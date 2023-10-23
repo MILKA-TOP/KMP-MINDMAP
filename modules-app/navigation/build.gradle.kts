@@ -1,11 +1,14 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("org.jetbrains.compose")
 }
 
 android {
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "ru.lipt.navigation"
+    kotlin {
+        jvmToolchain(17)
+    }
 }
 
 dependencies {

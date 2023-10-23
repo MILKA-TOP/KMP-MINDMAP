@@ -24,4 +24,11 @@ object Dependencies {
         const val transitions = "cafe.adriel.voyager:voyager-transitions:$version"
     }
 
+    object Koin {
+        private const val koin_version = "3.5.0"
+
+        const val core = "io.insert-koin:koin-core:$koin_version"
+        const val android = "io.insert-koin:koin-android:$koin_version"
+    }
+
 }

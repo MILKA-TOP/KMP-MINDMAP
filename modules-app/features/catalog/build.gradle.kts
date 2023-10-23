@@ -5,7 +5,16 @@ plugins {
 }
 
 android {
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "ru.lipt.catalog"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlin {
+        jvmToolchain(17)
+    }
 }
 
 dependencies {

@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "ru.lipt.catalog"
 }
 

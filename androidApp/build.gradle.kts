@@ -36,3 +36,8 @@ android {
         jvmToolchain(17)
     }
 }
+
+dependencies {
+    implementation(Dependencies.Koin.android)
+    implementation(Dependencies.Koin.core)
+}
