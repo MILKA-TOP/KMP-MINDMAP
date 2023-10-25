@@ -1,29 +1,14 @@
 plugins {
-    kotlin("android")
-    id("com.android.library")
-    id("org.jetbrains.compose")
+    id("ru.lipt.multiplatform")
 }
 
-android {
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+multiplatformLiptLibrary {
+    baseIosBinariesName = "feature.catalog"
     namespace = "ru.lipt.catalog"
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlin {
-        jvmToolchain(17)
-    }
 }
+
 
 dependencies {
     implementation(Dependencies.Voyager.navigator)
-
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.material)
-    @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-    implementation(compose.components.resources)
     implementation(project(":modules-app:navigation"))
 }

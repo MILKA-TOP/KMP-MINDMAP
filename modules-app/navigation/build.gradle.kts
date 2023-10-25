@@ -1,14 +1,10 @@
 plugins {
-    kotlin("android")
-    id("com.android.library")
+    id("ru.lipt.multiplatform")
 }
 
-android {
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+multiplatformLiptLibrary {
+    baseIosBinariesName = "base.navigation"
     namespace = "ru.lipt.navigation"
-    kotlin {
-        jvmToolchain(17)
-    }
 }
 
 dependencies {
