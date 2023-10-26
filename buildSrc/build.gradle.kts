@@ -1,5 +1,7 @@
 plugins {
+    `java-gradle-plugin`
     `kotlin-dsl`
+    `kotlin-dsl-precompiled-script-plugins`
 }
 
 repositories {
@@ -21,6 +23,7 @@ dependencies {
     implementation(Dependencies.Kotlin.gradlePlugin)
     implementation(Dependencies.Compose.gradlePlugin)
     implementation(Dependencies.Android.gradlePlugin)
+    implementation(Dependencies.Android.gradleApiPlugin)
 }
 
 kotlin {

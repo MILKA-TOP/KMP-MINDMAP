@@ -1,12 +1,12 @@
-package ru.lipt.catalog.ui
+package ru.lipt.map.ui
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 
-class MainScreen: Screen {
+class MapScreen: Screen {
 
     @Composable
     override fun Content() {
-        MainContent()
+        MapContent()
     }
 }

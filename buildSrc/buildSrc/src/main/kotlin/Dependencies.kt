@@ -12,6 +12,7 @@ object Dependencies {
 
     object Android {
         const val gradlePlugin = "com.android.tools.build:gradle:8.1.0"
+        const val gradleApiPlugin = "com.android.tools.build:gradle-api:8.1.0"
         const val composeActivity = "androidx.activity:activity-compose:1.5.1"
     }
 
