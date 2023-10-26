@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-private val iosBaseName = "shared"
-private val androidNamespace = "ru.lipt"
+private val iosBaseName = "feature.map"
+private val androidNamespace = "ru.lipt.map"
 
 kotlin {
     androidTarget()
@@ -31,12 +31,10 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.navigator)
-
+                implementation(Dependencies.Koin.core)
                 // Add here you dependencies
-                implementation(project(":modules-app:features:catalog"))
-                implementation(project(":modules-app:features:map"))
+                implementation(project(":modules-app:navigation"))
 
             }
         }
