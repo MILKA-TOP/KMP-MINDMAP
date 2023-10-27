@@ -20,7 +20,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ru.lipt.navigation.MainNavigator
 
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CatalogContent() {

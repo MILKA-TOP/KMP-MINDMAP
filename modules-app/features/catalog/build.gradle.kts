@@ -35,7 +35,6 @@ kotlin {
 
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
-
             }
         }
         val androidMain by getting {

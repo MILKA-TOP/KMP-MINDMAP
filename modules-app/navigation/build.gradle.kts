@@ -34,7 +34,6 @@ kotlin {
                 implementation(Dependencies.Voyager.navigator)
 
                 // Add here you dependencies
-
             }
         }
         val androidMain by getting {
