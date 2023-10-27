@@ -11,7 +11,6 @@ repositories {
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
-
 gradlePlugin {
     plugins.register("ru.lipt.multiplatform") {
         id = "ru.lipt.multiplatform"

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-
 @Composable
 fun MapContent() {
     val navigator = LocalNavigator.currentOrThrow
