@@ -1,4 +1,4 @@
-rootProject.name = "Mind-map Ed"
+rootProject.name = "Mind-map"
 
 include(":androidApp")
 include(":desktopApp")
