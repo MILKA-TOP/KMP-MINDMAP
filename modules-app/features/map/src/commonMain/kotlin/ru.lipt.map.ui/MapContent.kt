@@ -12,9 +12,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 @Composable
-fun MapContent() {
+fun MapContent(
+    screenModel: MapScreenModel,
+) {
+    screenModel.toString()
     val navigator = LocalNavigator.currentOrThrow
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.align(Alignment.Center)) {
             Text(text = "Map screen")

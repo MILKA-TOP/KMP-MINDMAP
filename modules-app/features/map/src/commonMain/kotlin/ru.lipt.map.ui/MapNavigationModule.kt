@@ -8,4 +8,5 @@ val mapNavigationModule = module {
     ScreenRegistry.register<MainNavigator.MapScreenDestination> {
         MapScreen()
     }
+    factory { MapScreenModel() }
 }
