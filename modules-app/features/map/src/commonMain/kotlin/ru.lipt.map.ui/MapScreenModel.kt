@@ -1,5 +1,66 @@
 package ru.lipt.map.ui
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import ru.lipt.map.ui.models.MapEdge
+import ru.lipt.map.ui.models.MapNode
+import ru.lipt.map.ui.models.MapScreenUi
+import ru.lipt.map.ui.models.NodePosition
 
-class MapScreenModel : ScreenModel
+class MapScreenModel : ScreenModel {
+    private val _uiState: MutableStateFlow<MapScreenUi> = MutableStateFlow(
+        MapScreenUi(
+            nodes = mapOf(
+                ROOT_ID to MapNode(
+                    id = ROOT_ID,
+                    text = "root",
+                )
+            )
+        )
+    )
+    val uiState = _uiState.asStateFlow()
+
+    fun onAddClick(id: String) {
+        _uiState.update {
+            val number = it.nodes.size.toString()
+            it.copy(
+                nodes = it.nodes.toMutableMap().apply {
+                    this[id]?.let { node ->
+                        this[id] = node.copy(childIds = node.childIds + listOf(number))
+                    }
+                } + mapOf(number to MapNode(number, "Node ${it.nodes.size}")),
+                edges = it.edges + listOf(MapEdge(
+                    firstNodeId = id,
+                    secondNodeId = number,
+                    firstPosition = it.nodes[id]?.position ?: NodePosition()
+                ))
+            )
+        }
+    }
+
+    fun updatePosition(id: String, x: Float, y: Float) {
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes.toMutableMap().apply {
+                    this[id]?.let { node ->
+                        this[id] = node.copy(position = NodePosition(x, y))
+                    }
+                },
+                edges = it.edges.map { edge ->
+                    if (edge.firstNodeId == id) edge.copy(
+                        firstPosition = NodePosition(x, y)
+                    )
+                    else if (edge.secondNodeId == id) edge.copy(
+                        secondPosition = NodePosition(x, y)
+                    ) else edge
+                }
+            )
+        }
+    }
+
+    companion object {
+        const val ROOT_ID = "root_0"
+    }
+}
