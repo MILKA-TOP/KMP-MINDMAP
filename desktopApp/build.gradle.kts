@@ -24,7 +24,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Mind-map Ed"
+            packageName = "Mind-map"
             packageVersion = "1.0.0"
         }
     }

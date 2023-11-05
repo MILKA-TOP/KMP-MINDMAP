@@ -17,12 +17,13 @@ object Dependencies {
     }
 
     object Voyager {
-        private const val version = "1.0.0-rc05"
+        private const val version = "1.0.0-rc08"
 
         const val navigator = "cafe.adriel.voyager:voyager-navigator:$version"
         const val bottomSheetNavigator = "cafe.adriel.voyager:voyager-bottom-sheet-navigator:$version"
         const val tabNavigator = "cafe.adriel.voyager:voyager-tab-navigator:$version"
         const val transitions = "cafe.adriel.voyager:voyager-transitions:$version"
+        const val koin = "cafe.adriel.voyager:voyager-koin:$version"
     }
 
     object Koin {
@@ -30,5 +31,6 @@ object Dependencies {
 
         const val core = "io.insert-koin:koin-core:$koin_version"
         const val android = "io.insert-koin:koin-android:$koin_version"
+        const val compose = "io.insert-koin:koin-compose:$koin_version"
     }
 }
