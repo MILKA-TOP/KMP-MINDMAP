@@ -31,6 +31,8 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation(Dependencies.Koin.core)
+                implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
 
                 // Add here you dependencies

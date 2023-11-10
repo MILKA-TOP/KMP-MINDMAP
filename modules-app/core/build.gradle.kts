@@ -26,6 +26,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("co.touchlab:stately-concurrent-collections:2.0.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Koin.core)
