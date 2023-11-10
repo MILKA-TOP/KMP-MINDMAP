@@ -5,8 +5,8 @@ import org.koin.dsl.module
 import ru.lipt.navigation.MainNavigator
 
 val mapNavigationModule = module {
-    ScreenRegistry.register<MainNavigator.MapScreenDestination> {
-        MapScreen()
+    ScreenRegistry.register<MainNavigator.MapScreenDestination> { provider ->
+        MapScreen(provider.id)
     }
     factory { MapScreenModel() }
 }
