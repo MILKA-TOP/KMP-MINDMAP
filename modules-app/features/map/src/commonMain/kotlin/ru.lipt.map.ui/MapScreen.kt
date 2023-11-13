@@ -3,15 +3,17 @@ package ru.lipt.map.ui
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import org.koin.core.parameter.parametersOf
+import ru.lipt.navigation.params.map.MapScreenParams
 
 class MapScreen(
-    val id: String
+    private val params: MapScreenParams
 ) : Screen {
 
     @Composable
     override fun Content() {
         MapContent(
-            screenModel = getScreenModel(),
+            screenModel = getScreenModel(parameters = { parametersOf(params) }),
         )
     }
 }

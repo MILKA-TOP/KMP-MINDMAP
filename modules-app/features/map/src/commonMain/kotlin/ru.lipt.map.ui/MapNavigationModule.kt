@@ -6,7 +6,12 @@ import ru.lipt.navigation.MainNavigator
 
 val mapNavigationModule = module {
     ScreenRegistry.register<MainNavigator.MapScreenDestination> { provider ->
-        MapScreen(provider.id)
+        MapScreen(provider.params)
     }
-    factory { MapScreenModel() }
+    factory { params ->
+        MapScreenModel(
+            params = params.get(),
+            mapInteractor = get(),
+        )
+    }
 }
