@@ -21,6 +21,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.ui.models.MapCatalogElement
 import ru.lipt.navigation.MainNavigator
+import ru.lipt.navigation.params.map.MapScreenParams
 
 @Composable
 fun CatalogContent(
@@ -33,7 +34,7 @@ fun CatalogContent(
 
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         ui.maps.forEach { map ->
-            val mapScreen = rememberScreen(MainNavigator.MapScreenDestination(id = map.id))
+            val mapScreen = rememberScreen(MainNavigator.MapScreenDestination(params = MapScreenParams(map.id)))
             MapListElement(
                 map = map,
                 toMapNavigate = { id -> navigator.push(mapScreen) }
