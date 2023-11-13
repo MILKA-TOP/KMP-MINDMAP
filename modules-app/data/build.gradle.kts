@@ -1,7 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose")
 }
 
 private val iosBaseName = "modules.data"
@@ -32,6 +31,7 @@ kotlin {
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
+                implementation(project(":modules-app:core"))
             }
         }
         val androidMain by getting {
