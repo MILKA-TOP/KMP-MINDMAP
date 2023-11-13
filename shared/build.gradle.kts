@@ -37,6 +37,8 @@ kotlin {
                 // Add here you dependencies
                 implementation(project(":modules-app:features:catalog"))
                 implementation(project(":modules-app:features:map"))
+                implementation(project(":modules-app:domain"))
+                implementation(project(":modules-app:data"))
             }
         }
         val androidMain by getting {

@@ -1,10 +1,9 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose")
 }
 
-private val iosBaseName = "modules.domain"
+private val iosBaseName = "base.domain"
 private val androidNamespace = "ru.lipt.domain"
 
 kotlin {
@@ -29,6 +28,8 @@ kotlin {
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Koin.core)
+
+                implementation(project(":modules-app:core"))
                 // Add here you dependencies
             }
         }
