@@ -61,7 +61,7 @@ private fun MapListElement(
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = map.title,
+            text = map.description,
             style = MaterialTheme.typography.body1,
         )
     }

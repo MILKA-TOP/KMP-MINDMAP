@@ -31,12 +31,14 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
 
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
+                implementation(project(":modules-app:domain"))
             }
         }
         val androidMain by getting {
@@ -58,6 +60,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 dependsOn(commonMain)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
                 implementation(compose.desktop.common)
             }
         }
