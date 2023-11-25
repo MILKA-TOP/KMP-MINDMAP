@@ -16,12 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.rememberScreen
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ru.lipt.catalog.ui.models.CatalogScreenUi
 import ru.lipt.catalog.ui.models.MapCatalogElement
-import ru.lipt.navigation.MainNavigator
-import ru.lipt.navigation.params.map.MapScreenParams
+import ru.lipt.map.common.navigation.MapNavigationDestinations
 
 @Composable
 fun CatalogContent(
@@ -32,12 +32,32 @@ fun CatalogContent(
 
     val ui = screenModel.uiState.collectAsState().value
 
+    screenModel.handleNavigation { target ->
+        when (target) {
+            is NavigationTarget.MapDestination -> navigator.push(
+                ScreenRegistry.get(
+                    MapNavigationDestinations.MapScreenDestination(target.params)
+                )
+            )
+        }
+    }
+
+    Content(
+        ui = ui.model,
+        onMapElementClick = screenModel::onMapElementClick,
+    )
+}
+
+@Composable
+private fun Content(
+    ui: CatalogScreenUi,
+    onMapElementClick: (String) -> Unit,
+) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         ui.maps.forEach { map ->
-            val mapScreen = rememberScreen(MainNavigator.MapScreenDestination(params = MapScreenParams(map.id)))
             MapListElement(
                 map = map,
-                toMapNavigate = { id -> navigator.push(mapScreen) }
+                onMapElementClick = onMapElementClick,
             )
             Spacer(Modifier.height(16.dp))
         }
@@ -47,14 +67,14 @@ fun CatalogContent(
 @Composable
 private fun MapListElement(
     map: MapCatalogElement,
-    toMapNavigate: (String) -> Unit // :TODO replace to call VM for navigation and navigate by navigationTarget
+    onMapElementClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .sizeIn(maxWidth = 400.dp, maxHeight = 300.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colors.background)
-            .clickable(onClick = { toMapNavigate(map.id) })
+            .clickable(onClick = { onMapElementClick(map.id) })
     ) {
         Text(
             text = map.title,

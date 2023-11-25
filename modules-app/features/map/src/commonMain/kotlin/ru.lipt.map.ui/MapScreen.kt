@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import org.koin.core.parameter.parametersOf
-import ru.lipt.navigation.params.map.MapScreenParams
+import ru.lipt.map.common.params.MapScreenParams
 
 class MapScreen(
     private val params: MapScreenParams

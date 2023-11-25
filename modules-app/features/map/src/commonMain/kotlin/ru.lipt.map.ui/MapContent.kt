@@ -33,12 +33,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import cafe.adriel.voyager.core.registry.rememberScreen
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ru.lipt.details.common.navigation.NodeDetailsNavigationDestinations
 import ru.lipt.map.ui.models.MapEdge
 import ru.lipt.map.ui.models.MapNode
-import ru.lipt.navigation.MainNavigator
+import ru.lipt.map.ui.models.MapScreenUi
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,8 +48,37 @@ fun MapContent(
 ) {
     val uiState = screenModel.uiState.collectAsState().value
 
-    screenModel.toString()
     val navigator = LocalNavigator.currentOrThrow
+
+    screenModel.handleNavigation { target ->
+        when (target) {
+            is NavigationTarget.DetailsScreen -> navigator.push(
+                ScreenRegistry.get(
+                    NodeDetailsNavigationDestinations.NodeDetailsScreenDestination(target.params)
+                )
+            )
+
+            is NavigationTarget.NavigateUp -> navigator.pop()
+        }
+    }
+
+    MapContent(
+        uiState = uiState.model,
+        addNode = screenModel::onAddClick,
+        openNode = screenModel::openNode,
+        updatePosition = screenModel::updatePosition,
+        onBackButtonClick = screenModel::onBackButtonClick,
+    )
+}
+
+@Composable
+private fun MapContent(
+    uiState: MapScreenUi,
+    addNode: (String) -> Unit,
+    openNode: (String) -> Unit,
+    updatePosition: (String, Float, Float) -> Unit,
+    onBackButtonClick: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         uiState.edges.forEach { edge ->
@@ -56,19 +86,16 @@ fun MapContent(
         }
 
         uiState.nodes.forEach { node ->
-            val detailsScreen = rememberScreen(MainNavigator.DetailsScreenDestination)
             MindNode(
                 node = node.value,
-                addNode = screenModel::onAddClick,
-                openNode = {
-                    navigator.push(detailsScreen)
-                },
-                onUpdatePosition = screenModel::updatePosition,
+                addNode = addNode,
+                openNode = openNode,
+                onUpdatePosition = updatePosition,
             )
         }
 
         Column(modifier = Modifier.align(Alignment.Center)) {
-            Button(onClick = navigator::pop) {
+            Button(onClick = onBackButtonClick) {
                 Text(text = "Go back to \"Catalog Screen\"")
             }
         }
