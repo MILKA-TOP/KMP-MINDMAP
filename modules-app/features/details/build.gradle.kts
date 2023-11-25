@@ -35,8 +35,10 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(project(":modules-app:core"))
 
                 // Add here you dependencies
+                implementation(project(":modules-app:features:details:common"))
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
             }

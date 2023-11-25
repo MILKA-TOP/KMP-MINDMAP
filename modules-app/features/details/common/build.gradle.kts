@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-private val iosBaseName = "feature.catalog"
-private val androidNamespace = "ru.lipt.catalog"
+private val iosBaseName = "feature.details.common"
+private val androidNamespace = "ru.lipt.details.common"
 
 kotlin {
     androidTarget()
@@ -38,9 +38,6 @@ kotlin {
                 implementation(project(":modules-app:core"))
 
                 // Add here you dependencies
-                implementation(project(":modules-app:features:map:common"))
-                implementation(project(":modules-app:navigation"))
-                implementation(project(":modules-app:domain"))
             }
         }
         val androidMain by getting {
