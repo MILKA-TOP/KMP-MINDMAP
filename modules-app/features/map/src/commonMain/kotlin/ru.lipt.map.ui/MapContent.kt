@@ -33,10 +33,12 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.map.ui.models.MapEdge
 import ru.lipt.map.ui.models.MapNode
+import ru.lipt.navigation.MainNavigator
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,10 +56,13 @@ fun MapContent(
         }
 
         uiState.nodes.forEach { node ->
+            val detailsScreen = rememberScreen(MainNavigator.DetailsScreenDestination)
             MindNode(
                 node = node.value,
                 addNode = screenModel::onAddClick,
-                openNode = screenModel::openNode,
+                openNode = {
+                    navigator.push(detailsScreen)
+                },
                 onUpdatePosition = screenModel::updatePosition,
             )
         }
