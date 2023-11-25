@@ -5,4 +5,5 @@ import ru.lipt.navigation.params.map.MapScreenParams
 
 sealed class MainNavigator : ScreenProvider {
     data class MapScreenDestination(val params: MapScreenParams) : MainNavigator()
+    object DetailsScreenDestination : MainNavigator()
 }

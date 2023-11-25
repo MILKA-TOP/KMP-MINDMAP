@@ -28,14 +28,17 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.map.ui.models.MapEdge
 import ru.lipt.map.ui.models.MapNode
+import ru.lipt.navigation.MainNavigator
 import kotlin.math.roundToInt
 
 @Composable
@@ -53,9 +56,13 @@ fun MapContent(
         }
 
         uiState.nodes.forEach { node ->
+            val detailsScreen = rememberScreen(MainNavigator.DetailsScreenDestination)
             MindNode(
                 node = node.value,
                 addNode = screenModel::onAddClick,
+                openNode = {
+                    navigator.push(detailsScreen)
+                },
                 onUpdatePosition = screenModel::updatePosition,
             )
         }
@@ -72,11 +79,13 @@ fun MapContent(
 private fun MindNode(
     node: MapNode,
     addNode: (String) -> Unit,
+    openNode: (String) -> Unit,
     onUpdatePosition: (String, Float, Float) -> Unit = { _, _, _ -> },
 ) {
     val borderColor = Color.Magenta
 
     var popUpState by remember { mutableStateOf(false) }
+    var popUpOffset by remember { mutableStateOf(IntOffset(0, 0)) }
     DraggableItem(
         onUpdatePosition = { x, y -> onUpdatePosition(node.id, x, y) },
     ) {
@@ -85,6 +94,9 @@ private fun MindNode(
                 .clip(RoundedCornerShape(12.dp))
                 .border(4.dp, borderColor)
                 .background(borderColor.copy(alpha = 0.4f))
+                .onGloballyPositioned {
+                    popUpOffset = IntOffset(it.size.width, it.size.height / 2)
+                }
                 .clickable {
                     popUpState = true
                 }
@@ -95,14 +107,21 @@ private fun MindNode(
             )
             if (popUpState) {
                 Popup(alignment = Alignment.Center,
+                    offset = popUpOffset,
                     onDismissRequest = { popUpState = false }
                 ) {
-                    Box {
+                    Column {
                         Button(onClick = {
                             addNode(node.id)
                             popUpState = false
                         }) {
                             Text(text = "+")
+                        }
+                        Button(onClick = {
+                            openNode(node.id)
+                            popUpState = false
+                        }) {
+                            Text(text = "Details")
                         }
                     }
                 }

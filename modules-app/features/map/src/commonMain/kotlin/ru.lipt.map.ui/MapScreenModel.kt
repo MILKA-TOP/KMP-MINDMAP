@@ -60,6 +60,10 @@ class MapScreenModel(
         }
     }
 
+    @Suppress("EmptyFunctionBlock", "UnusedPrivateMember")
+    fun openNode(id: String) {
+    }
+
     fun updatePosition(id: String, x: Float, y: Float) {
         _uiState.update {
             it.copy(
