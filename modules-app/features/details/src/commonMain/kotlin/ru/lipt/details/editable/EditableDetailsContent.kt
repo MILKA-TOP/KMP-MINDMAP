@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -20,11 +26,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
 import ru.lipt.details.editable.models.EditableTestResultUi
+import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @Composable
 fun EditableDetailsContent(
@@ -37,27 +45,46 @@ fun EditableDetailsContent(
 
     val uiState = screenModel.uiState.collectAsState().value
 
-    screenModel.handleNavigation { target ->
-        when (target) {
-            NavigationTarget.SaveText -> scope.launch {
-                snackBarHostState.showSnackbar("Saved")
-            }
-            is NavigationTarget.EditTest -> scope.launch {
-                snackBarHostState.showSnackbar("Navigation will be added later")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Details") },
+                navigationIcon = {
+                    IconButton(onClick = navigator::pop) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = ""
+                        )
+                    }
+                }
+            )
+        }
+    ) {
+
+        screenModel.handleNavigation { target ->
+            when (target) {
+                NavigationTarget.SaveText -> scope.launch {
+                    snackBarHostState.showSnackbar("Saved")
+                }
+                is NavigationTarget.EditTest -> navigator.push(
+                    ScreenRegistry.get(
+                        TestingNavigationDestinations.TestEditScreenDestination(target.params)
+                    )
+                )
             }
         }
+        SnackbarHost(hostState = snackBarHostState)
+
+        val ui = uiState.model
+
+        Content(
+            ui = ui,
+            onValueChange = screenModel::onEditText,
+            onTextSave = screenModel::onTextSaveButtonClick,
+            onTestResultButtonClick = screenModel::onEditTestClick,
+            scrollState = scrollState,
+        )
     }
-    SnackbarHost(hostState = snackBarHostState)
-
-    val ui = uiState.model
-
-    Content(
-        ui = ui,
-        onValueChange = screenModel::onEditText,
-        onTextSave = screenModel::onTextSaveButtonClick,
-        onTestResultButtonClick = screenModel::onEditTestClick,
-        scrollState = scrollState,
-    )
 }
 
 @Composable

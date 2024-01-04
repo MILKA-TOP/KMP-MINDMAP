@@ -7,6 +7,7 @@ import ru.lipt.data.di.dataModules
 import ru.lipt.details.detailsNavigationModule
 import ru.lipt.domain.di.domainModules
 import ru.lipt.map.ui.mapNavigationModule
+import ru.lipt.testing.testingNavigationModule
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
@@ -15,6 +16,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
             mapNavigationModule,
             catalogNavigationModule,
             detailsNavigationModule,
+            testingNavigationModule,
             domainModules,
             dataModules,
         )

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
+import ru.lipt.testing.common.params.TestEditScreenParams
 
 class EditableDetailsScreenModel(
     val params: NodeDetailsScreenParams
@@ -27,7 +28,7 @@ class EditableDetailsScreenModel(
     fun onEditTestClick() {
         _uiState.navigateTo(
             NavigationTarget.EditTest(
-                NodeDetailsScreenParams(
+                TestEditScreenParams(
                     mapId = params.mapId,
                     nodeId = params.nodeId,
                 )

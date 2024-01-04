@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-private val iosBaseName = "shared"
-private val androidNamespace = "ru.lipt"
+private val iosBaseName = "feature.testing"
+private val androidNamespace = "ru.lipt.testing"
 
 kotlin {
     androidTarget()
@@ -31,16 +31,16 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation(Dependencies.Koin.core)
+                implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(project(":modules-app:core"))
 
                 // Add here you dependencies
-                implementation(project(":modules-app:features:catalog"))
-                implementation(project(":modules-app:features:map"))
-                implementation(project(":modules-app:features:details"))
-                implementation(project(":modules-app:features:testing"))
+                implementation(project(":modules-app:features:testing:common"))
+                implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
-                implementation(project(":modules-app:data"))
             }
         }
         val androidMain by getting {
@@ -62,6 +62,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 dependsOn(commonMain)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
                 implementation(compose.desktop.common)
             }
         }
