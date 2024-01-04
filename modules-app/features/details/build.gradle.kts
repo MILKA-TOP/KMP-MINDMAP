@@ -39,6 +39,7 @@ kotlin {
 
                 // Add here you dependencies
                 implementation(project(":modules-app:features:details:common"))
+                implementation(project(":modules-app:features:testing:common"))
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
             }
