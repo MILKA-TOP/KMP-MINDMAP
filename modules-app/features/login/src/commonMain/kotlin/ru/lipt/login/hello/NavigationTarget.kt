@@ -1,3 +1,5 @@
 package ru.lipt.login.hello
 
-class NavigationTarget
+sealed class NavigationTarget {
+    data object RegistryNavigate : NavigationTarget()
+}
