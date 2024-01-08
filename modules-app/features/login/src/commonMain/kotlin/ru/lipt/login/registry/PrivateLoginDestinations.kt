@@ -1,4 +1,4 @@
-package ru.lipt.login.navigation
+package ru.lipt.login.registry
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
 

@@ -3,7 +3,6 @@ package ru.lipt.login.registry.input
 import cafe.adriel.voyager.core.model.ScreenModel
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
-import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.validate.isEmailValid
 import ru.lipt.login.registry.input.model.RegistryInputModel
 
@@ -39,7 +38,7 @@ class RegistryInputScreenModel : ScreenModel {
     }
 
     fun onRegistryButtonClick() {
-        _uiState.showAlertError(UiError.Alert.Default(message = "Tmp"))
+        _uiState.navigateTo(NavigationTarget.PinCreateNavigate)
     }
 
     private fun RegistryInputModel.updateValidateState() = copy(registryButtonEnable = validate())
