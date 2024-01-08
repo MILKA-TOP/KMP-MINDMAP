@@ -14,19 +14,26 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.input.KeyboardType
+import cafe.adriel.voyager.core.model.ScreenModelStore
+import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.core.compose.alert.ErrorAlertDialog
+import ru.lipt.login.pin.PrivatePinPadDestinations
 import ru.lipt.login.registry.input.model.RegistryInputModel
 
 @Composable
 fun RegistryInputContent(
-    screenModel: RegistryInputScreenModel
+    screen: Screen,
+    navigator: Navigator = LocalNavigator.currentOrThrow,
+    screenModel: RegistryInputScreenModel = screen.getScreenModel<RegistryInputScreenModel>()
 ) {
 
     val uiState = screenModel.uiState.collectAsState().value
     val ui = uiState.model
-    val navigator = LocalNavigator.currentOrThrow
 
     ErrorAlertDialog(
         error = uiState.alertError,
@@ -34,6 +41,13 @@ fun RegistryInputContent(
     )
 
     screenModel.handleNavigation { target ->
+        when (target) {
+            NavigationTarget.PinCreateNavigate -> {
+                navigator.pop()
+                ScreenModelStore.onDispose(screen) // :TODO TRY FIX THIS
+                navigator.push(ScreenRegistry.get(PrivatePinPadDestinations.CreatePin))
+            }
+        }
     }
 
     Scaffold(

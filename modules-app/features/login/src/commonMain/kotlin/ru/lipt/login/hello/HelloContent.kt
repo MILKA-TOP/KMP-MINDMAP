@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import ru.lipt.login.navigation.PrivateLoginDestinations
+import ru.lipt.login.registry.PrivateLoginDestinations
 
 @Composable
 fun HelloContent(
