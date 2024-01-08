@@ -9,6 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import ru.lipt.login.navigation.PrivateLoginDestinations
 
 @Composable
 fun HelloContent(
@@ -16,8 +20,12 @@ fun HelloContent(
 ) {
     val uiState = screenModel.uiState.collectAsState().value
     val ui = uiState.model
+    val navigator = LocalNavigator.currentOrThrow
 
-    screenModel.handleNavigation { _ ->
+    screenModel.handleNavigation { target ->
+        when (target) {
+            NavigationTarget.RegistryNavigate -> navigator.push(ScreenRegistry.get(PrivateLoginDestinations.RegistryInputDestination))
+        }
     }
 
     Content(

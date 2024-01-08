@@ -3,14 +3,17 @@ package ru.lipt.core.compose
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import kotlinx.coroutines.flow.MutableStateFlow
+import ru.lipt.core.compose.alert.UiError
 
 class MutableScreenUiStateFlow<Ui, Nav>(
     model: Ui,
     navigationEvents: List<Nav> = emptyList(),
+    alertErrors: List<UiError.Alert> = emptyList(),
 ) : MutableStateFlow<UiState<Ui, Nav>> by MutableStateFlow(
     UiState(
         model = model,
         navigationEvents = navigationEvents,
+        alertErrors = alertErrors,
     )
 ) {
 
@@ -37,5 +40,18 @@ class MutableScreenUiStateFlow<Ui, Nav>(
             navigate(value.navigationEvents.first())
             update { copy(navigationEvents = navigationEvents.drop(1)) }
         }
+    }
+
+    fun handleErrorAlertClose() {
+        update { copy(alertErrors = alertErrors.consumeAlert()) }
+    }
+
+    fun showAlertError(alert: UiError.Alert) =
+        showAlertError(listOf(alert))
+
+    fun showAlertError(alert: List<UiError.Alert>) = lock.withLock {
+        value = value.copy(
+            alertErrors = value.alertErrors + alert.filterNot { value.alertErrors.contains(it) }
+        )
     }
 }
