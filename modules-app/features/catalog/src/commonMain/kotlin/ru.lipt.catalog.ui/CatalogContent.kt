@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -42,10 +44,18 @@ fun CatalogContent(
         }
     }
 
-    Content(
-        ui = ui.model,
-        onMapElementClick = screenModel::onMapElementClick,
-    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Catalog Screen") },
+            )
+        }
+    ) {
+        Content(
+            ui = ui.model,
+            onMapElementClick = screenModel::onMapElementClick,
+        )
+    }
 }
 
 @Composable

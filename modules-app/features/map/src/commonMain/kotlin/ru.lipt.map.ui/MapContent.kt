@@ -12,7 +12,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,13 +68,28 @@ fun MapContent(
         }
     }
 
-    MapContent(
-        uiState = uiState.model,
-        addNode = screenModel::onAddClick,
-        openNode = screenModel::openNode,
-        updatePosition = screenModel::updatePosition,
-        onBackButtonClick = screenModel::onBackButtonClick,
-    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Map Editor") },
+                navigationIcon = {
+                    IconButton(onClick = screenModel::onBackButtonClick) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = ""
+                        )
+                    }
+                }
+            )
+        }
+    ) {
+        MapContent(
+            uiState = uiState.model,
+            addNode = screenModel::onAddClick,
+            openNode = screenModel::openNode,
+            updatePosition = screenModel::updatePosition,
+        )
+    }
 }
 
 @Composable
@@ -77,7 +98,6 @@ private fun MapContent(
     addNode: (String) -> Unit,
     openNode: (String) -> Unit,
     updatePosition: (String, Float, Float) -> Unit,
-    onBackButtonClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -92,12 +112,6 @@ private fun MapContent(
                 openNode = openNode,
                 onUpdatePosition = updatePosition,
             )
-        }
-
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            Button(onClick = onBackButtonClick) {
-                Text(text = "Go back to \"Catalog Screen\"")
-            }
         }
     }
 }
