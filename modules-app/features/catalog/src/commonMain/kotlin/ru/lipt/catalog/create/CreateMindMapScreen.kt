@@ -1,12 +1,11 @@
-package ru.lipt.login.pin.create
+package ru.lipt.catalog.create
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 
-class PinPadCreateScreen : Screen {
-
+object CreateMindMapScreen : Screen {
     @Composable
     override fun Content() {
-        PinPadCreateContent(screen = this)
+        CreateMindMapContent(screen = this)
     }
 }

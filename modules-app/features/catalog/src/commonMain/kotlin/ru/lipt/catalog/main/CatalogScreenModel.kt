@@ -50,6 +50,8 @@ class CatalogScreenModel(
         }
     }
 
+    fun createNewMindMap() = _uiState.navigateTo(NavigationTarget.CreateMindMapDestination)
+
     private fun init() {
         screenModelScope.launch {
             val maps = catalogInteractor.getMaps()

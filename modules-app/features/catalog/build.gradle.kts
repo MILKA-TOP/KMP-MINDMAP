@@ -35,6 +35,7 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Logs.napier)
                 implementation(project(":modules-app:core"))
 
                 // Add here you dependencies

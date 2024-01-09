@@ -15,6 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +28,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.main.models.CatalogScreenUi
 import ru.lipt.catalog.main.models.MapCatalogElement
+import ru.lipt.catalog.navigation.PrivateCatalogDestinations
 import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.map.common.navigation.MapNavigationDestinations
@@ -54,6 +56,13 @@ fun CatalogContent(
                     )
                 )
             }
+            NavigationTarget.CreateMindMapDestination -> {
+                navigator.push(
+                    ScreenRegistry.get(
+                        PrivateCatalogDestinations.CreateMapDestination
+                    )
+                )
+            }
         }
     }
 
@@ -70,6 +79,12 @@ fun CatalogContent(
                     IconButton(onClick = screenModel::logout) {
                         Icon(
                             imageVector = Icons.Filled.ExitToApp,
+                            contentDescription = ""
+                        )
+                    }
+                    IconButton(onClick = screenModel::createNewMindMap) {
+                        Icon(
+                            imageVector = Icons.Filled.AddCircle,
                             contentDescription = ""
                         )
                     }

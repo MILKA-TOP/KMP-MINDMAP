@@ -16,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.common.navigation.CatalogNavigationDestinations
@@ -25,7 +28,8 @@ import ru.lipt.login.pin.create.models.PinPadCreateModel
 
 @Composable
 fun PinPadCreateContent(
-    screenModel: PinPadCreateScreenModel
+    screen: Screen,
+    screenModel: PinPadCreateScreenModel = screen.getScreenModel()
 ) {
 
     val navigator = LocalNavigator.currentOrThrow
@@ -37,6 +41,7 @@ fun PinPadCreateContent(
         when (target) {
             is NavigationTarget.CatalogNavigate -> {
                 navigator.popAll()
+                ScreenModelStore.onDispose(screen)
                 navigator.push(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
             }
         }

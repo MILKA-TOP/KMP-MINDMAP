@@ -40,4 +40,10 @@ object Dependencies {
         const val multiplatformSettings = "com.russhwolf:multiplatform-settings:$settings_version"
         const val multiplatformSettingsNoArgs = "com.russhwolf:multiplatform-settings-no-arg:$settings_version"
     }
+
+    object Logs {
+        private const val napierVersion = "2.7.1"
+
+        const val napier = "io.github.aakira:napier:$napierVersion"
+    }
 }
