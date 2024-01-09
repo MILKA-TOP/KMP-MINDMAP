@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.input.KeyboardType
-import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -38,9 +37,7 @@ fun CreateMindMapContent(
     screenModel.handleNavigation { target ->
         when (target) {
             is NavigationTarget.MindMapScreen -> {
-                navigator.pop()
-                ScreenModelStore.onDispose(screen)
-                navigator.push(ScreenRegistry.get(MapNavigationDestinations.MapScreenDestination(target.params)))
+                navigator.replace(ScreenRegistry.get(MapNavigationDestinations.MapScreenDestination(target.params)))
             }
         }
     }

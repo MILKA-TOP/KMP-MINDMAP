@@ -36,6 +36,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))

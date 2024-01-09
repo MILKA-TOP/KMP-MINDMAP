@@ -33,6 +33,7 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Voyager.screenModel)
 
                 // Add here you dependencies
                 implementation(project(":modules-app:features:catalog"))

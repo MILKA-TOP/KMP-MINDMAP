@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Setings.multiplatformSettings)
                 implementation(Dependencies.Setings.multiplatformSettingsNoArgs)

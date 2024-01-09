@@ -23,7 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.main.models.CatalogScreenUi
@@ -35,8 +38,12 @@ import ru.lipt.map.common.navigation.MapNavigationDestinations
 
 @Composable
 fun CatalogContent(
-    screenModel: CatalogScreenModel,
+    screen: Screen,
+    screenModel: CatalogScreenModel = screen.getScreenModel(),
 ) {
+    screen.LifecycleEffect(
+        onStarted = screenModel::onStarted
+    )
 
     val navigator = LocalNavigator.currentOrThrow
 

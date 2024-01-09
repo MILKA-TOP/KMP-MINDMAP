@@ -22,12 +22,10 @@ class CatalogScreenModel(
         MutableScreenUiStateFlow(CatalogScreenUi())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        init()
-    }
-
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
+
+    fun onStarted() = init()
 
     fun onMapElementClick(id: String) = _uiState.navigateTo(
         NavigationTarget.MapDestination(

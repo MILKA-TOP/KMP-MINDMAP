@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -40,9 +39,7 @@ fun PinPadCreateContent(
     screenModel.handleNavigation { target ->
         when (target) {
             is NavigationTarget.CatalogNavigate -> {
-                navigator.popAll()
-                ScreenModelStore.onDispose(screen)
-                navigator.push(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
+                navigator.replaceAll(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
             }
         }
     }
