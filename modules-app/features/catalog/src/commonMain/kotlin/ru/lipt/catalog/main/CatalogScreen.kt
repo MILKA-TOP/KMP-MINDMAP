@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen

@@ -1,11 +1,11 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.lipt.catalog.ui.models.CatalogScreenUi
-import ru.lipt.catalog.ui.models.MapCatalogElement
+import ru.lipt.catalog.main.models.CatalogScreenUi
+import ru.lipt.catalog.main.models.MapCatalogElement
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching

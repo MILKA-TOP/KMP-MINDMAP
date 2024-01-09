@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module

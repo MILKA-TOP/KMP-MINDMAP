@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui.models
+package ru.lipt.catalog.main.models
 
 import androidx.compose.runtime.Immutable
 

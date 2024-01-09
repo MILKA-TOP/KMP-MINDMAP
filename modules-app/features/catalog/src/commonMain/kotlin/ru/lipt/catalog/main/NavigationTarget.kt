@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import ru.lipt.map.common.params.MapScreenParams
 

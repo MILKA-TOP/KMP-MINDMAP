@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import ru.lipt.catalog.ui.models.CatalogScreenUi
-import ru.lipt.catalog.ui.models.MapCatalogElement
+import ru.lipt.catalog.main.models.CatalogScreenUi
+import ru.lipt.catalog.main.models.MapCatalogElement
 import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.map.common.navigation.MapNavigationDestinations
