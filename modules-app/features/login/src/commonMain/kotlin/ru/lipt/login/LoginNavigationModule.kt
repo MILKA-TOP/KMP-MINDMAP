@@ -8,6 +8,7 @@ import ru.lipt.login.hello.HelloScreenModel
 import ru.lipt.login.login.loginDiModule
 import ru.lipt.login.pin.pinDiModule
 import ru.lipt.login.registry.registryDiModule
+import ru.lipt.login.splash.splashDiModule
 
 val loginNavigationModule = module {
     ScreenRegistry.register<LoginNavigationDestinations.HelloScreenDestination> {
@@ -20,6 +21,7 @@ val loginNavigationModule = module {
     includes(
         registryDiModule,
         pinDiModule,
-        loginDiModule
+        loginDiModule,
+        splashDiModule,
     )
 }

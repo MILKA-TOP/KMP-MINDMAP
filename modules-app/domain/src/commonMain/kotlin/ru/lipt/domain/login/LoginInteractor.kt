@@ -28,6 +28,8 @@ class LoginInteractor(
         sessionRepository.saveData(encryptedPin)
     }
 
+    suspend fun containsSavedAuthData(): Boolean = sessionRepository.containsSavedData()
+
     suspend fun logout() {
         val session = sessionRepository.session
         loginRepository.revokeDeviceTokens(session.userId)

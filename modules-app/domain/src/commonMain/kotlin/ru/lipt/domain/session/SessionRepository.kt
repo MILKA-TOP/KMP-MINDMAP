@@ -18,6 +18,8 @@ class SessionRepository(
         dataSource.saveSession(session, pinKey)
     }
 
+    suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
+
     suspend fun logOut() {
         this.session = Session()
         dataSource.clearSession()
