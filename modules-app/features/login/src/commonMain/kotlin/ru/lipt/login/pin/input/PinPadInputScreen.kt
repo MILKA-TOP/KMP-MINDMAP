@@ -1,14 +1,11 @@
-package ru.lipt.login.registry.input
+package ru.lipt.login.pin.input
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 
-class RegistryInputScreen : Screen {
-
+class PinPadInputScreen : Screen {
     @Composable
     override fun Content() {
-        RegistryInputContent(
-            screen = this,
-        )
+        PinPadInputContent(screen = this)
     }
 }

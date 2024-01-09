@@ -6,4 +6,5 @@ sealed class LoginNavigationDestinations : ScreenProvider {
 
     data object HelloScreenDestination : LoginNavigationDestinations()
     data object SplashScreenDestination : LoginNavigationDestinations()
+    data object PinInputScreenDestination : LoginNavigationDestinations()
 }

@@ -10,7 +10,8 @@ val catalogNavigationModule = module {
     }
     factory {
         CatalogScreenModel(
-            catalogInteractor = get()
+            catalogInteractor = get(),
+            loginInteractor = get(),
         )
     }
 }

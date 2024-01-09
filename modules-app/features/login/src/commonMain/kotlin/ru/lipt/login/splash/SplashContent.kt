@@ -26,10 +26,11 @@ fun SplashContent(
     screenModel.handleNavigation { target ->
         when (target) {
             NavigationTarget.HelloScreenNavigate -> {
-
-                navigator.push(ScreenRegistry.get(LoginNavigationDestinations.HelloScreenDestination))
+                navigator.replaceAll(ScreenRegistry.get(LoginNavigationDestinations.HelloScreenDestination))
             }
-            NavigationTarget.PinInputScreenNavigate -> Unit
+            NavigationTarget.PinInputScreenNavigate -> {
+                navigator.replaceAll(ScreenRegistry.get(LoginNavigationDestinations.PinInputScreenDestination))
+            }
         }
     }
 

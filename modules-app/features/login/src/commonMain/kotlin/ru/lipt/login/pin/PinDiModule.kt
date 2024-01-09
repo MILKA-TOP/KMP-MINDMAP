@@ -2,16 +2,27 @@ package ru.lipt.login.pin
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
+import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.login.pin.create.PinPadCreateScreen
 import ru.lipt.login.pin.create.PinPadCreateScreenModel
+import ru.lipt.login.pin.input.PinPadInputScreen
+import ru.lipt.login.pin.input.PinPadInputScreenModel
 
 val pinDiModule = module {
     ScreenRegistry.register<PrivatePinPadDestinations.CreatePin> {
         PinPadCreateScreen()
     }
+    ScreenRegistry.register<LoginNavigationDestinations.PinInputScreenDestination> {
+        PinPadInputScreen()
+    }
 
     factory { params ->
         PinPadCreateScreenModel(
+            loginInteractor = get()
+        )
+    }
+    factory { params ->
+        PinPadInputScreenModel(
             loginInteractor = get()
         )
     }

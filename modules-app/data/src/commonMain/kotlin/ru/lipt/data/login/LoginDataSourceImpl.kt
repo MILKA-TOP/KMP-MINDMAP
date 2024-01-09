@@ -11,7 +11,7 @@ class LoginDataSourceImpl : LoginDataSource {
 
     override suspend fun fetch(request: String) = Unit
 
-    override suspend fun login(userId: String, encryptedPin: String) = Unit
+    override suspend fun login(userId: String, encryptedPin: String) = TEMP_SESSION
 
     override suspend fun revokeDeviceTokens(userId: String) = Unit
 

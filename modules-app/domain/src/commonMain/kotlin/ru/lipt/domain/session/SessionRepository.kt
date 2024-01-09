@@ -20,6 +20,9 @@ class SessionRepository(
 
     suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
 
+    suspend fun getSavedPinKey(): String = dataSource.getPinKey()
+    suspend fun getSavedUserId(): String = dataSource.getUserId()
+
     suspend fun logOut() {
         this.session = Session()
         dataSource.clearSession()

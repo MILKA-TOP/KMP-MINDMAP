@@ -8,7 +8,7 @@ import ru.lipt.login.registry.input.RegistryInputScreenModel
 
 val registryDiModule = module {
     ScreenRegistry.register<PrivateLoginDestinations.RegistryInputDestination> {
-        RegistryInputScreen
+        RegistryInputScreen()
     }
 
     factory { params ->

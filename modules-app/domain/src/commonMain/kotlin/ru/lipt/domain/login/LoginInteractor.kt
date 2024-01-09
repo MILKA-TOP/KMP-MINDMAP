@@ -18,6 +18,15 @@ class LoginInteractor(
         sessionRepository.start(session)
     }
 
+    suspend fun login(pin: String) {
+        val userId = sessionRepository.getSavedUserId()
+        val token = sessionRepository.getSavedPinKey()
+        val encryptedPin = PinCrypt.encrypt(token, pin)
+        val session = loginRepository.login(userId, encryptedPin)
+
+        sessionRepository.start(session)
+    }
+
     suspend fun setPin(pin: String) {
         val session = sessionRepository.session
         if (!session.isEnabled) throw IllegalArgumentException()

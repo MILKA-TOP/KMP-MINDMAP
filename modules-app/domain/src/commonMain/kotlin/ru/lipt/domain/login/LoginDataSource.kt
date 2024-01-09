@@ -7,7 +7,7 @@ interface LoginDataSource : RemoteDataSource<String, Unit> {
     suspend fun register(email: String, password: String): Session
     suspend fun setPin(userId: String, pin: String)
     suspend fun generatePinToken(): String
-    suspend fun login(userId: String, encryptedPin: String)
+    suspend fun login(userId: String, encryptedPin: String): Session
     suspend fun revokeDeviceTokens(userId: String)
     suspend fun enterAuthData(email: String, password: String): Session
 }

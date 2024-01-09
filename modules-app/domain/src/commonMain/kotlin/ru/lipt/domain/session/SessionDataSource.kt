@@ -9,4 +9,7 @@ interface SessionDataSource {
     suspend fun clearSession()
 
     suspend fun isContainsAuthData(): Boolean
+
+    suspend fun getPinKey(): String
+    suspend fun getUserId(): String
 }

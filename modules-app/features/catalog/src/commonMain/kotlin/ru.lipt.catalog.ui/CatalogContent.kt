@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -23,6 +27,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.ui.models.CatalogScreenUi
 import ru.lipt.catalog.ui.models.MapCatalogElement
+import ru.lipt.core.compose.alert.ErrorAlertDialog
+import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.map.common.navigation.MapNavigationDestinations
 
 @Composable
@@ -32,7 +38,7 @@ fun CatalogContent(
 
     val navigator = LocalNavigator.currentOrThrow
 
-    val ui = screenModel.uiState.collectAsState().value
+    val uiState = screenModel.uiState.collectAsState().value
 
     screenModel.handleNavigation { target ->
         when (target) {
@@ -41,18 +47,38 @@ fun CatalogContent(
                     MapNavigationDestinations.MapScreenDestination(target.params)
                 )
             )
+            NavigationTarget.HelloScreenDestination -> {
+                navigator.replaceAll(
+                    ScreenRegistry.get(
+                        LoginNavigationDestinations.HelloScreenDestination
+                    )
+                )
+            }
         }
     }
+
+    ErrorAlertDialog(
+        error = uiState.alertError,
+        onDismissRequest = screenModel::handleErrorAlertClose,
+    )
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Catalog Screen") },
+                actions = {
+                    IconButton(onClick = screenModel::logout) {
+                        Icon(
+                            imageVector = Icons.Filled.ExitToApp,
+                            contentDescription = ""
+                        )
+                    }
+                }
             )
         }
     ) {
         Content(
-            ui = ui.model,
+            ui = uiState.model,
             onMapElementClick = screenModel::onMapElementClick,
         )
     }
