@@ -16,6 +16,8 @@ class LoginRepository(
         remoteDataSource.setPin(userId, pin)
     }
 
+    suspend fun enterAuthData(email: String, password: String): Session = remoteDataSource.enterAuthData(email, password)
+
     suspend fun login(userId: String, encryptedPin: String) = remoteDataSource.login(userId, encryptedPin)
 
     suspend fun revokeDeviceTokens(userId: String) = remoteDataSource.revokeDeviceTokens(userId)

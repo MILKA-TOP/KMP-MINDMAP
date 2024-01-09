@@ -8,6 +8,11 @@ class LoginInteractor(
     private val sessionRepository: SessionRepository,
 ) {
 
+    suspend fun enterAuthData(email: String, password: String) {
+        val session = loginRepository.enterAuthData(email, password)
+        sessionRepository.start(session)
+    }
+
     suspend fun register(email: String, password: String) {
         val session = loginRepository.register(email, password)
         sessionRepository.start(session)
