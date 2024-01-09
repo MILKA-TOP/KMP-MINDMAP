@@ -16,8 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ru.lipt.catalog.common.navigation.CatalogNavigationDestinations
+import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.login.pin.create.models.PinPadCreateModel
 
 @Composable
@@ -29,6 +32,20 @@ fun PinPadCreateContent(
 
     val uiState = screenModel.uiState.collectAsState().value
     val ui = uiState.model
+
+    screenModel.handleNavigation { target ->
+        when (target) {
+            is NavigationTarget.CatalogNavigate -> {
+                navigator.popAll()
+                navigator.push(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
+            }
+        }
+    }
+
+    ErrorAlertDialog(
+        error = uiState.alertError,
+        onDismissRequest = screenModel::handleErrorAlertClose,
+    )
 
     Scaffold(
         topBar = {
@@ -74,7 +91,7 @@ private fun Content(
             label = { Text("Repeat PIN") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        Button(onClick = onSetButtonClick, enabled = ui.isButtonEnabled) {
+        Button(onClick = onSetButtonClick, enabled = ui.isPinEnabled) {
             Text("Set pin")
         }
     }

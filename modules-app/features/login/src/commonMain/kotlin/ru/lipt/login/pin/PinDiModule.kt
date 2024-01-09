@@ -11,6 +11,8 @@ val pinDiModule = module {
     }
 
     factory { params ->
-        PinPadCreateScreenModel()
+        PinPadCreateScreenModel(
+            loginInteractor = get()
+        )
     }
 }

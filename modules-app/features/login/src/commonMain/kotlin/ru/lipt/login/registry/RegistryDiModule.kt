@@ -11,6 +11,8 @@ val registryDiModule = module {
     }
 
     factory { params ->
-        RegistryInputScreenModel()
+        RegistryInputScreenModel(
+            loginInteractor = get()
+        )
     }
 }

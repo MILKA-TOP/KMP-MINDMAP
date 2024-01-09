@@ -33,4 +33,11 @@ object Dependencies {
         const val android = "io.insert-koin:koin-android:$koin_version"
         const val compose = "io.insert-koin:koin-compose:$koin_version"
     }
+
+    object Setings {
+        private const val settings_version = "1.1.1"
+
+        const val multiplatformSettings = "com.russhwolf:multiplatform-settings:$settings_version"
+        const val multiplatformSettingsNoArgs = "com.russhwolf:multiplatform-settings-no-arg:$settings_version"
+    }
 }
