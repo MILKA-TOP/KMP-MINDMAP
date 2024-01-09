@@ -8,5 +8,5 @@ data class PinPadCreateModel(
     val pinRepeat: String = ""
 ) {
 
-    val isButtonEnabled: Boolean = pin == pinRepeat
+    val isPinEnabled: Boolean = pin == pinRepeat && pin.isNotEmpty()
 }
