@@ -42,6 +42,13 @@ import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ru.lipt.core.compose.alert.EnterAlertDialog
+import ru.lipt.core.compose.alert.ErrorAlertDialog
+import ru.lipt.core.compose.error.ErrorScreen
+import ru.lipt.core.compose.loading.CircularProgressIndicatorLoadingScreen
+import ru.lipt.core.compose.onError
+import ru.lipt.core.compose.onLoading
+import ru.lipt.core.compose.onSuccess
 import ru.lipt.details.common.navigation.NodeDetailsNavigationDestinations
 import ru.lipt.map.ui.models.MapEdge
 import ru.lipt.map.ui.models.MapNode
@@ -53,6 +60,7 @@ fun MapContent(
     screenModel: MapScreenModel,
 ) {
     val uiState = screenModel.uiState.collectAsState().value
+    val ui = uiState.model
 
     val navigator = LocalNavigator.currentOrThrow
 
@@ -67,6 +75,11 @@ fun MapContent(
             is NavigationTarget.NavigateUp -> navigator.pop()
         }
     }
+
+    ErrorAlertDialog(
+        error = uiState.alertError,
+        onDismissRequest = screenModel::handleErrorAlertClose,
+    )
 
     Scaffold(
         topBar = {
@@ -83,29 +96,57 @@ fun MapContent(
             )
         }
     ) {
-        MapContent(
-            uiState = uiState.model,
-            addNode = screenModel::onAddClick,
-            openNode = screenModel::openNode,
-            updatePosition = screenModel::updatePosition,
-        )
+
+        ui.onSuccess {
+            MapContent(
+                ui = data,
+                addNode = screenModel::onAddClick,
+                openNode = screenModel::openNode,
+                updatePosition = screenModel::updatePosition,
+                onEnterNewNodeTitle = screenModel::onConfirmNewNodeAlert,
+                closeNewNodeAlert = screenModel::closeNewNodeAlert,
+            )
+        }
+
+        ui.onLoading {
+            CircularProgressIndicatorLoadingScreen()
+        }
+
+        ui.onError { ErrorScreen(onRefresh = screenModel::init) }
     }
 }
 
 @Composable
 private fun MapContent(
-    uiState: MapScreenUi,
+    ui: MapScreenUi,
     addNode: (String) -> Unit,
     openNode: (String) -> Unit,
     updatePosition: (String, Float, Float) -> Unit,
+    onEnterNewNodeTitle: (String) -> Unit,
+    closeNewNodeAlert: () -> Unit,
 ) {
+
+    ui.newNodeAlert?.let { alert ->
+        EnterAlertDialog(
+            title = "New Node",
+            text = "Please, enter the title of new node",
+            fieldLabel = "Title",
+            confirmText = "Enter",
+            cancelText = "Cancel",
+            onConfirm = onEnterNewNodeTitle,
+            inProgress = alert.inProgress,
+            onDismissRequest = closeNewNodeAlert,
+            onCancel = closeNewNodeAlert,
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
-        uiState.edges.forEach { edge ->
+        ui.edges.forEach { edge ->
             NodeEdge(edge)
         }
 
-        uiState.nodes.forEach { node ->
+        ui.nodes.forEach { node ->
             MindNode(
                 node = node.value,
                 addNode = addNode,

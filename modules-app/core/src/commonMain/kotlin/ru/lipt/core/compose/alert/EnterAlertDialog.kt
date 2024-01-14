@@ -68,7 +68,7 @@ fun EnterAlertDialog(
                     onConfirm = { onConfirm(enterText) },
                     cancelText = cancelText,
                     onCancel = onCancel,
-                    enabledConfirmButton = !inProgress,
+                    enabledConfirmButton = !inProgress && enterText.trim().isNotEmpty(),
                 )
             }
         }

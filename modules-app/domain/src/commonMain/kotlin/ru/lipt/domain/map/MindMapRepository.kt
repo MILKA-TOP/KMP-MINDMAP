@@ -5,8 +5,15 @@ import ru.lipt.domain.map.models.MindMap
 
 class MindMapRepository(
     localDataSource: MindMapLocalDataSource,
-    remoteDataSource: MindMapDataSource
+    private val remoteDataSource: MindMapDataSource
 ) : CachePolicyRepository<String, MindMap>(
     localDataSource = localDataSource,
     remoteDataSource = remoteDataSource,
-)
+) {
+    suspend fun createNewNode(mapId: String, parentId: String, title: String) =
+        remoteDataSource.createNewNode(mapId, parentId, title).also { newNode ->
+            updateCache(mapId) {
+                copy(nodes = nodes + newNode)
+            }
+        }
+}
