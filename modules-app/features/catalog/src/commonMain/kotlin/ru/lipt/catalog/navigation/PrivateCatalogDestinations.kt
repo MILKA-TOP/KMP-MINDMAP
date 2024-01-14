@@ -5,4 +5,5 @@ import cafe.adriel.voyager.core.registry.ScreenProvider
 sealed class PrivateCatalogDestinations : ScreenProvider {
 
     data object CreateMapDestination : PrivateCatalogDestinations()
+    data object SearchDestination : PrivateCatalogDestinations()
 }

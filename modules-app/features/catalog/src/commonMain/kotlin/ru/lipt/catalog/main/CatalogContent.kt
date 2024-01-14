@@ -17,6 +17,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -30,7 +31,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.catalog.main.models.CatalogScreenUi
-import ru.lipt.catalog.main.models.MapCatalogElement
+import ru.lipt.catalog.models.MapCatalogElement
 import ru.lipt.catalog.navigation.PrivateCatalogDestinations
 import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
@@ -70,6 +71,13 @@ fun CatalogContent(
                     )
                 )
             }
+            NavigationTarget.SearchMapDestination -> {
+                navigator.push(
+                    ScreenRegistry.get(
+                        PrivateCatalogDestinations.SearchDestination
+                    )
+                )
+            }
         }
     }
 
@@ -83,15 +91,21 @@ fun CatalogContent(
             TopAppBar(
                 title = { Text(text = "Catalog Screen") },
                 actions = {
-                    IconButton(onClick = screenModel::logout) {
-                        Icon(
-                            imageVector = Icons.Filled.ExitToApp,
-                            contentDescription = ""
-                        )
-                    }
                     IconButton(onClick = screenModel::createNewMindMap) {
                         Icon(
                             imageVector = Icons.Filled.AddCircle,
+                            contentDescription = ""
+                        )
+                    }
+                    IconButton(onClick = screenModel::searchMindMap) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = ""
+                        )
+                    }
+                    IconButton(onClick = screenModel::logout) {
+                        Icon(
+                            imageVector = Icons.Filled.ExitToApp,
                             contentDescription = ""
                         )
                     }

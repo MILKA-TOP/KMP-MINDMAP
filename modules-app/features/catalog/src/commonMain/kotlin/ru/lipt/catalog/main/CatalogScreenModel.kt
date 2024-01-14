@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.lipt.catalog.main.models.CatalogScreenUi
-import ru.lipt.catalog.main.models.MapCatalogElement
+import ru.lipt.catalog.main.models.CatalogScreenUi.Companion.toUi
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
@@ -49,19 +49,14 @@ class CatalogScreenModel(
     }
 
     fun createNewMindMap() = _uiState.navigateTo(NavigationTarget.CreateMindMapDestination)
+    fun searchMindMap() = _uiState.navigateTo(NavigationTarget.SearchMapDestination)
 
     private fun init() {
         screenModelScope.launch {
             val maps = catalogInteractor.getMaps()
             _uiState.updateUi {
                 copy(
-                    maps = maps.map { map ->
-                        MapCatalogElement(
-                            id = map.id,
-                            title = map.title,
-                            description = map.description,
-                        )
-                    }
+                    maps = maps.toUi()
                 )
             }
         }
