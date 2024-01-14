@@ -32,6 +32,7 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Voyager.screenModel)
 
                 // Add here you dependencies
             }

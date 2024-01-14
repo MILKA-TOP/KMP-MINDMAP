@@ -32,10 +32,12 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                implementation("co.touchlab:stately-concurrent-collections:2.0.5")
+                implementation("co.touchlab:stately-common:2.0.6")
+                implementation("co.touchlab:stately-concurrent-collections:2.0.6")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
+                implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))

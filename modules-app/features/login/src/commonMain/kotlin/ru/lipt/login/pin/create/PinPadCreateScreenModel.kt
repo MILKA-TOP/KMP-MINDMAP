@@ -8,6 +8,7 @@ import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
 import ru.lipt.domain.login.LoginInteractor
 import ru.lipt.login.pin.create.models.PinPadCreateModel
+import ru.lipt.login.pin.extensions.PIN_SIZE
 
 class PinPadCreateScreenModel(
     private val loginInteractor: LoginInteractor,
@@ -21,11 +22,11 @@ class PinPadCreateScreenModel(
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
 
     fun onPinChanged(pin: String) {
-        _uiState.updateUi { copy(pin = pin.take(MAX_PIN_SIZE)) }
+        _uiState.updateUi { copy(pin = pin.take(PIN_SIZE)) }
     }
 
     fun onPinRepeatChanged(pin: String) {
-        _uiState.updateUi { copy(pinRepeat = pin.take(MAX_PIN_SIZE)) }
+        _uiState.updateUi { copy(pinRepeat = pin.take(PIN_SIZE)) }
     }
 
     fun submitPin() {
@@ -39,9 +40,5 @@ class PinPadCreateScreenModel(
             loginInteractor.setPin(pin)
             _uiState.navigateTo(NavigationTarget.CatalogNavigate)
         }
-    }
-
-    companion object {
-        const val MAX_PIN_SIZE = 4
     }
 }

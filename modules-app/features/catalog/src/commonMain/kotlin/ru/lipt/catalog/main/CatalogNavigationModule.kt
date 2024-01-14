@@ -1,4 +1,4 @@
-package ru.lipt.catalog.ui
+package ru.lipt.catalog.main
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
@@ -10,7 +10,8 @@ val catalogNavigationModule = module {
     }
     factory {
         CatalogScreenModel(
-            catalogInteractor = get()
+            catalogInteractor = get(),
+            loginInteractor = get(),
         )
     }
 }

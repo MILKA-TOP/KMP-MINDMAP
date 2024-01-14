@@ -20,6 +20,7 @@ internal fun AlertButtons(
     onCancel: (() -> Unit)? = null,
     confirmText: String? = null,
     onConfirm: (() -> Unit)? = null,
+    enabledConfirmButton: Boolean = true,
 ) = FlowRow(
     modifier = modifier
         .fillMaxWidth(),
@@ -42,6 +43,7 @@ internal fun AlertButtons(
     if (confirmText != null && onConfirm != null) {
         TextButton(
             onClick = onConfirm,
+            enabled = enabledConfirmButton,
             content = {
                 Text(
                     text = confirmText.uppercase(),

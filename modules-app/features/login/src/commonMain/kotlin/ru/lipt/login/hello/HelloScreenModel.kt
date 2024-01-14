@@ -12,6 +12,6 @@ class HelloScreenModel : ScreenModel {
 
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
 
-    fun onLoginButtonClick() = Unit
+    fun onLoginButtonClick() = _uiState.navigateTo(NavigationTarget.LoginNavigate)
     fun onRegistryButtonClick() = _uiState.navigateTo(NavigationTarget.RegistryNavigate)
 }

@@ -8,8 +8,22 @@ class LoginInteractor(
     private val sessionRepository: SessionRepository,
 ) {
 
+    suspend fun enterAuthData(email: String, password: String) {
+        val session = loginRepository.enterAuthData(email, password)
+        sessionRepository.start(session)
+    }
+
     suspend fun register(email: String, password: String) {
         val session = loginRepository.register(email, password)
+        sessionRepository.start(session)
+    }
+
+    suspend fun login(pin: String) {
+        val userId = sessionRepository.getSavedUserId()
+        val token = sessionRepository.getSavedPinKey()
+        val encryptedPin = PinCrypt.encrypt(token, pin)
+        val session = loginRepository.login(userId, encryptedPin)
+
         sessionRepository.start(session)
     }
 
@@ -22,6 +36,8 @@ class LoginInteractor(
         loginRepository.login(session.userId, encryptedPin)
         sessionRepository.saveData(encryptedPin)
     }
+
+    suspend fun containsSavedAuthData(): Boolean = sessionRepository.containsSavedData()
 
     suspend fun logout() {
         val session = sessionRepository.session

@@ -17,9 +17,10 @@ object Dependencies {
     }
 
     object Voyager {
-        private const val version = "1.0.0-rc08"
+        private const val version = "1.0.0"
 
         const val navigator = "cafe.adriel.voyager:voyager-navigator:$version"
+        const val screenModel = "cafe.adriel.voyager:voyager-screenmodel:$version"
         const val bottomSheetNavigator = "cafe.adriel.voyager:voyager-bottom-sheet-navigator:$version"
         const val tabNavigator = "cafe.adriel.voyager:voyager-tab-navigator:$version"
         const val transitions = "cafe.adriel.voyager:voyager-transitions:$version"
@@ -39,5 +40,11 @@ object Dependencies {
 
         const val multiplatformSettings = "com.russhwolf:multiplatform-settings:$settings_version"
         const val multiplatformSettingsNoArgs = "com.russhwolf:multiplatform-settings-no-arg:$settings_version"
+    }
+
+    object Logs {
+        private const val napierVersion = "2.7.1"
+
+        const val napier = "io.github.aakira:napier:$napierVersion"
     }
 }

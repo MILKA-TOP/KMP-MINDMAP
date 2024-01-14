@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.input.KeyboardType
-import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -43,9 +42,7 @@ fun RegistryInputContent(
     screenModel.handleNavigation { target ->
         when (target) {
             NavigationTarget.PinCreateNavigate -> {
-                navigator.pop()
-                ScreenModelStore.onDispose(screen) // :TODO TRY FIX THIS
-                navigator.push(ScreenRegistry.get(PrivatePinPadDestinations.CreatePin))
+                navigator.replace(ScreenRegistry.get(PrivatePinPadDestinations.CreatePin))
             }
         }
     }
