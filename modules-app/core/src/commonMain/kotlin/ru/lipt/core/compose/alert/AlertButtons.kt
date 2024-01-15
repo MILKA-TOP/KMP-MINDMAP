@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -21,6 +23,7 @@ internal fun AlertButtons(
     confirmText: String? = null,
     onConfirm: (() -> Unit)? = null,
     enabledConfirmButton: Boolean = true,
+    inProgressConfirmation: Boolean = false,
 ) = FlowRow(
     modifier = modifier
         .fillMaxWidth(),
@@ -41,15 +44,21 @@ internal fun AlertButtons(
         )
     }
     if (confirmText != null && onConfirm != null) {
-        TextButton(
-            onClick = onConfirm,
-            enabled = enabledConfirmButton,
-            content = {
-                Text(
-                    text = confirmText.uppercase(),
-                    style = MaterialTheme.typography.button,
-                )
+        if (inProgressConfirmation) {
+            Button(onClick = onConfirm, enabled = enabledConfirmButton) {
+                CircularProgressIndicator()
             }
-        )
+        } else {
+            TextButton(
+                onClick = onConfirm,
+                enabled = enabledConfirmButton,
+                content = {
+                    Text(
+                        text = confirmText.uppercase(),
+                        style = MaterialTheme.typography.button,
+                    )
+                }
+            )
+        }
     }
 }

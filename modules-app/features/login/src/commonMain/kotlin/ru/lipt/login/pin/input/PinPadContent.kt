@@ -36,12 +36,10 @@ fun PinPadInputContent(
     screenModel.handleNavigation { target ->
         when (target) {
             is NavigationTarget.CatalogScreenNavigate -> {
-                navigator.popAll()
-                navigator.push(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
+                navigator.replaceAll(ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination))
             }
             is NavigationTarget.HelloScreenNavigate -> {
-                navigator.popAll()
-                navigator.push(ScreenRegistry.get(LoginNavigationDestinations.HelloScreenDestination))
+                navigator.replaceAll(ScreenRegistry.get(LoginNavigationDestinations.HelloScreenDestination))
             }
         }
     }

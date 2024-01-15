@@ -8,5 +8,6 @@ data class MindMap(
     val title: String,
     val viewType: MapType,
     val description: String,
-    val nodes: List<Node>
+    val nodes: List<Node>,
+    val users: List<User> = emptyList(),
 )

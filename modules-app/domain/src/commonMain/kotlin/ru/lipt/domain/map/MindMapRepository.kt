@@ -4,7 +4,7 @@ import ru.lipt.core.cache.CachePolicyRepository
 import ru.lipt.domain.map.models.MindMap
 
 class MindMapRepository(
-    localDataSource: MindMapLocalDataSource,
+    private val localDataSource: MindMapLocalDataSource,
     private val remoteDataSource: MindMapDataSource
 ) : CachePolicyRepository<String, MindMap>(
     localDataSource = localDataSource,
@@ -16,4 +16,8 @@ class MindMapRepository(
                 copy(nodes = nodes + newNode)
             }
         }
+
+    suspend fun deleteMap(mapId: String) = remoteDataSource.deleteMap(mapId).also {
+        localDataSource.remove(mapId)
+    }
 }

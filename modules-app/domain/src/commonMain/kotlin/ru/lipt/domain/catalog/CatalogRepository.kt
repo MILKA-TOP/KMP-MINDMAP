@@ -19,4 +19,7 @@ class CatalogRepository(
 
     suspend fun addPublicMap(mapId: String) = remoteDataSource.addPublicMap(mapId)
     suspend fun addPrivateMap(mapId: String, password: String) = remoteDataSource.addPrivateMap(mapId, password)
+    suspend fun removeMap(mapId: String) = updateCache(Unit) {
+        this.filter { it.id != mapId }
+    }
 }
