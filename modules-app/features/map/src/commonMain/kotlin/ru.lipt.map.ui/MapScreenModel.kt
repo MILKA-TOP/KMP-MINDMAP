@@ -111,13 +111,23 @@ class MapScreenModel(
     }
 
     fun openNode(nodeId: String) {
+        val viewType = _map?.viewType ?: return
+
         _uiState.navigateTo(
-            NavigationTarget.DetailsScreen(
-                NodeDetailsScreenParams(
-                    mapId = params.id,
-                    nodeId = nodeId,
+            when (viewType) {
+                MapType.EDIT -> NavigationTarget.EditableDetailsScreen(
+                    NodeDetailsScreenParams(
+                        mapId = params.id,
+                        nodeId = nodeId,
+                    )
                 )
-            )
+                else -> NavigationTarget.UneditableDetailsScreen(
+                    NodeDetailsScreenParams(
+                        mapId = params.id,
+                        nodeId = nodeId,
+                    )
+                )
+            }
         )
     }
 
