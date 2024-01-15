@@ -20,7 +20,12 @@ class MindMapDataSourceImpl : MindMapDataSource {
             Node(
                 id = Random.nextInt().toString(),
                 title = "Map title",
-                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc molestie velit rutrum dapibus egestas. Cras tristique tristique pretium. Proin pulvinar orci ut molestie pretium. Etiam at est tincidunt, viverra augue vitae, pretium mauris. Suspendisse a mauris ac nunc feugiat pellentesque. Nullam molestie, nibh vehicula congue efficitur, enim elit sodales mi, et efficitur dui turpis ac elit. Quisque dignissim diam sed tincidunt sollicitudin. Nam vitae ipsum tempor, malesuada ex non, congue quam. Praesent iaculis felis urna, ac ultricies justo pharetra a. Fusce scelerisque eros in libero volutpat, ut mattis sapien ornare.\n",
+                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc molestie velit rutrum dapibus egestas. " +
+                        "Cras tristique tristique pretium. Proin pulvinar orci ut molestie pretium. Etiam at est tincidunt, " +
+                        "viverra augue vitae, pretium mauris. Suspendisse a mauris ac nunc feugiat pellentesque. Nullam molestie, " +
+                        "nibh vehicula congue efficitur, enim elit sodales mi, et efficitur dui turpis ac elit. Quisque dignissim diam " +
+                        "sed tincidunt sollicitudin. Nam vitae ipsum tempor, malesuada ex non, congue quam. Praesent iaculis felis urna, " +
+                        "ac ultricies justo pharetra a. Fusce scelerisque eros in libero volutpat, ut mattis sapien ornare.\n",
                 result = QuestionResult(
                     questionsCount = 4,
                     correctQuestionsCount = 8,
@@ -28,7 +33,8 @@ class MindMapDataSourceImpl : MindMapDataSource {
                     completedQuestions = listOf(),
                 )
             )
-        )
+        ),
+        users = listOf(User("2", "tmp_1@gmail.com"), User("2", "tmp_2@gmail.com"))
     )
 
     override suspend fun createNewNode(mapId: String, parentId: String, title: String) = Node(
@@ -36,4 +42,6 @@ class MindMapDataSourceImpl : MindMapDataSource {
         parentId = parentId,
         title = title,
     )
+
+    override suspend fun deleteMap(mapId: String) = Unit
 }

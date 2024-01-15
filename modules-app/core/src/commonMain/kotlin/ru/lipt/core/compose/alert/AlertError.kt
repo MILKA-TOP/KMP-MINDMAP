@@ -34,6 +34,7 @@ fun AlertDialog(
     cancelText: String? = null,
     onCancel: (() -> Unit)? = null,
     onDismissRequest: (() -> Unit)? = onCancel,
+    inProgress: Boolean = false,
 ) {
     val buttonsTopPadding = remember(text) {
         if (text?.takeIf(String::isNotEmpty) == null) {
@@ -53,6 +54,8 @@ fun AlertDialog(
                 onConfirm = onConfirm,
                 cancelText = cancelText,
                 onCancel = onCancel,
+                enabledConfirmButton = !inProgress,
+                inProgressConfirmation = inProgress,
             )
         },
         title = title?.takeIf(String::isNotEmpty)?.let {

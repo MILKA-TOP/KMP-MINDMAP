@@ -16,6 +16,7 @@ val mapModules = module {
     single {
         MindMapInteractor(
             mapRepository = get(),
+            catalogRepository = get(),
         )
     }
 }

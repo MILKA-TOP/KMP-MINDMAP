@@ -156,6 +156,7 @@ class MapScreenModel(
     }
 
     fun onBackButtonClick() = _uiState.navigateTo(NavigationTarget.NavigateUp)
+    fun openMapDetails() = _uiState.navigateTo(NavigationTarget.MapDetailsScreenDestination(params))
 
     private fun hideNewNodeAlert() {
         parentIdNewNode = null

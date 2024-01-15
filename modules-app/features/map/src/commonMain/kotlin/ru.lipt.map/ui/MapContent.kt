@@ -19,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,6 +51,7 @@ import ru.lipt.core.compose.onError
 import ru.lipt.core.compose.onLoading
 import ru.lipt.core.compose.onSuccess
 import ru.lipt.details.common.navigation.NodeDetailsNavigationDestinations
+import ru.lipt.map.PrivateMapNavigationDestinations
 import ru.lipt.map.ui.models.MapEdge
 import ru.lipt.map.ui.models.MapNode
 import ru.lipt.map.ui.models.MapScreenUi
@@ -76,7 +78,11 @@ fun MapContent(
                     NodeDetailsNavigationDestinations.UneditableNodeDetailsScreenDestination(target.params)
                 )
             )
-
+            is NavigationTarget.MapDetailsScreenDestination -> navigator.push(
+                ScreenRegistry.get(
+                    PrivateMapNavigationDestinations.MapDetails(target.params)
+                )
+            )
             is NavigationTarget.NavigateUp -> navigator.pop()
         }
     }
@@ -94,6 +100,14 @@ fun MapContent(
                     IconButton(onClick = screenModel::onBackButtonClick) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = ""
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = screenModel::openMapDetails) {
+                        Icon(
+                            imageVector = Icons.Filled.List,
                             contentDescription = ""
                         )
                     }

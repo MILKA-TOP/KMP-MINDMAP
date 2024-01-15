@@ -6,4 +6,5 @@ import ru.lipt.domain.map.models.Node
 
 interface MindMapDataSource : RemoteDataSource<String, MindMap> {
     suspend fun createNewNode(mapId: String, parentId: String, title: String): Node
+    suspend fun deleteMap(mapId: String)
 }
