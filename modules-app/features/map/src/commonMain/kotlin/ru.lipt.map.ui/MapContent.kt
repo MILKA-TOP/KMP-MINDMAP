@@ -66,9 +66,14 @@ fun MapContent(
 
     screenModel.handleNavigation { target ->
         when (target) {
-            is NavigationTarget.DetailsScreen -> navigator.push(
+            is NavigationTarget.EditableDetailsScreen -> navigator.push(
                 ScreenRegistry.get(
-                    NodeDetailsNavigationDestinations.NodeDetailsScreenDestination(target.params)
+                    NodeDetailsNavigationDestinations.EditableNodeDetailsScreenDestination(target.params)
+                )
+            )
+            is NavigationTarget.UneditableDetailsScreen -> navigator.push(
+                ScreenRegistry.get(
+                    NodeDetailsNavigationDestinations.UneditableNodeDetailsScreenDestination(target.params)
                 )
             )
 
