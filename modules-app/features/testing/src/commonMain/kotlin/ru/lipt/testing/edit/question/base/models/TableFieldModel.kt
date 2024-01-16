@@ -8,8 +8,8 @@ sealed class TableFieldModel {
 
     data class HeaderEdit(val text: String) : TableFieldModel()
 
-    data class SingleCheckboxSelect(val text: String, val isSelected: Boolean) : TableFieldModel()
-    data class MultipleCheckboxSelect(val text: String, val isSelected: Boolean) : TableFieldModel()
+    data class SingleCheckboxSelect(val text: String, val isSelected: Boolean = false) : TableFieldModel()
+    data class MultipleCheckboxSelect(val text: String, val isSelected: Boolean = false) : TableFieldModel()
     data class SingleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
     data class MultipleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
 

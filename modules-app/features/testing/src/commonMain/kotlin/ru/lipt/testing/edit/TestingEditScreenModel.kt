@@ -11,7 +11,7 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel.Companion.onMul
 import ru.lipt.testing.edit.question.base.models.TableFieldModel.Companion.onSingleCheckboxChanged
 import ru.lipt.testing.edit.question.base.models.TableFieldModel.Companion.onTextChanged
 
-class TestingScreenModel(
+class TestingEditScreenModel(
     private val params: TestEditScreenParams
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<TestingEditScreenUi, NavigationTarget> =

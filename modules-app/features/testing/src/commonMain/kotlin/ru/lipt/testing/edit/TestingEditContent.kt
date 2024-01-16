@@ -30,19 +30,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
-import ru.lipt.testing.edit.question.QuestionComponent
+import ru.lipt.testing.common.compose.circleLayout
+import ru.lipt.testing.edit.question.QuestionEditComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Suppress("UnusedPrivateMember")
 @Composable
 fun TestingEditContent(
-    screenModel: TestingScreenModel,
+    screenModel: TestingEditScreenModel,
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -87,7 +87,7 @@ fun TestingEditContent(
             HorizontalPager(
                 modifier = Modifier.weight(1f), state = horizontalPagerState
             ) { position ->
-                QuestionComponent(
+                QuestionEditComponent(
                     model = ui.questions[position],
                     onHeaderTextChanged = { screenModel.onHeaderTextChanged(position, it) },
                     onSingleCheckboxSelect = { screenModel.onSingleSelectChanged(position, it) },
@@ -127,21 +127,5 @@ fun TestingEditContent(
             }
         }
         SnackbarHost(hostState = snackBarHostState)
-    }
-}
-
-fun Modifier.circleLayout() = layout { measurable, constraints ->
-    // Measure the composable
-    val placeable = measurable.measure(constraints)
-
-    // get the current max dimension to assign width=height
-    val currentHeight = placeable.height
-    val currentWidth = placeable.width
-    val newDiameter = maxOf(currentHeight, currentWidth)
-
-    // assign the dimension and the center position
-    layout(newDiameter, newDiameter) {
-        // Where the composable gets placed
-        placeable.placeRelative((newDiameter - currentWidth) / 2, (newDiameter - currentHeight) / 2)
     }
 }

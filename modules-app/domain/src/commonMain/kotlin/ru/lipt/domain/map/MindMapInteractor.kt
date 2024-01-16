@@ -2,6 +2,7 @@ package ru.lipt.domain.map
 
 import ru.lipt.core.cache.CachePolicy
 import ru.lipt.domain.catalog.CatalogRepository
+import ru.lipt.domain.map.models.RequestAnswer
 
 class MindMapInteractor(
     private val mapRepository: MindMapRepository,
@@ -16,4 +17,7 @@ class MindMapInteractor(
     suspend fun deleteMap(mapId: String) = mapRepository.deleteMap(mapId).also {
         catalogRepository.removeMap(mapId)
     }
+
+    suspend fun sendTestAnswersForNode(mapId: String, nodeId: String, answers: List<RequestAnswer>) =
+        mapRepository.sendTestAnswersForNode(mapId, nodeId, answers)
 }

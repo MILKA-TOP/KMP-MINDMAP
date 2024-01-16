@@ -15,6 +15,7 @@ import ru.lipt.details.uneditable.models.UneditableDetailsScreenUi
 import ru.lipt.details.uneditable.models.UneditableTestResultUi
 import ru.lipt.domain.map.MindMapInteractor
 import ru.lipt.domain.map.models.Node
+import ru.lipt.testing.common.params.TestCompleteScreenParams
 
 class UneditableDetailsScreenModel(
     private val params: NodeDetailsScreenParams,
@@ -66,7 +67,14 @@ class UneditableDetailsScreenModel(
         }
     }
 
-    fun onTestNavigateClick() = Unit
+    fun onTestNavigateClick() = _uiState.navigateTo(
+        NavigationTarget.CompleteTest(
+            params = TestCompleteScreenParams(
+                mapId = params.mapId,
+                nodeId = params.nodeId,
+            )
+        )
+    )
 
     fun onTestResultButtonClick() = Unit
 }

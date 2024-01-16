@@ -2,6 +2,7 @@ package ru.lipt.domain.map
 
 import ru.lipt.core.cache.CachePolicyRepository
 import ru.lipt.domain.map.models.MindMap
+import ru.lipt.domain.map.models.RequestAnswer
 
 class MindMapRepository(
     private val localDataSource: MindMapLocalDataSource,
@@ -20,4 +21,13 @@ class MindMapRepository(
     suspend fun deleteMap(mapId: String) = remoteDataSource.deleteMap(mapId).also {
         localDataSource.remove(mapId)
     }
+
+    suspend fun sendTestAnswersForNode(mapId: String, nodeId: String, answers: List<RequestAnswer>) =
+        remoteDataSource.sendTestAnswersForNode(mapId, nodeId, answers).also { result ->
+            updateCache(mapId) {
+                copy(
+                    nodes = nodes.map { if (it.id == nodeId) it.copy(result = result) else it }
+                )
+            }
+        }
 }
