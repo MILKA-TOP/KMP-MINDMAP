@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.core.compose.alert.ErrorAlertDialog
@@ -26,6 +27,7 @@ import ru.lipt.core.compose.onLoading
 import ru.lipt.core.compose.onSuccess
 import ru.lipt.details.uneditable.models.UneditableDetailsScreenUi
 import ru.lipt.details.uneditable.models.UneditableTestResultUi
+import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @Composable
 fun UneditableDetailsContent(
@@ -43,6 +45,15 @@ fun UneditableDetailsContent(
     )
 
     screenModel.handleNavigation { target ->
+        when (target) {
+            is NavigationTarget.CompleteTest -> navigator.push(
+                ScreenRegistry.get(
+                    TestingNavigationDestinations.TestCompleteScreenDestination(
+                        target.params
+                    )
+                )
+            )
+        }
     }
 
     Scaffold(
