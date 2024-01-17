@@ -16,7 +16,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ru.lipt.core.compose.alert.ErrorAlertDialog
@@ -31,8 +33,12 @@ import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @Composable
 fun UneditableDetailsContent(
+    screen: Screen,
     screenModel: UneditableDetailsScreenModel
 ) {
+    screen.LifecycleEffect(
+        onStarted = screenModel::onStarted
+    )
     val navigator = LocalNavigator.currentOrThrow
     val scrollState = rememberScrollState()
 
@@ -49,6 +55,13 @@ fun UneditableDetailsContent(
             is NavigationTarget.CompleteTest -> navigator.push(
                 ScreenRegistry.get(
                     TestingNavigationDestinations.TestCompleteScreenDestination(
+                        target.params
+                    )
+                )
+            )
+            is NavigationTarget.TestResult -> navigator.push(
+                ScreenRegistry.get(
+                    TestingNavigationDestinations.TestResultScreenDestination(
                         target.params
                     )
                 )

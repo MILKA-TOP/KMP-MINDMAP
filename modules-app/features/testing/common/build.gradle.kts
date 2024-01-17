@@ -36,6 +36,7 @@ kotlin {
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
                 // Add here you dependencies
+                implementation(project(":modules-app:domain"))
             }
         }
         val androidMain by getting {

@@ -16,6 +16,7 @@ import ru.lipt.domain.map.models.Question
 import ru.lipt.domain.map.models.QuestionType
 import ru.lipt.domain.map.models.RequestAnswer
 import ru.lipt.testing.common.params.TestCompleteScreenParams
+import ru.lipt.testing.common.params.TestingResultParams
 import ru.lipt.testing.complete.models.QuestionUiModel
 import ru.lipt.testing.complete.models.QuestionUiModel.Companion.copy
 import ru.lipt.testing.complete.models.TestingCompleteScreenUi
@@ -108,8 +109,12 @@ class TestingCompleteScreenModel(
                 )
             }
 
-            mapInteractor.sendTestAnswersForNode(params.mapId, params.nodeId, resultQuestions)
-            _uiState.navigateTo(NavigationTarget.Result)
+            val result = mapInteractor.sendTestAnswersForNode(params.mapId, params.nodeId, resultQuestions)
+            _uiState.navigateTo(
+                NavigationTarget.Result(
+                    TestingResultParams(result)
+                )
+            )
         }
     }
 }

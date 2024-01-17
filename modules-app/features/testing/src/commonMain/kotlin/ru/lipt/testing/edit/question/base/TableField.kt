@@ -1,5 +1,6 @@
 package ru.lipt.testing.edit.question.base
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import ru.lipt.testing.edit.question.base.models.AnswerResultType
 import ru.lipt.testing.edit.question.base.models.FieldTypes
 import ru.lipt.testing.edit.question.base.models.TableFieldModel
 
@@ -36,6 +40,7 @@ fun TableField(
 
     when (model) {
         is TableFieldModel.Header -> Header(model)
+        is TableFieldModel.Caption -> Caption(model)
         is TableFieldModel.HeaderEdit -> HeaderEdit(model, onFieldTextChanged)
         is TableFieldModel.SingleCheckboxSelect -> SingleCheckboxSelect(model, onSingleCheckboxSelect)
         is TableFieldModel.MultipleCheckboxSelect -> MultipleCheckboxSelect(model, onMultipleCheckboxSelect)
@@ -73,6 +78,11 @@ private fun Header(model: TableFieldModel.Header) {
 }
 
 @Composable
+private fun Caption(model: TableFieldModel.Caption) {
+    Text(modifier = Modifier.fillMaxWidth(), text = model.text)
+}
+
+@Composable
 private fun HeaderEdit(
     model: TableFieldModel.HeaderEdit,
     onValueChange: (String) -> Unit,
@@ -85,10 +95,21 @@ private fun SingleCheckboxSelect(
     model: TableFieldModel.SingleCheckboxSelect,
     onClick: () -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .border(
+                width = 4.dp,
+                color = when (model.resultType) {
+                    AnswerResultType.NONE -> Color.Unspecified
+                    AnswerResultType.ERROR -> Color.Red
+                    AnswerResultType.CORRECT -> Color.Green
+                }
+            )
+    ) {
         RadioButton(
             selected = model.isSelected,
             onClick = onClick,
+            enabled = model.enabled,
         )
         Text(modifier = Modifier.weight(1f), text = model.text)
     }
@@ -118,10 +139,22 @@ private fun MultipleCheckboxSelect(
     model: TableFieldModel.MultipleCheckboxSelect,
     onClick: (Boolean) -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 4.dp,
+                color = when (model.resultType) {
+                    AnswerResultType.NONE -> Color.Unspecified
+                    AnswerResultType.ERROR -> Color.Red
+                    AnswerResultType.CORRECT -> Color.Green
+                }
+            )
+    ) {
         Checkbox(
             checked = model.isSelected,
             onCheckedChange = onClick,
+            enabled = model.enabled,
         )
         Text(modifier = Modifier.weight(1f), text = model.text)
     }

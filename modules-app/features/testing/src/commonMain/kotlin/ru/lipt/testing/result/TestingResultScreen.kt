@@ -1,19 +1,18 @@
-package ru.lipt.details.uneditable
+package ru.lipt.testing.result
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import org.koin.core.parameter.parametersOf
-import ru.lipt.details.common.params.NodeDetailsScreenParams
+import ru.lipt.testing.common.params.TestingResultParams
 
-class UneditableDetailsScreen(
-    private val params: NodeDetailsScreenParams
+class TestingResultScreen(
+    private val params: TestingResultParams
 ) : Screen {
 
     @Composable
     override fun Content() {
-        UneditableDetailsContent(
-            screen = this,
+        TestingResultContent(
             screenModel = getScreenModel(parameters = { parametersOf(params) })
         )
     }

@@ -5,11 +5,24 @@ import androidx.compose.runtime.Immutable
 @Immutable
 sealed class TableFieldModel {
     data class Header(val text: String) : TableFieldModel()
+    data class Caption(val text: String) : TableFieldModel()
 
     data class HeaderEdit(val text: String) : TableFieldModel()
 
-    data class SingleCheckboxSelect(val text: String, val isSelected: Boolean = false) : TableFieldModel()
-    data class MultipleCheckboxSelect(val text: String, val isSelected: Boolean = false) : TableFieldModel()
+    data class SingleCheckboxSelect(
+        val text: String,
+        val isSelected: Boolean = false,
+        val enabled: Boolean = true,
+        val resultType: AnswerResultType = AnswerResultType.NONE,
+    ) : TableFieldModel()
+
+    data class MultipleCheckboxSelect(
+        val text: String,
+        val isSelected: Boolean = false,
+        val enabled: Boolean = true,
+        val resultType: AnswerResultType = AnswerResultType.NONE,
+    ) : TableFieldModel()
+
     data class SingleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
     data class MultipleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
 
@@ -39,4 +52,8 @@ sealed class TableFieldModel {
 
 enum class FieldTypes {
     SINGLE, MULTIPLE
+}
+
+enum class AnswerResultType {
+    CORRECT, ERROR, NONE
 }

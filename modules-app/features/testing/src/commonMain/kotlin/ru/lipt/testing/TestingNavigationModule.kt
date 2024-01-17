@@ -7,6 +7,8 @@ import ru.lipt.testing.complete.TestingCompleteScreen
 import ru.lipt.testing.complete.TestingCompleteScreenModel
 import ru.lipt.testing.edit.TestingEditScreen
 import ru.lipt.testing.edit.TestingEditScreenModel
+import ru.lipt.testing.result.TestingResultScreen
+import ru.lipt.testing.result.TestingResultScreenModel
 
 val testingNavigationModule = module {
     ScreenRegistry.register<TestingNavigationDestinations.TestEditScreenDestination> { provider ->
@@ -14,6 +16,9 @@ val testingNavigationModule = module {
     }
     ScreenRegistry.register<TestingNavigationDestinations.TestCompleteScreenDestination> { provider ->
         TestingCompleteScreen(params = provider.params)
+    }
+    ScreenRegistry.register<TestingNavigationDestinations.TestResultScreenDestination> { provider ->
+        TestingResultScreen(params = provider.params)
     }
 
     factory { params ->
@@ -25,6 +30,11 @@ val testingNavigationModule = module {
         TestingCompleteScreenModel(
             params = params.get(),
             mapInteractor = get(),
+        )
+    }
+    factory { params ->
+        TestingResultScreenModel(
+            params = params.get(),
         )
     }
 }
