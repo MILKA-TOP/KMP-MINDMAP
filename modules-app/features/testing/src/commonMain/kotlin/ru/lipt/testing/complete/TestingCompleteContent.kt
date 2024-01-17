@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ import ru.lipt.core.compose.onError
 import ru.lipt.core.compose.onLoading
 import ru.lipt.core.compose.onSuccess
 import ru.lipt.testing.common.compose.circleLayout
+import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,7 +61,13 @@ fun TestingCompleteContent(
 
     screenModel.handleNavigation { target ->
         when (target) {
-            NavigationTarget.Result -> Unit
+            is NavigationTarget.Result -> navigator.replace(
+                ScreenRegistry.get(
+                    TestingNavigationDestinations.TestResultScreenDestination(
+                        target.params
+                    )
+                )
+            )
         }
     }
 

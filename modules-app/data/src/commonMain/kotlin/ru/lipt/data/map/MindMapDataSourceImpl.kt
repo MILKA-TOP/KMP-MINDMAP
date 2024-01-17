@@ -3,6 +3,8 @@ package ru.lipt.data.map
 import ru.lipt.domain.login.models.User
 import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.Answer
+import ru.lipt.domain.map.models.CompletedAnswer
+import ru.lipt.domain.map.models.CompletedQuestion
 import ru.lipt.domain.map.models.MapType
 import ru.lipt.domain.map.models.MindMap
 import ru.lipt.domain.map.models.Node
@@ -69,9 +71,47 @@ class MindMapDataSourceImpl : MindMapDataSource {
         mapId: String,
         nodeId: String,
         answers: List<RequestAnswer>
-    ): QuestionResult = QuestionResult(
-        questionsCount = answers.size,
-        correctQuestionsCount = answers.size / 2,
-        completedQuestions = listOf()
-    )
+    ): QuestionResult {
+        val question1 = CompletedQuestion(
+            id = "1",
+            nodeId = "node1",
+            questionText = "What is your favorite color?",
+            type = QuestionType.SINGLE_CHOICE,
+            answers = listOf(
+                CompletedAnswer("1", "Red", true, false),
+                CompletedAnswer("2", "Blue", false, true),
+                CompletedAnswer("3", "Green", false, false)
+            )
+        )
+
+        val question2 = CompletedQuestion(
+            id = "2",
+            nodeId = "node2",
+            questionText = "Select all that apply.",
+            type = QuestionType.MULTIPLE_CHOICE,
+            answers = listOf(
+                CompletedAnswer("4", "Option A", true, true),
+                CompletedAnswer("5", "Option B", false, false),
+                CompletedAnswer("6", "Option C", true, false)
+            )
+        )
+
+        val question3 = CompletedQuestion(
+            id = "3",
+            nodeId = "node3",
+            questionText = "What is the capital of France?",
+            type = QuestionType.SINGLE_CHOICE,
+            answers = listOf(
+                CompletedAnswer("7", "Berlin", false, false),
+                CompletedAnswer("8", "Paris", true, true),
+                CompletedAnswer("9", "London", false, false)
+            )
+        )
+
+        return QuestionResult(
+            questionsCount = answers.size,
+            correctQuestionsCount = answers.size / 2,
+            completedQuestions = listOf(question1, question2, question3)
+        )
+    }
 }
