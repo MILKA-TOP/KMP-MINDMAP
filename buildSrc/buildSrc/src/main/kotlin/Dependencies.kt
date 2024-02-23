@@ -42,6 +42,13 @@ object Dependencies {
         const val multiplatformSettingsNoArgs = "com.russhwolf:multiplatform-settings-no-arg:$settings_version"
     }
 
+    object Resources {
+        private const val moko_version = "0.23.0"
+
+        const val mokoBase = "dev.icerock.moko:resources:$moko_version"
+        const val mokoCompose = "dev.icerock.moko:resources-compose:$moko_version"
+    }
+
     object Logs {
         private const val napierVersion = "2.7.1"
 

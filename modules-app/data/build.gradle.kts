@@ -35,6 +35,7 @@ kotlin {
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
                 implementation(project(":modules-app:core"))
+                implementation(project(":modules-app:core-ui"))
             }
         }
         val androidMain by getting {

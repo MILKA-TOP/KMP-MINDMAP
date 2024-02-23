@@ -1,11 +1,11 @@
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
+import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.login.splash.SplashScreen
 
 @Composable
 fun App() {
-    MaterialTheme {
+    MindTheme {
         Navigator(SplashScreen)
     }
 }

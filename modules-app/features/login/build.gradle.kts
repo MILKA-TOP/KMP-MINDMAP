@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 private val iosBaseName = "feature.login"
@@ -18,6 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export("dev.icerock.moko:resources:0.23.0")
             baseName = iosBaseName
             isStatic = true
         }
@@ -37,6 +39,10 @@ kotlin {
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(project(":modules-app:core"))
+                implementation(project(":modules-app:core-ui"))
+
+                api(Dependencies.Resources.mokoBase)
+                api(Dependencies.Resources.mokoCompose)
 
                 // Add here you dependencies
                 implementation(project(":modules-app:features:login:common"))
@@ -89,4 +95,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = androidNamespace // required
 }
