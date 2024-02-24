@@ -2,6 +2,7 @@ package ru.lipt.login.registry.input
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
@@ -24,21 +25,21 @@ class RegistryInputScreenModel(
 
     fun onEmailTextChanged(text: String) {
         _uiState.updateUi {
-            copy(email = text)
+            copy(email = text.trim())
                 .updateValidateState()
         }
     }
 
     fun onPasswordTextChanged(text: String) {
         _uiState.updateUi {
-            copy(password = text)
+            copy(password = text.trim())
                 .updateValidateState()
         }
     }
 
     fun onPasswordRepeatTextChanged(text: String) {
         _uiState.updateUi {
-            copy(passwordRepeat = text)
+            copy(passwordRepeat = text.trim())
                 .updateValidateState()
         }
     }
@@ -46,16 +47,20 @@ class RegistryInputScreenModel(
     fun onRegistryButtonClick() {
         val ui = _uiState.ui
         screenModelScope.launchCatching(
-            catchBlock = {
+            catchBlock = { throwable ->
                 _uiState.showAlertError(
                     UiError.Alert.Default(
-                        title = "Ошибка регистрации",
-                        message = "Возникла какая-то ошибка при регистрации"
+                        message = throwable.message,
                     )
                 )
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(buttonInProgress = false) }
             }
         ) {
-            loginInteractor.register(email = ui.email.trim(), password = ui.password)
+            _uiState.updateUi { copy(buttonInProgress = true) }
+            delay(2_500L)
+            loginInteractor.register(email = ui.email.trim(), password = ui.password.trim())
 
             _uiState.navigateTo(NavigationTarget.PinCreateNavigate)
         }
@@ -68,4 +73,9 @@ class RegistryInputScreenModel(
                 && password.isNotBlank()
                 && passwordRepeat.isNotBlank()
                 && password == passwordRepeat
+                && password.length >= MINIMUM_PASSWORD_LENGTH
+
+    companion object {
+        private const val MINIMUM_PASSWORD_LENGTH = 8
+    }
 }

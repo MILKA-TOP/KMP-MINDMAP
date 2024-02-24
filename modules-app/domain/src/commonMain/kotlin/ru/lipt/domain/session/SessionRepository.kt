@@ -18,6 +18,10 @@ class SessionRepository(
         dataSource.saveSession(session, pinKey)
     }
 
+    suspend fun reset() {
+        session = Session()
+    }
+
     suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
 
     suspend fun getSavedPinKey(): String = dataSource.getPinKey()

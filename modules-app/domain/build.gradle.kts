@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    kotlin("plugin.serialization")
 }
 
 private val iosBaseName = "base.domain"
@@ -29,6 +30,7 @@ kotlin {
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
+                implementation(Dependencies.Kotlin.serialization)
 
                 implementation(project(":modules-app:core"))
                 implementation(project(":modules-app:core-ui"))

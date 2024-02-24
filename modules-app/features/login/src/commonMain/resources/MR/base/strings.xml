@@ -1,7 +1,0 @@
-<resources>
-    <string name="splash_screen_text">Harmony of Thoughts, Mind in Sync: Unlock Your Potential!</string>
-    <string name="welcome_title">Welcome to\n"Mind in Sync"</string>
-    <string name="welcome_description">Create your first mind map or log in to access your existing ones.</string>
-    <string name="welcome_sign_up_text_button">Sign up</string>
-    <string name="welcome_login_text_button">Log in</string>
-</resources>

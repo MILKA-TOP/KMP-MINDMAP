@@ -8,4 +8,5 @@ data class RegistryInputModel(
     val password: String = "",
     val passwordRepeat: String = "",
     val registryButtonEnable: Boolean = false,
+    val buttonInProgress: Boolean = false,
 )

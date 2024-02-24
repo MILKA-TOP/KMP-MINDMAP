@@ -5,5 +5,10 @@ import ru.lipt.data.login.LoginDataSourceImpl
 import ru.lipt.domain.login.LoginDataSource
 
 val loginDataSourceModule = module {
-    single<LoginDataSource> { LoginDataSourceImpl() }
+    single<LoginDataSource> {
+        LoginDataSourceImpl(
+            config = get(),
+            client = get(),
+        )
+    }
 }
