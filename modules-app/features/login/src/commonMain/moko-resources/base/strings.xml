@@ -12,4 +12,7 @@
     <string name="registry_continue">Continue</string>
     <string name="registry_continue">Continue</string>
     <string name="registry_exception">Something went wrong</string>
+    <string name="login_screen_header">Access your account</string>
+    <string name="login_field_title_email">Email</string>
+    <string name="login_field_title_password">Password</string>
 </resources>
