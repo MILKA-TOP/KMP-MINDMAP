@@ -24,14 +24,14 @@ class LoginScreenModel(
 
     fun onEmailTextChanged(text: String) {
         _uiState.updateUi {
-            copy(email = text)
+            copy(email = text.trim())
                 .updateValidateState()
         }
     }
 
     fun onPasswordTextChanged(text: String) {
         _uiState.updateUi {
-            copy(password = text)
+            copy(password = text.trim())
                 .updateValidateState()
         }
     }
@@ -39,16 +39,19 @@ class LoginScreenModel(
     fun onLoginButtonClick() {
         val ui = _uiState.ui
         screenModelScope.launchCatching(
-            catchBlock = {
+            catchBlock = { throwable ->
                 _uiState.showAlertError(
                     UiError.Alert.Default(
-                        title = "Ошибка логина",
-                        message = "Возникла какая-то ошибка при входе"
+                        message = throwable.message
                     )
                 )
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(buttonInProgress = false) }
             }
         ) {
-            loginInteractor.enterAuthData(email = ui.email.trim(), password = ui.password)
+            _uiState.updateUi { copy(buttonInProgress = true) }
+            loginInteractor.enterAuthData(email = ui.email.trim(), password = ui.password.trim())
 
             _uiState.navigateTo(NavigationTarget.PinCreateNavigate)
         }

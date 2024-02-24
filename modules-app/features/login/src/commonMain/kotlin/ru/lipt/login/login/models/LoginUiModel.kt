@@ -7,4 +7,5 @@ data class LoginUiModel(
     val email: String = "",
     val password: String = "",
     val loginButtonEnable: Boolean = false,
+    val buttonInProgress: Boolean = false,
 )

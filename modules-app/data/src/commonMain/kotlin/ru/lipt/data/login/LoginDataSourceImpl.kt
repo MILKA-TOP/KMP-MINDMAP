@@ -8,14 +8,14 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.login.LoginDataSource
-import ru.lipt.domain.login.models.RegistryRequestModel
+import ru.lipt.domain.login.models.AuthRequestModel
 import ru.lipt.domain.session.models.Session
 
 class LoginDataSourceImpl(
     private val config: ApplicationConfig,
     private val client: HttpClient
 ) : LoginDataSource {
-    override suspend fun register(request: RegistryRequestModel): Session =
+    override suspend fun register(request: AuthRequestModel): Session =
         client.post(
             urlString = "${config.baseUrl}/registry",
         ) {
@@ -33,10 +33,13 @@ class LoginDataSourceImpl(
 
     override suspend fun revokeDeviceTokens(userId: String) = Unit
 
-    override suspend fun enterAuthData(email: String, password: String): Session {
-        if (password != CORRECT_PASSWORD) throw IllegalArgumentException()
-        return TEMP_SESSION
-    }
+    override suspend fun enterAuthData(request: AuthRequestModel): Session =
+        client.post(
+            urlString = "${config.baseUrl}/enter-auth-data",
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
 
     private companion object {
         val TEMP_SESSION = Session(

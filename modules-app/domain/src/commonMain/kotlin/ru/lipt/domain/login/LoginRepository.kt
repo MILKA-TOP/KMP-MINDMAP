@@ -1,7 +1,7 @@
 package ru.lipt.domain.login
 
 import ru.lipt.core.cache.CachePolicyRepository
-import ru.lipt.domain.login.models.RegistryRequestModel
+import ru.lipt.domain.login.models.AuthRequestModel
 import ru.lipt.domain.session.models.Session
 
 class LoginRepository(
@@ -12,14 +12,16 @@ class LoginRepository(
     remoteDataSource = remoteDataSource,
 ) {
     suspend fun register(email: String, password: String): Session = remoteDataSource.register(
-        RegistryRequestModel(email, password)
+        AuthRequestModel(email, password)
     )
 
     suspend fun setPin(userId: String, pin: String) {
         remoteDataSource.setPin(userId, pin)
     }
 
-    suspend fun enterAuthData(email: String, password: String): Session = remoteDataSource.enterAuthData(email, password)
+    suspend fun enterAuthData(email: String, password: String): Session = remoteDataSource.enterAuthData(
+        AuthRequestModel(email, password)
+    )
 
     suspend fun login(userId: String, encryptedPin: String): Session = remoteDataSource.login(userId, encryptedPin)
 
