@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import ru.lipt.coreui.colors.MindColors
+import ru.lipt.coreui.shapes.MindShapes
 import ru.lipt.coreui.typography.ExtendedTypography
 import ru.lipt.coreui.typography.ExtendedTypography.Companion.LocalExtendedTypography
 import ru.lipt.coreui.typography.MindTypography
@@ -16,6 +17,7 @@ fun MindTheme(
     MaterialTheme(
         colors = MindColors.provideMaterial(),
         typography = MindTypography.Material,
+        shapes = MindShapes
     ) {
         CompositionLocalProvider(
             // app typography
