@@ -31,6 +31,7 @@ kotlin {
                 implementation(Dependencies.Koin.core)
 
                 implementation(project(":modules-app:core"))
+                implementation(project(":modules-app:core-ui"))
                 // Add here you dependencies
             }
         }

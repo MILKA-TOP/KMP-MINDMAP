@@ -6,6 +6,7 @@ plugins {
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
     id("io.gitlab.arturbosch.detekt") version ("1.19.0")
+    kotlin("native.cocoapods")
 }
 
 buildscript {
@@ -18,6 +19,7 @@ buildscript {
         classpath(Dependencies.Kotlin.gradlePlugin)
         classpath(Dependencies.Android.gradlePlugin)
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0")
+        classpath("dev.icerock.moko:resources-generator:0.23.0")
     }
 }
 

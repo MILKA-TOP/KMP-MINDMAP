@@ -38,6 +38,7 @@ kotlin {
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Logs.napier)
                 implementation(project(":modules-app:core"))
+                implementation(project(":modules-app:core-ui"))
 
                 // Add here you dependencies
                 implementation(project(":modules-app:features:catalog:common"))
