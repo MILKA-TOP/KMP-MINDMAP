@@ -30,6 +30,6 @@ class SplashScreenModel(
     }
 
     private companion object {
-        const val SPLASH_DELAY = 5_500L
+        const val SPLASH_DELAY = 2_500L
     }
 }
