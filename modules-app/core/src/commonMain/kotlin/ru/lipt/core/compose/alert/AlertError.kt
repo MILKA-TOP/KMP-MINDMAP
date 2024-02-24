@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun ErrorAlertDialog(
@@ -16,8 +17,8 @@ fun ErrorAlertDialog(
 ) {
     if (error != null) {
         AlertDialog(
-            title = error.title,
-            text = error.message,
+            title = error.title ?: error.titleRes?.let { stringResource(it) },
+            text = error.message ?: error.messageRes?.let { stringResource(it) },
             confirmText = error.confirmText,
             onConfirm = onDismissRequest,
             onCancel = onDismissRequest,

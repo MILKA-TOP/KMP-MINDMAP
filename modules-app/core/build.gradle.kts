@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 private val iosBaseName = "modules.core"
@@ -18,6 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export("dev.icerock.moko:resources:0.24.0-alpha-3")
             baseName = iosBaseName
             isStatic = true
         }
@@ -35,6 +37,8 @@ kotlin {
                 implementation("co.touchlab:stately-common:2.0.6")
                 implementation("co.touchlab:stately-concurrent-collections:2.0.6")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
+                api(Dependencies.Resources.mokoBase)
+                api(Dependencies.Resources.mokoCompose)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
@@ -71,9 +75,10 @@ android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = androidNamespace
 
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources", "build/generated/moko/androidMain/src")
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
@@ -85,4 +90,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+
+multiplatformResources {
+    resourcesPackage.set(androidNamespace) // required
 }

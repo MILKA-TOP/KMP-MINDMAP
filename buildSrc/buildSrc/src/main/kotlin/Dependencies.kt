@@ -3,6 +3,7 @@ object Dependencies {
     object Kotlin {
         private const val version = "1.9.20"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
+        const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
     }
 
     object Compose {
@@ -43,7 +44,7 @@ object Dependencies {
     }
 
     object Resources {
-        private const val moko_version = "0.23.0"
+        private const val moko_version = "0.24.0-alpha-3"
 
         const val mokoBase = "dev.icerock.moko:resources:$moko_version"
         const val mokoCompose = "dev.icerock.moko:resources-compose:$moko_version"
@@ -53,5 +54,17 @@ object Dependencies {
         private const val napierVersion = "2.7.1"
 
         const val napier = "io.github.aakira:napier:$napierVersion"
+    }
+
+    object Ktor {
+        private const val ktorVersion = "2.3.8"
+
+        const val core = "io.ktor:ktor-client-core:$ktorVersion"
+        const val contentNegotation = "io.ktor:ktor-client-content-negotiation:$ktorVersion"
+        const val serialization = "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion"
+        const val okHttp = "io.ktor:ktor-client-okhttp:$ktorVersion"
+        const val darwin = "io.ktor:ktor-client-darwin:$ktorVersion"
+        const val android = "io.ktor:ktor-client-android:$ktorVersion"
+        const val jvm = "io.ktor:ktor-client-java:$ktorVersion"
     }
 }

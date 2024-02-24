@@ -19,7 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            export("dev.icerock.moko:resources:0.23.0")
+            export("dev.icerock.moko:resources:0.24.0-alpha-3")
             baseName = iosBaseName
             isStatic = true
         }
@@ -98,5 +98,5 @@ android {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = androidNamespace // required
+    resourcesPackage.set(androidNamespace) // required
 }

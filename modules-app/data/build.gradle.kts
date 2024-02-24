@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    kotlin("plugin.serialization")
 }
 
 private val iosBaseName = "modules.data"
@@ -31,6 +32,10 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Setings.multiplatformSettings)
                 implementation(Dependencies.Setings.multiplatformSettingsNoArgs)
+                implementation(Dependencies.Ktor.core)
+                implementation(Dependencies.Ktor.contentNegotation)
+                implementation(Dependencies.Ktor.serialization)
+                implementation(Dependencies.Kotlin.serialization)
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
@@ -40,6 +45,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(Dependencies.Ktor.android)
             }
         }
         val iosX64Main by getting
@@ -47,12 +53,16 @@ kotlin {
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                implementation(Dependencies.Ktor.darwin)
+            }
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
         }
         val desktopMain by getting {
             dependencies {
+                implementation(Dependencies.Ktor.jvm)
                 dependsOn(commonMain)
             }
         }

@@ -1,0 +1,15 @@
+<resources>
+    <string name="splash_screen_text">Harmony of Thoughts, Mind in Sync: Unlock Your Potential!</string>
+    <string name="welcome_title">Welcome to\n"Mind in Sync"</string>
+    <string name="welcome_description">Create your first mind map or log in to access your existing ones.</string>
+    <string name="welcome_sign_up_text_button">Sign up</string>
+    <string name="welcome_login_text_button">Log in</string>
+    <string name="registry_screen_header">Create your account</string>
+    <string name="registry_field_title_email">Email</string>
+    <string name="registry_field_title_password">Password</string>
+    <string name="registry_field_hint_password">Minimum 8 characters</string>
+    <string name="registry_field_title_repeat_password">Repeat password</string>
+    <string name="registry_continue">Continue</string>
+    <string name="registry_continue">Continue</string>
+    <string name="registry_exception">Something went wrong</string>
+</resources>

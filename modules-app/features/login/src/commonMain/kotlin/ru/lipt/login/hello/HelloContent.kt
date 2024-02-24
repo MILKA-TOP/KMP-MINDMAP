@@ -26,6 +26,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.login.MR
+// import ru.lipt.login.MR
 import ru.lipt.login.navigation.PrivateLoginDestinations
 
 @Composable
@@ -80,7 +81,7 @@ private fun Content(
             Spacer(Modifier.height(12.dp))
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onLoginButtonClick
+                onClick = onRegistryButtonClick
             ) {
                 Text(
                     text = stringResource(MR.strings.welcome_sign_up_text_button),
@@ -91,7 +92,7 @@ private fun Content(
             Spacer(Modifier.height(12.dp))
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onRegistryButtonClick,
+                onClick = onLoginButtonClick,
                 colors = ButtonDefaults.outlinedButtonColors()
             ) {
                 Text(

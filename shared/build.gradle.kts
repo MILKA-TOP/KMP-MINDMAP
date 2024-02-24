@@ -20,7 +20,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            export("dev.icerock.moko:resources:0.23.0")
+            export("dev.icerock.moko:resources:0.24.0-alpha-3")
             baseName = iosBaseName
             isStatic = true
         }
@@ -50,8 +50,8 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
-                api("dev.icerock.moko:resources:0.23.0")
-                api("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+                api("dev.icerock.moko:resources:0.24.0-alpha-3")
+                api("dev.icerock.moko:resources-compose:0.24.0-alpha-3") // for compose multiplatform
                 // Add here you dependencies
                 implementation(project(":modules-app:features:catalog"))
                 implementation(project(":modules-app:features:map"))
@@ -110,5 +110,5 @@ android {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "ru.lipt.shared" // required
+    resourcesPackage.set("ru.lipt.shared") // required
 }
