@@ -19,4 +19,11 @@
     <string name="create_pin_field_enter">PIN</string>
     <string name="create_repeat_pin_field_enter">Repeat PIN</string>
     <string name="create_pin_button_title">Create PIN</string>
+    <string name="enter_pin_title">Enter your 4-digit PIN to unlock "MindInSync"</string>
+    <string name="enter_pin_enter_button_title">Enter</string>
+    <string name="enter_pin_logout_button_title">Log out</string>
+    <string name="enter_pin_logout_alert_title">Exit</string>
+    <string name="enter_pin_logout_alert_message">Are you sure, that you want log out?</string>
+    <string name="enter_pin_logout_alert_confirm">Log out</string>
+    <string name="enter_pin_logout_alert_cancel">Cancel</string>
 </resources>

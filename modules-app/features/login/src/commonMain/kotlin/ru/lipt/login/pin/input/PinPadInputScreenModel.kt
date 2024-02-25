@@ -2,6 +2,7 @@ package ru.lipt.login.pin.input
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
@@ -18,34 +19,62 @@ class PinPadInputScreenModel(
         MutableScreenUiStateFlow(PinPadInputModel())
     val uiState = _uiState.asStateFlow()
 
+    private var _pin: String = ""
+
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
 
     fun onPinChanged(pin: String) {
+        _pin = pin
         _uiState.updateUi { copy(pin = pin.take(PIN_SIZE)) }
     }
 
     fun onSubmitPinButtonClick() {
+        val pin = _pin
+        if (pin.length != PIN_SIZE) return
+
         screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(UiError.Alert.Default(message = "Ошибка при входе пина"))
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(isSetButtonInProgress = false) }
             }
         ) {
-            val pin = _uiState.ui.pin
-            if (!_uiState.ui.isPinEnabled) throw IllegalArgumentException()
+            _uiState.updateUi { copy(isSetButtonInProgress = true) }
+            delay(LOADING_DELAY)
+
             loginInteractor.login(pin)
             _uiState.navigateTo(NavigationTarget.CatalogScreenNavigate)
         }
     }
 
     fun onLogoutButtonClick() {
+        _uiState.updateUi { copy(showLogOutAlert = true) }
+    }
+
+    fun onConfirmLogOutAlertButtonClick() {
+        onCloseLogOutAlert()
         screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(UiError.Alert.Default(message = "Ошибка при выходе"))
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(isLogOutButtonInProgress = false) }
             }
         ) {
+            _uiState.updateUi { copy(isLogOutButtonInProgress = true) }
+            delay(LOADING_DELAY)
             loginInteractor.logout()
             _uiState.navigateTo(NavigationTarget.HelloScreenNavigate)
         }
+    }
+
+    fun onCloseLogOutAlert() {
+        _uiState.updateUi { copy(showLogOutAlert = false) }
+    }
+
+    private companion object {
+        const val LOADING_DELAY = 250L
     }
 }

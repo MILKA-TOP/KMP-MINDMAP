@@ -6,20 +6,29 @@ class SessionRepository(
     private val dataSource: SessionDataSource,
 ) {
 
-    var session: Session = Session()
+    private var _session: Session = DEFAULT_SESSION
+
+    suspend fun getSession(): Session {
+        if (_session == DEFAULT_SESSION) {
+            _session = Session(
+                userId = getSavedUserId(),
+            )
+        }
+        return _session
+    }
 
     suspend fun start(session: Session) {
-        this.session = session
+        _session = session
     }
 
     suspend fun saveData(pinKey: String) {
-        if (!session.isEnabled) throw IllegalArgumentException()
+        if (!_session.isEnabled) throw IllegalArgumentException()
 
-        dataSource.saveSession(session, pinKey)
+        dataSource.saveSession(_session, pinKey)
     }
 
     suspend fun reset() {
-        session = Session()
+        _session = DEFAULT_SESSION
     }
 
     suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
@@ -28,7 +37,11 @@ class SessionRepository(
     suspend fun getSavedUserId(): String = dataSource.getUserId()
 
     suspend fun logOut() {
-        this.session = Session()
+        _session = DEFAULT_SESSION
         dataSource.clearSession()
+    }
+
+    companion object {
+        val DEFAULT_SESSION = Session()
     }
 }

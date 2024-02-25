@@ -3,6 +3,8 @@ package ru.lipt.coreui.components
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
@@ -17,10 +19,12 @@ fun ProgressButton(
     inProgress: Boolean = false,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
+    colors: ButtonColors = ButtonDefaults.buttonColors()
 ) = Button(
     modifier = Modifier.sizeIn(minHeight = 48.dp).then(modifier),
     onClick = onClick,
-    enabled = enabled
+    enabled = enabled,
+    colors = colors,
 ) {
     val localContentColor = LocalContentColor.current
     if (inProgress) {
