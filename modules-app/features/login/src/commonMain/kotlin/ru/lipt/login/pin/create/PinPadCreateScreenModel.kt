@@ -18,10 +18,13 @@ class PinPadCreateScreenModel(
         MutableScreenUiStateFlow(PinPadCreateModel())
     val uiState = _uiState.asStateFlow()
 
+    private var _pin = ""
+
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
 
     fun onPinChanged(pin: String) {
+        _pin = pin
         _uiState.updateUi { copy(pin = pin.take(PIN_SIZE)) }
     }
 
@@ -30,13 +33,18 @@ class PinPadCreateScreenModel(
     }
 
     fun submitPin() {
+        val pin = _pin
+        if (pin.length != PIN_SIZE || pin.any { !it.isDigit() }) return
         screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(UiError.Alert.Default(message = "Ошибка при создании пина"))
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(isButtonInProgress = false) }
             }
         ) {
-            val pin = _uiState.ui.pin
-            if (!_uiState.ui.isPinEnabled) throw IllegalArgumentException()
+            _uiState.updateUi { copy(isButtonInProgress = true) }
+
             loginInteractor.setPin(pin)
             _uiState.navigateTo(NavigationTarget.CatalogNavigate)
         }

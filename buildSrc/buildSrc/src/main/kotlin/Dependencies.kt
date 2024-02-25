@@ -66,5 +66,6 @@ object Dependencies {
         const val darwin = "io.ktor:ktor-client-darwin:$ktorVersion"
         const val android = "io.ktor:ktor-client-android:$ktorVersion"
         const val jvm = "io.ktor:ktor-client-java:$ktorVersion"
+        const val auth = "io.ktor:ktor-client-auth:$ktorVersion"
     }
 }
