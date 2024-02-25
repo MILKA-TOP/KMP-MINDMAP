@@ -33,7 +33,6 @@ class LoginInteractor(
 
         val token = loginRepository.generatePinToken()
         val encryptedPin = PinCrypt.encrypt(token, pin)
-        loginRepository.login(session.userId, encryptedPin)
         sessionRepository.saveData(encryptedPin)
     }
 

@@ -2,6 +2,7 @@ package ru.lipt.domain.login
 
 import ru.lipt.core.cache.CachePolicyRepository
 import ru.lipt.domain.login.models.AuthRequestModel
+import ru.lipt.domain.login.models.LoginRequestRemote
 import ru.lipt.domain.session.models.Session
 
 class LoginRepository(
@@ -23,9 +24,9 @@ class LoginRepository(
         AuthRequestModel(email, password)
     )
 
-    suspend fun login(userId: String, encryptedPin: String): Session = remoteDataSource.login(userId, encryptedPin)
+    suspend fun login(userId: String, encryptedPin: String): Session = remoteDataSource.login(LoginRequestRemote(userId, encryptedPin))
 
     suspend fun revokeDeviceTokens(userId: String) = remoteDataSource.revokeDeviceTokens(userId)
 
-    suspend fun generatePinToken(): String = remoteDataSource.generatePinToken()
+    suspend fun generatePinToken(): String = remoteDataSource.generatePinToken().token
 }

@@ -35,6 +35,7 @@ kotlin {
                 implementation(Dependencies.Ktor.core)
                 implementation(Dependencies.Ktor.contentNegotation)
                 implementation(Dependencies.Ktor.serialization)
+                implementation(Dependencies.Ktor.auth)
                 implementation(Dependencies.Kotlin.serialization)
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
