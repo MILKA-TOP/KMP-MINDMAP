@@ -28,7 +28,7 @@ class LoginInteractor(
     }
 
     suspend fun setPin(pin: String) {
-        val session = sessionRepository.session
+        val session = sessionRepository.getSession()
         if (!session.isEnabled) throw IllegalArgumentException()
 
         val token = loginRepository.generatePinToken()
@@ -39,7 +39,7 @@ class LoginInteractor(
     suspend fun containsSavedAuthData(): Boolean = sessionRepository.containsSavedData()
 
     suspend fun logout() {
-        val session = sessionRepository.session
+        val session = sessionRepository.getSession()
         loginRepository.revokeDeviceTokens(session.userId)
         sessionRepository.logOut()
     }

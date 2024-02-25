@@ -41,7 +41,10 @@ class LoginDataSourceImpl(
         setBody(request)
     }.body<Session>()
 
-    override suspend fun revokeDeviceTokens(userId: String) = Unit
+    override suspend fun revokeDeviceTokens(userId: String) =
+        unAuthedClient.post(
+            urlString = "${config.baseUrl}/user/revoke-device?userId=$userId",
+        ).body<Unit>()
 
     override suspend fun enterAuthData(request: AuthRequestModel): Session =
         unAuthedClient.post(

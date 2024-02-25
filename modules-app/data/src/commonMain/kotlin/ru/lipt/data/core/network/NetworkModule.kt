@@ -50,7 +50,8 @@ object NetworkModule {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens(sessionRepository.session.sessionId, "")
+                    val session = sessionRepository.getSession()
+                    BearerTokens(session.sessionId, "")
                 }
             }
         }
