@@ -10,4 +10,5 @@ data class CatalogMindMap(
     val description: String,
     val isEnableEdit: Boolean,
     val isSaved: Boolean,
+    val isPrivate: Boolean,
 )

@@ -43,7 +43,7 @@ import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import ru.lipt.core.compose.alert.EnterAlertDialog
+import ru.lipt.core.compose.alert.EnterAlertDialogV2
 import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.core.compose.error.ErrorScreen
 import ru.lipt.core.compose.loading.CircularProgressIndicatorLoadingScreen
@@ -146,7 +146,7 @@ private fun MapContent(
 ) {
 
     ui.newNodeAlert?.let { alert ->
-        EnterAlertDialog(
+        EnterAlertDialogV2(
             title = "New Node",
             text = "Please, enter the title of new node",
             fieldLabel = "Title",

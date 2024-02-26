@@ -19,6 +19,7 @@ data class CatalogScreenUi(
                 type = if (map.isEnableEdit) MapCatalogElement.MapType.EDITABLE else MapCatalogElement.MapType.VIEW,
                 adminEmail = map.admin.email,
                 isSaved = map.isSaved,
+                isPrivate = map.isPrivate,
             )
         }
     }

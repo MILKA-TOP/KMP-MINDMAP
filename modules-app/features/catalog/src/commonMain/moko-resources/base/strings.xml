@@ -5,4 +5,11 @@
     <string name="catalog_map_type_interactable">Interactable</string>
     <string name="catalog_map_saved_maps_title">Saved Mindmaps</string>
     <string name="catalog_map_saved_author_format_caption">Admin: %s</string>
+    <string name="search_map_idle_caption_text">Please, enter text for searching Mindmap or refereal ID</string>
+    <string name="search_map_success_empty_caption_text">No Mind maps were found</string>
+    <string name="search_map_alert_message_add">Would you like to add a "%s"mindmap?</string>
+    <string name="search_map_alert_title_add">Save mindmap</string>
+    <string name="search_map_alert_confirm_button">Save</string>
+    <string name="search_map_alert_cancel_button">Cancel</string>
+    <string name="search_map_alert_password_field">Password</string>
 </resources>

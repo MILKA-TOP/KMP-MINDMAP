@@ -5,8 +5,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
-import ru.lipt.catalog.search.models.EnterAlertModel
-import ru.lipt.catalog.search.models.MapQueryElement
+import ru.lipt.catalog.main.models.CatalogScreenUi.Companion.toUi
+import ru.lipt.catalog.search.models.SearchAlerts
 import ru.lipt.catalog.search.models.SearchContentUi
 import ru.lipt.catalog.search.models.SearchScreenUi
 import ru.lipt.core.compose.MutableScreenUiStateFlow
@@ -17,124 +17,125 @@ import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
 import ru.lipt.domain.catalog.CatalogInteractor
-import ru.lipt.domain.catalog.models.MindMapQueryResponse
+import ru.lipt.domain.catalog.models.CatalogMindMap
 import ru.lipt.map.common.params.MapScreenParams
 
 class SearchScreenModel(
     private val catalogInteractor: CatalogInteractor,
 ) : ScreenModel {
-    private val _uiState: MutableScreenUiStateFlow<SearchScreenUi, NavigationTarget> =
-        MutableScreenUiStateFlow(SearchScreenUi())
+    private val _uiState: MutableScreenUiStateFlow<SearchScreenUi, NavigationTarget> = MutableScreenUiStateFlow(SearchScreenUi())
     val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
     private var privateMapAdd: Job? = null
-    private var selectedPrivateMapId: String? = null
-    private var maps: List<MindMapQueryResponse> = emptyList()
+    private var publicMapAdd: Job? = null
+    private var selectedMapId: String? = null
+    private var privateMapPassword: String = ""
+    private var maps: List<CatalogMindMap> = emptyList()
 
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
 
     fun onSearchTextChanged(text: String) {
-        _uiState.updateUi { copy(searchText = text, content = (idle<SearchContentUi, Unit>()).takeIf { text.isEmpty() } ?: content) }
+        val inputText = text.trimStart()
+        if (inputText == text) {
+            _uiState.updateUi {
+                copy(searchText = inputText, content = (idle<SearchContentUi, Unit>()).takeIf { !inputText.isQueryValidated() } ?: content)
+            }
 
-        loadMaps()
+            loadMaps()
+        }
     }
 
     fun loadMaps() {
         searchJob?.cancel()
         val query = _uiState.ui.searchText
-        if (query.isEmpty()) return
+        if (!query.isQueryValidated()) return
 
-        searchJob = screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.updateUi { copy(content = Unit.error()) }
-            }
-        ) {
+        searchJob = screenModelScope.launchCatching(catchBlock = {
+            _uiState.updateUi { copy(content = Unit.error()) }
+        }) {
             _uiState.updateUi { copy(content = loading()) }
 
+            delay(SEARCH_DELAY)
             maps = catalogInteractor.search(query)
-            val uiElements = maps.map {
-                MapQueryElement(
-                    id = it.id,
-                    title = it.title,
-                    description = it.description,
-                    isNeedPassword = it.isNeedPassword,
-                )
-            }
-            delay(1_000L)
-            _uiState.updateUi { copy(content = SearchContentUi(uiElements).success()) }
+            val uiElements = maps
+            _uiState.updateUi { copy(content = SearchContentUi(uiElements.toUi()).success()) }
         }
     }
 
-    fun onHidePasswordAlert() {
+    fun onHideAddAlert() {
         privateMapAdd?.cancel()
-        selectedPrivateMapId = null
-        _uiState.updateUi { copy(enterPasswordAlert = null) }
+        publicMapAdd?.cancel()
+        selectedMapId = null
+        privateMapPassword = ""
+        _uiState.updateUi { copy(addMindMapAlert = null) }
     }
 
     fun onMapElementClick(mapId: String) {
         val clickedMap = maps.firstOrNull { it.id == mapId } ?: return
-        if (clickedMap.isNeedPassword) {
-            selectedPrivateMapId = mapId
-            _uiState.updateUi { copy(enterPasswordAlert = EnterAlertModel()) }
-        } else {
-            addPublicMap(mapId)
+        selectedMapId = clickedMap.id
+        val clickedMapTitle = clickedMap.title
+        when {
+            clickedMap.isSaved -> _uiState.navigateTo(NavigationTarget.ToMapNavigate(MapScreenParams(mapId)))
+            clickedMap.isPrivate -> _uiState.updateUi { copy(addMindMapAlert = SearchAlerts.PrivateMap(clickedMapTitle)) }
+            else -> _uiState.updateUi { copy(addMindMapAlert = SearchAlerts.PublicMap(clickedMapTitle)) }
+        }
+    }
+
+    fun onConfirmAddPublicMapAlert() {
+        privateMapAdd?.cancel()
+        publicMapAdd?.cancel()
+        val mapId = selectedMapId ?: return
+        publicMapAdd = screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(addMindMapAlert = addMindMapAlert?.copy(false)) }
+            }
+        ) {
+            _uiState.updateUi { copy(addMindMapAlert = addMindMapAlert?.copy(true)) }
+
+            catalogInteractor.addMap(mapId)
+            _uiState.navigateTo(NavigationTarget.ToMapNavigate(MapScreenParams(mapId)))
+        }
+    }
+
+    fun onConfirmAddPrivateMapAlert() {
+        privateMapAdd?.cancel()
+        publicMapAdd?.cancel()
+        val mapId = selectedMapId ?: return
+        val password = privateMapPassword.takeIf { it.isNotEmpty() } ?: return
+        publicMapAdd = screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(addMindMapAlert = addMindMapAlert?.copy(false)) }
+            }
+        ) {
+            _uiState.updateUi { copy(addMindMapAlert = addMindMapAlert?.copy(true)) }
+
+            catalogInteractor.addMap(mapId, password)
+            _uiState.navigateTo(NavigationTarget.ToMapNavigate(MapScreenParams(mapId)))
         }
     }
 
     fun onPasswordEnter(password: String) {
-        privateMapAdd?.cancel()
-        val mapId = selectedPrivateMapId ?: return
-        privateMapAdd = screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(UiError.Alert.Default(message = "Can't add private map"))
-            },
-            finalBlock = {
-                _uiState.updateUi { copy(enterPasswordAlert = enterPasswordAlert?.copy(inProgress = false)) }
-            }
-        ) {
-            _uiState.updateUi { copy(enterPasswordAlert = enterPasswordAlert?.copy(inProgress = true)) }
-
-            delay(2_000L)
-            catalogInteractor.addPrivateMap(mapId, password)
-            _uiState.navigateTo(NavigationTarget.ToMapNavigate(MapScreenParams(id = mapId)))
+        privateMapPassword = password
+        _uiState.updateUi {
+            copy(
+                addMindMapAlert = (addMindMapAlert as? SearchAlerts.PrivateMap)
+                    ?.copy(password = password.trimStart())
+            )
         }
     }
 
-    private fun addPublicMap(mapId: String) {
-        screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(UiError.Alert.Default(message = "Can't add public map"))
-            },
-            finalBlock = {
-                _uiState.updateUi {
-                    copy(
-                        searchFieldEnabled = true,
-                        content = content.copy { successContent ->
-                            successContent.copy(
-                                maps = successContent.maps.map { it.copy(enabled = true, isLoading = false) }
-                            )
-                        }
-                    )
-                }
-            }
-        ) {
-            _uiState.updateUi {
-                copy(
-                    searchFieldEnabled = false,
-                    content = content.copy { successContent ->
-                        successContent.copy(
-                            maps = successContent.maps.map { it.copy(enabled = false, isLoading = it.id == mapId) }
-                        )
-                    }
-                )
-            }
+    private fun String.isQueryValidated(): Boolean = this.length >= MINIMAL_QUERY_LENGTH
 
-            delay(2_000L)
-            catalogInteractor.addPublicMap(mapId)
-
-            _uiState.navigateTo(NavigationTarget.ToMapNavigate(MapScreenParams(id = mapId)))
-        }
+    companion object {
+        private const val MINIMAL_QUERY_LENGTH = 3
+        private const val SEARCH_DELAY = 250L
     }
 }

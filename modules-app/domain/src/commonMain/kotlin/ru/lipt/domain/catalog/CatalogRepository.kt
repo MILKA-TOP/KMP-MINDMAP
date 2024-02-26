@@ -2,7 +2,6 @@ package ru.lipt.domain.catalog
 
 import ru.lipt.core.cache.CachePolicyRepository
 import ru.lipt.domain.catalog.models.CatalogMindMap
-import ru.lipt.domain.catalog.models.MindMapQueryResponse
 
 class CatalogRepository(
     localDataSource: CatalogLocalDataSource,
@@ -15,10 +14,9 @@ class CatalogRepository(
         remoteDataSource.createMap(title, description, password)
             .also { map -> updateCache(Unit) { this + map } }
 
-    suspend fun search(query: String): List<MindMapQueryResponse> = remoteDataSource.search(query)
+    suspend fun search(query: String): List<CatalogMindMap> = remoteDataSource.search(query)
 
-    suspend fun addPublicMap(mapId: String) = remoteDataSource.addPublicMap(mapId)
-    suspend fun addPrivateMap(mapId: String, password: String) = remoteDataSource.addPrivateMap(mapId, password)
+    suspend fun addMap(mapId: String, password: String? = null) = remoteDataSource.addMap(mapId, password)
     suspend fun removeMap(mapId: String) = updateCache(Unit) {
         this.filter { it.id != mapId }
     }
