@@ -19,7 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            export("dev.icerock.moko:resources:0.24.0-alpha-3")
+            export("dev.icerock.moko:resources:0.24.0-alpha-5")
             baseName = iosBaseName
             isStatic = true
         }

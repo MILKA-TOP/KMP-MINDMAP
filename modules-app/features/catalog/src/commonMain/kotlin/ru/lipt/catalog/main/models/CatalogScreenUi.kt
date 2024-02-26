@@ -6,7 +6,8 @@ import ru.lipt.domain.catalog.models.CatalogMindMap
 
 @Immutable
 data class CatalogScreenUi(
-    val maps: List<MapCatalogElement> = listOf()
+    val maps: List<MapCatalogElement> = listOf(),
+    val isLoadingInProgress: Boolean = false,
 ) {
     companion object {
         fun List<CatalogMindMap>.toUi() = this.map { map ->
@@ -14,6 +15,10 @@ data class CatalogScreenUi(
                 id = map.id,
                 title = map.title,
                 description = map.description,
+                isEnabledEdit = map.isEnableEdit,
+                type = if (map.isEnableEdit) MapCatalogElement.MapType.EDITABLE else MapCatalogElement.MapType.VIEW,
+                adminEmail = map.admin.email,
+                isSaved = map.isSaved,
             )
         }
     }

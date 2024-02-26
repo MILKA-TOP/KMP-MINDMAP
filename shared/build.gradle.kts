@@ -20,7 +20,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            export("dev.icerock.moko:resources:0.24.0-alpha-3")
+            export("dev.icerock.moko:resources:0.24.0-alpha-5")
             baseName = iosBaseName
             isStatic = true
         }
@@ -50,8 +50,9 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
-                api("dev.icerock.moko:resources:0.24.0-alpha-3")
-                api("dev.icerock.moko:resources-compose:0.24.0-alpha-3") // for compose multiplatform
+                implementation(Dependencies.Voyager.transitions)
+                api("dev.icerock.moko:resources:0.24.0-alpha-5")
+                api("dev.icerock.moko:resources-compose:0.24.0-alpha-5") // for compose multiplatform
                 // Add here you dependencies
                 implementation(project(":modules-app:features:catalog"))
                 implementation(project(":modules-app:features:map"))

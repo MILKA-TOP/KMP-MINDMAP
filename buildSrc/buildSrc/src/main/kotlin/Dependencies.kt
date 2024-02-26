@@ -44,7 +44,7 @@ object Dependencies {
     }
 
     object Resources {
-        private const val moko_version = "0.24.0-alpha-3"
+        private const val moko_version = "0.24.0-alpha-5"
 
         const val mokoBase = "dev.icerock.moko:resources:$moko_version"
         const val mokoCompose = "dev.icerock.moko:resources-compose:$moko_version"

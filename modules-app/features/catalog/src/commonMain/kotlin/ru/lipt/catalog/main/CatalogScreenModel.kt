@@ -2,20 +2,18 @@ package ru.lipt.catalog.main
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import ru.lipt.catalog.main.models.CatalogScreenUi
 import ru.lipt.catalog.main.models.CatalogScreenUi.Companion.toUi
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
 import ru.lipt.domain.catalog.CatalogInteractor
-import ru.lipt.domain.login.LoginInteractor
 import ru.lipt.map.common.params.MapScreenParams
 
 class CatalogScreenModel(
     private val catalogInteractor: CatalogInteractor,
-    private val loginInteractor: LoginInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<CatalogScreenUi, NavigationTarget> =
@@ -34,25 +32,22 @@ class CatalogScreenModel(
     )
 
     fun logout() {
-        screenModelScope.launchCatching(
-            catchBlock = {
-                _uiState.showAlertError(
-                    UiError.Alert.Default(
-                        message = "Не удалось выйти"
-                    )
-                )
-            }
-        ) {
-            loginInteractor.logout()
-            _uiState.navigateTo(NavigationTarget.HelloScreenDestination)
-        }
+        _uiState.navigateTo(NavigationTarget.EnterPinScreenDestination)
     }
 
     fun createNewMindMap() = _uiState.navigateTo(NavigationTarget.CreateMindMapDestination)
     fun searchMindMap() = _uiState.navigateTo(NavigationTarget.SearchMapDestination)
 
     private fun init() {
-        screenModelScope.launch {
+        screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(isLoadingInProgress = false) }
+            }
+        ) {
+            _uiState.updateUi { copy(isLoadingInProgress = true) }
             val maps = catalogInteractor.getMaps()
             _uiState.updateUi {
                 copy(
@@ -60,5 +55,29 @@ class CatalogScreenModel(
                 )
             }
         }
+    }
+
+    fun onPullToRefresh() {
+        screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy(isLoadingInProgress = false) }
+            }
+        ) {
+            _uiState.updateUi { copy(isLoadingInProgress = true) }
+            delay(REFRESH_DELAY)
+            val maps = catalogInteractor.fetchMaps()
+            _uiState.updateUi {
+                copy(
+                    maps = maps.toUi()
+                )
+            }
+        }
+    }
+
+    companion object {
+        private const val REFRESH_DELAY = 250L
     }
 }
