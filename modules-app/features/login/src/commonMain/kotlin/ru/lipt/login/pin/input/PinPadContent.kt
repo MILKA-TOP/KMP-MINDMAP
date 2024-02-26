@@ -28,12 +28,12 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
 import ru.lipt.catalog.common.navigation.CatalogNavigationDestinations
-import ru.lipt.core.compose.alert.AlertDialog
 import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.coreui.components.PinField
 import ru.lipt.coreui.components.ProgressButton
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.login.MR
+import ru.lipt.login.common.components.LogoutAlertDialog
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.login.pin.input.model.PinPadInputModel
 
@@ -138,19 +138,4 @@ private fun Content(
             }
         }
     }
-}
-
-@Composable
-private fun LogoutAlertDialog(
-    onCancel: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        title = stringResource(MR.strings.enter_pin_logout_alert_title),
-        text = stringResource(MR.strings.enter_pin_logout_alert_message),
-        confirmText = stringResource(MR.strings.enter_pin_logout_alert_confirm),
-        cancelText = stringResource(MR.strings.enter_pin_logout_alert_cancel),
-        onCancel = onCancel,
-        onConfirm = onConfirm,
-    )
 }

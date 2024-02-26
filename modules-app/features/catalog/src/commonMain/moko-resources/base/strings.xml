@@ -1,0 +1,8 @@
+<resources>
+    <string name="catalog_screen_title">Mind in Sync</string>
+    <string name="catalog_screen_field_search_label">Search Mindmaps</string>
+    <string name="catalog_map_type_editable">Editable</string>
+    <string name="catalog_map_type_interactable">Interactable</string>
+    <string name="catalog_map_saved_maps_title">Saved Mindmaps</string>
+    <string name="catalog_map_saved_author_format_caption">Admin: %s</string>
+</resources>

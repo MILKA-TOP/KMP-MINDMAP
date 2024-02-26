@@ -20,7 +20,7 @@ buildscript {
         classpath(Dependencies.Kotlin.gradlePlugin)
         classpath(Dependencies.Android.gradlePlugin)
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0")
-        classpath("dev.icerock.moko:resources-generator:0.24.0-alpha-3")
+        classpath("dev.icerock.moko:resources-generator:0.24.0-alpha-5")
         classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     }
 }
