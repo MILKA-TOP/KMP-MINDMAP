@@ -16,8 +16,20 @@ class CatalogDataSourceImpl(
     private val client: HttpClient,
     private val config: ApplicationConfig,
 ) : CatalogDataSource {
-    override suspend fun createMap(title: String, description: String, password: String?): CatalogMindMap =
-        TODO()
+    override suspend fun createMap(title: String, description: String, password: String?, mapRefId: String?): String =
+        client.post(
+            urlString = "${config.baseUrl}/maps/create"
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                MapsCreateRequestParams(
+                    title = title,
+                    description = description,
+                    password = password,
+                    ref = mapRefId,
+                )
+            )
+        }.body<MapIdResponseRemote>().mapId
 
     override suspend fun search(query: String): List<CatalogMindMap> =
         client.get(
@@ -42,4 +54,17 @@ class CatalogDataSourceImpl(
 
     @Serializable
     private data class AddMapRequest(val mapId: String, val password: String? = null)
+
+    @Serializable
+    private data class MapsCreateRequestParams(
+        val title: String,
+        val description: String,
+        val password: String? = null,
+        val ref: String? = null,
+    )
+
+    @Serializable
+    private data class MapIdResponseRemote(
+        val mapId: String
+    )
 }
