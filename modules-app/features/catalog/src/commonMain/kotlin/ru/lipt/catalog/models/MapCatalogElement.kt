@@ -11,10 +11,12 @@ data class MapCatalogElement(
     val adminEmail: String,
     val description: String,
     val type: MapType,
+    val isPrivate: Boolean,
     val isEnabledEdit: Boolean = false,
     val isSaved: Boolean = false,
 ) {
     val showFirstTypeActionLine: Boolean = isEnabledEdit || isSaved
+    val showPrivateIcon: Boolean = !isSaved && isPrivate
 
     enum class MapType(val stringRes: StringResource) {
         EDITABLE(MR.strings.catalog_map_type_editable), VIEW(MR.strings.catalog_map_type_interactable)

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun EnterAlertDialog(
+fun EnterAlertDialogV2(
     title: String? = null,
     text: String? = null,
     fieldLabel: String? = null,

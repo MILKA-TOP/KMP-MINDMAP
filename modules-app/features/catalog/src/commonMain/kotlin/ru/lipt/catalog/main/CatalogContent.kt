@@ -28,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.AddCircle
@@ -209,6 +210,7 @@ private fun Content(
                     map = map,
                     onMapElementClick = onMapElementClick,
                 )
+                Spacer(Modifier.height(16.dp))
             }
         }
         PullRefreshIndicator(
@@ -220,7 +222,7 @@ private fun Content(
 }
 
 @Composable
-private fun MapListElement(
+fun MapListElement(
     map: MapCatalogElement,
     onMapElementClick: (String) -> Unit
 ) {
@@ -255,16 +257,28 @@ private fun MapListElement(
             style = MaterialTheme.typography.h6,
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = map.description,
-            style = MaterialTheme.typography.body1,
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(MR.strings.catalog_map_saved_author_format_caption, map.adminEmail),
-            style = MaterialTheme.typography.caption,
-        )
+        if (map.description.isNotEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = map.description,
+                style = MaterialTheme.typography.body1,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(MR.strings.catalog_map_saved_author_format_caption, map.adminEmail),
+                style = MaterialTheme.typography.caption,
+            )
+            if (map.showPrivateIcon) {
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    modifier = Modifier.size(12.dp),
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = ""
+                )
+            }
+        }
     }
 }
