@@ -10,8 +10,12 @@ class CatalogInteractor(
     suspend fun getMaps(): List<CatalogMindMap> = catalogRepository.fetch(Unit, CachePolicy.ALWAYS).orEmpty()
     suspend fun fetchMaps(): List<CatalogMindMap> = catalogRepository.fetch(Unit, CachePolicy.REFRESH).orEmpty()
 
-    suspend fun createMap(title: String, description: String, password: String? = null): CatalogMindMap =
-        catalogRepository.createMap(title, description, password)
+    suspend fun createMap(
+        title: String,
+        description: String,
+        password: String? = null,
+        mapRefId: String? = null
+    ): String = catalogRepository.createMap(title, description, password, mapRefId)
 
     suspend fun search(query: String): List<CatalogMindMap> = catalogRepository.search(query)
 

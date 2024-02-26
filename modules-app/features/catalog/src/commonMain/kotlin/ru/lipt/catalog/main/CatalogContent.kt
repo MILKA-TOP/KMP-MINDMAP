@@ -51,6 +51,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
 import ru.lipt.catalog.MR
+import ru.lipt.catalog.common.params.CreateMindMapParams
 import ru.lipt.catalog.main.models.CatalogScreenUi
 import ru.lipt.catalog.models.MapCatalogElement
 import ru.lipt.catalog.navigation.PrivateCatalogDestinations
@@ -92,7 +93,7 @@ fun CatalogContent(
             NavigationTarget.CreateMindMapDestination -> {
                 navigator.push(
                     ScreenRegistry.get(
-                        PrivateCatalogDestinations.CreateMapDestination
+                        PrivateCatalogDestinations.CreateMapDestination(CreateMindMapParams.Default)
                     )
                 )
             }
