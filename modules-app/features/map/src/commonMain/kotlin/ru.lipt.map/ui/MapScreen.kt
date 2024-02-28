@@ -13,6 +13,7 @@ class MapScreen(
     @Composable
     override fun Content() {
         MapContent(
+            screen = this,
             screenModel = getScreenModel(parameters = { parametersOf(params) }),
         )
     }

@@ -12,6 +12,7 @@ data class SummaryViewMapResponseRemote(
     override val id: String,
     override val title: String,
     val description: String,
+    val referralId: String,
     val admin: UserResponseRemote,
     val nodes: List<NodesViewResponseRemote>,
 ) : SummaryMapResponseRemote()

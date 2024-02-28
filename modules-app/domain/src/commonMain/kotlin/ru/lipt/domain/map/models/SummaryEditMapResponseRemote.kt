@@ -10,6 +10,7 @@ data class SummaryEditMapResponseRemote(
     override val id: String,
     override val title: String,
     val description: String,
+    val referralId: String,
     val admin: UserResponseRemote,
     val nodes: List<NodesEditResponseRemote>,
     val accessUsers: List<UserResponseRemote> = emptyList()

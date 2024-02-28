@@ -3,6 +3,7 @@ package ru.lipt.data.map
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
@@ -23,7 +24,11 @@ class MindMapDataSourceImpl(
 //        title = title,
 //    )
 
-    override suspend fun deleteMap(mapId: String) = Unit
+    override suspend fun deleteMap(mapId: String) {
+        client.post(
+            urlString = "${config.baseUrl}/maps/delete?mapId=$mapId"
+        )
+    }
 
 //    override suspend fun sendTestAnswersForNode(
 //        mapId: String, nodeId: String, answers: List<RequestAnswer>

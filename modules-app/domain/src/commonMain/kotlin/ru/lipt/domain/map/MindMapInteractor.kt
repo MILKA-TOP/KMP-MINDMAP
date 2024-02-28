@@ -52,6 +52,12 @@ class MindMapInteractor(
         } ?: this
     }.let { getMap(mapId) }
 
+    suspend fun saveTitleAndData(mapId: String, title: String, description: String) = mapRepository.updateCache(
+        mapId
+    ) {
+        (this as? SummaryEditMapResponseRemote)?.copy(title = title, description = description) ?: this
+    }
+
 //    suspend fun sendTestAnswersForNode(mapId: String, nodeId: String, answers: List<RequestAnswer>) =
 //        mapRepository.sendTestAnswersForNode(mapId, nodeId, answers)
 }
