@@ -13,6 +13,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.core.network.ExtendedHttpHeaders
+import ru.lipt.domain.map.models.abstract.summaryMapJsonModule
 import ru.lipt.domain.session.SessionRepository
 
 object NetworkModule {
@@ -66,5 +67,7 @@ object NetworkModule {
         ignoreUnknownKeys = true
         coerceInputValues = true
         isLenient = true
+//        encodeDefaults = true
+        serializersModule = summaryMapJsonModule
     }
 }

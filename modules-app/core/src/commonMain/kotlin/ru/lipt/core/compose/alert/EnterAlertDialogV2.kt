@@ -6,13 +6,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import ru.lipt.core.compose.OutlinedCountedTextField
 
 @Composable
 fun EnterAlertDialogV2(
@@ -21,6 +21,7 @@ fun EnterAlertDialogV2(
     fieldLabel: String? = null,
     confirmText: String? = null,
     inProgress: Boolean = false,
+    maxSymbols: Int? = null,
     onConfirm: () -> Unit = { },
     confirmButtonEnabled: Boolean = true,
     fieldTextValue: String = "",
@@ -54,11 +55,13 @@ fun EnterAlertDialogV2(
                         style = MaterialTheme.typography.body1,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
+                    OutlinedCountedTextField(
+                        maxSymbols = maxSymbols ?: Int.MAX_VALUE,
                         enabled = !inProgress,
                         label = { Text(fieldLabel.orEmpty()) },
                         value = fieldTextValue,
-                        onValueChange = onFieldTextChanged
+                        onValueChange = onFieldTextChanged,
+                        singleLine = true,
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))

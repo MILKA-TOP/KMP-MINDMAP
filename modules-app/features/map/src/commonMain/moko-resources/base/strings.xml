@@ -1,0 +1,9 @@
+<resources>
+    <string name="map_screen_app_bar_title_placeholder">Mind in Sync</string>
+    <string name="map_screen_enter_title_message">Please, enter the title of new node</string>
+    <string name="map_screen_enter_title_confirm_button">Confirm</string>
+    <string name="map_screen_enter_title_cancel_button">Cancel</string>
+    <string name="map_screen_enter_title_field_label">Title</string>
+    <string name="map_screen_add_node">Add node</string>
+    <string name="map_screen_details">Details</string>
+</resources>

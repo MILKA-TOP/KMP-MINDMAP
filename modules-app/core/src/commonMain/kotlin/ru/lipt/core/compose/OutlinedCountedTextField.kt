@@ -1,4 +1,4 @@
-package ru.lipt.coreui.components
+package ru.lipt.core.compose
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -20,12 +20,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ru.lipt.coreui.typography.MindTypography
 
 @Composable
 fun OutlinedCountedTextField(
     value: String,
-    maxSymbols: Int,
+    maxSymbols: Int = Int.MAX_VALUE,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -69,11 +68,13 @@ fun OutlinedCountedTextField(
             shape = shape,
             colors = colors
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "${value.length} / $maxSymbols",
-            textAlign = TextAlign.End,
-            style = MindTypography.Material.caption,
-        )
+        if (maxSymbols != Int.MAX_VALUE) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "${value.length} / $maxSymbols",
+                textAlign = TextAlign.End,
+                style = MaterialTheme.typography.caption,
+            )
+        }
     }
 }

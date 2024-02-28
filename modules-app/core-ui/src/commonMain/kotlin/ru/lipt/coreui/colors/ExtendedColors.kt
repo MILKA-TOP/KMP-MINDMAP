@@ -5,12 +5,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class ExtendedColors(
     val onBackgroundSecondary: Color = Color.Unspecified,
     val surface: Surface = Surface(),
+    val unmarkedNode: Color = Color.Unspecified,
     val success: Color = Color.Unspecified,
     val warning: Color = Color.Unspecified,
     val onWarning: Color = Color.Unspecified,
@@ -26,4 +28,10 @@ data class ExtendedColors(
         val secondary: Color = Color.Unspecified,
         val onSurfaceSecondary: Color = Color.Unspecified,
     )
+
+    internal companion object {
+        val LocalExtendedColors = staticCompositionLocalOf {
+            ExtendedColors()
+        }
+    }
 }

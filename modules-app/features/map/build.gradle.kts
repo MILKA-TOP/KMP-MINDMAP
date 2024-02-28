@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 private val iosBaseName = "feature.map"
@@ -18,6 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export("dev.icerock.moko:resources:0.24.0-alpha-5")
             baseName = iosBaseName
             isStatic = true
         }
@@ -37,6 +39,10 @@ kotlin {
                 implementation(Dependencies.Koin.core)
                 implementation(project(":modules-app:core"))
                 implementation(project(":modules-app:core-ui"))
+                api(Dependencies.Resources.mokoBase)
+                api(Dependencies.Resources.mokoCompose)
+
+                implementation("com.mohamedrejeb.dnd:compose-dnd:0.1.0")
                 // Add here you dependencies
                 implementation(project(":modules-app:features:map:common"))
                 implementation(project(":modules-app:features:details:common"))
@@ -87,4 +93,7 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+multiplatformResources {
+    resourcesPackage.set(androidNamespace) // required
 }
