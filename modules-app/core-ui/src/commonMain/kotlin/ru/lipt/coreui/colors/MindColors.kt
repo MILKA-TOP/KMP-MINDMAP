@@ -29,4 +29,8 @@ object MindColors {
     )
 
     internal fun provideMaterial(): Colors = Light
+
+    val Extended = ExtendedColors(
+        unmarkedNode = Palette.GrayLight
+    )
 }

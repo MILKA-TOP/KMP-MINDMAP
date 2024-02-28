@@ -39,7 +39,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import ru.lipt.catalog.MR
 import ru.lipt.catalog.create.models.CreateMindMapModel
 import ru.lipt.core.compose.alert.ErrorAlertDialog
-import ru.lipt.coreui.components.OutlinedCountedTextField
+import ru.lipt.core.compose.OutlinedCountedTextField
 import ru.lipt.coreui.components.ProgressButton
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.map.common.navigation.MapNavigationDestinations

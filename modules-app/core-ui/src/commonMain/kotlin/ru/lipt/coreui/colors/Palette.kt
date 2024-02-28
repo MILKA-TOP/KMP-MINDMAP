@@ -19,6 +19,7 @@ internal object Palette {
 
     val Black = Color(0xFF000000)
     val BlackLight = Color(0xFF14191F)
+    val GrayLight = Color(0xFFF5F5F5)
     val Gray900 = Color(0xFF252B35)
     val Dark = Color(0xFF25292E)
     val Black800 = Color(0xFF383E46)

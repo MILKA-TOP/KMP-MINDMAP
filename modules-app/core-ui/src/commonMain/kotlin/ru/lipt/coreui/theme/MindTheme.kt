@@ -4,6 +4,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import ru.lipt.coreui.colors.ExtendedColors
+import ru.lipt.coreui.colors.ExtendedColors.Companion.LocalExtendedColors
 import ru.lipt.coreui.colors.MindColors
 import ru.lipt.coreui.shapes.MindShapes
 import ru.lipt.coreui.typography.ExtendedTypography
@@ -22,6 +24,7 @@ fun MindTheme(
         CompositionLocalProvider(
             // app typography
             LocalExtendedTypography provides MindTypography.Extended,
+            LocalExtendedColors provides MindColors.Extended,
             content = content
         )
     }
@@ -33,4 +36,8 @@ object MindTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalExtendedTypography.current
+    val colors: ExtendedColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalExtendedColors.current
 }
