@@ -1,6 +1,7 @@
 package ru.lipt.domain.map
 
 import ru.lipt.core.cache.CachePolicyRepository
+import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 
 class MindMapRepository(
@@ -12,6 +13,10 @@ class MindMapRepository(
 //    suspend fun createNewNode(mapId: String, parentId: String, title: String) = remoteDataSource.createNewNode(mapId, parentId, title)
 
     suspend fun deleteMap(mapId: String) = remoteDataSource.deleteMap(mapId).also {
+        localDataSource.remove(mapId)
+    }
+
+    suspend fun eraseMap(mapId: String, type: MapRemoveType) = remoteDataSource.eraseMap(mapId, type).also {
         localDataSource.remove(mapId)
     }
 

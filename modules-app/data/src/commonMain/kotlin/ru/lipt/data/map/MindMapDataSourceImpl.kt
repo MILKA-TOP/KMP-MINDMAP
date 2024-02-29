@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.map.MindMapDataSource
+import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 
 class MindMapDataSourceImpl(
@@ -15,8 +16,8 @@ class MindMapDataSourceImpl(
 
     override suspend fun fetch(request: String): SummaryMapResponseRemote =
         client.get(
-        urlString = "${config.baseUrl}/maps/fetch?mapId=$request"
-    ).body()
+            urlString = "${config.baseUrl}/maps/fetch?mapId=$request"
+        ).body()
 
 //    override suspend fun createNewNode(mapId: String, parentId: String, title: String) = Node(
 //        id = Random.nextInt().toString(),
@@ -27,6 +28,12 @@ class MindMapDataSourceImpl(
     override suspend fun deleteMap(mapId: String) {
         client.post(
             urlString = "${config.baseUrl}/maps/delete?mapId=$mapId"
+        )
+    }
+
+    override suspend fun eraseMap(mapId: String, type: MapRemoveType) {
+        client.post(
+            urlString = "${config.baseUrl}/maps/erase?mapId=$mapId&type=${type.name}"
         )
     }
 

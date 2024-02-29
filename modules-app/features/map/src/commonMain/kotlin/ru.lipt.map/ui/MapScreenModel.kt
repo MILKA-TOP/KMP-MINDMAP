@@ -81,7 +81,12 @@ class MapScreenModel(
     }
 
     fun onBackButtonClick() = _uiState.navigateTo(NavigationTarget.NavigateUp)
-    fun openMapDetails() = _uiState.navigateTo(NavigationTarget.MapDetailsScreenDestination(params))
+    fun openMapDetails() {
+        when (_mapType) {
+            MapType.EDIT -> _uiState.navigateTo(NavigationTarget.MapDetailsEditScreenDestination(params))
+            MapType.VIEW, MapType.INTRACTABLE -> _uiState.navigateTo(NavigationTarget.MapDetailsViewScreenDestination(params))
+        }
+    }
 
     private fun SummaryViewMapResponseRemote.toViewUi() = MapScreenUi(
         title = title, box = toViewBoxUi()

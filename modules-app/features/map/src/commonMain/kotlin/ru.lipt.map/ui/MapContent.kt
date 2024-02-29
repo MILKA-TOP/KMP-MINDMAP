@@ -106,9 +106,14 @@ fun MapContent(
                     NodeDetailsNavigationDestinations.UneditableNodeDetailsScreenDestination(target.params)
                 )
             )
-            is NavigationTarget.MapDetailsScreenDestination -> navigator.push(
+            is NavigationTarget.MapDetailsEditScreenDestination -> navigator.push(
                 ScreenRegistry.get(
                     PrivateMapNavigationDestinations.MapEditDetails(target.params)
+                )
+            )
+            is NavigationTarget.MapDetailsViewScreenDestination -> navigator.push(
+                ScreenRegistry.get(
+                    PrivateMapNavigationDestinations.MapViewDetails(target.params)
                 )
             )
             is NavigationTarget.NavigateUp -> navigator.pop()

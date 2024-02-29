@@ -3,6 +3,7 @@ package ru.lipt.domain.map
 import ru.lipt.core.cache.CachePolicy
 import ru.lipt.core.uuid.randomUUID
 import ru.lipt.domain.catalog.CatalogRepository
+import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 
@@ -30,6 +31,10 @@ class MindMapInteractor(
 //    suspend fun getNode(mapId: String, nodeId: String) = getMap(mapId).nodes.first { it.id == nodeId }
 
     suspend fun deleteMap(mapId: String) = mapRepository.deleteMap(mapId).also {
+        catalogRepository.removeMap(mapId)
+    }
+
+    suspend fun eraseMap(mapId: String, type: MapRemoveType) = mapRepository.eraseMap(mapId, type).also {
         catalogRepository.removeMap(mapId)
     }
 
