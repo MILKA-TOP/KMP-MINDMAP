@@ -11,7 +11,8 @@ val editableDetailsNavigationModule = module {
 
     factory { params ->
         EditableDetailsScreenModel(
-            params = params.get()
+            params = params.get(),
+            mapInteractor = get()
         )
     }
 }

@@ -1,31 +1,103 @@
 package ru.lipt.details.editable
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.flow.asStateFlow
+import ru.lipt.core.LoadingState
 import ru.lipt.core.compose.MutableScreenUiStateFlow
+import ru.lipt.core.coroutines.launchCatching
+import ru.lipt.core.error
+import ru.lipt.core.idle
+import ru.lipt.core.loading
+import ru.lipt.core.success
 import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
+import ru.lipt.details.editable.models.EditableTestResultUi
+import ru.lipt.details.editable.models.RemoveAlertUi
+import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.models.NodesEditResponseRemote
+import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.testing.common.params.TestEditScreenParams
 
 class EditableDetailsScreenModel(
-    val params: NodeDetailsScreenParams
+    val params: NodeDetailsScreenParams,
+    private val mapInteractor: MindMapInteractor,
 ) : ScreenModel {
 
-    private val _uiState: MutableScreenUiStateFlow<EditableDetailsScreenUi, NavigationTarget> =
-        MutableScreenUiStateFlow(EditableDetailsScreenUi())
+    private val _uiState: MutableScreenUiStateFlow<LoadingState<EditableDetailsScreenUi, Unit>, NavigationTarget> =
+        MutableScreenUiStateFlow(idle())
     val uiState = _uiState.asStateFlow()
+
+    private var _map: SummaryEditMapResponseRemote? = null
+    private var _node: NodesEditResponseRemote? = null
+    private var _parentNode: NodesEditResponseRemote? = null
+    private var _initTitle: String = ""
+    private var _currentTitle: String = ""
+    private var _initDescription: String = ""
+    private var _currentDescription: String = ""
+
+    init {
+        init()
+    }
+
+    fun init() {
+        screenModelScope.launchCatching(catchBlock = {
+            _uiState.updateUi { Unit.error() }
+        }) {
+            _uiState.updateUi { loading() }
+            val map = mapInteractor.getMap(params.mapId) as SummaryEditMapResponseRemote
+            val node = mapInteractor.getEditableNode(params.mapId, params.nodeId)
+            val isRootNode = node.parentNodeId == null
+            node.parentNodeId?.let { parentNodeId ->
+                _parentNode = mapInteractor.getEditableNode(params.mapId, parentNodeId)
+            }
+            _node = node
+            _map = map
+            _initTitle = map.title.takeIf { isRootNode } ?: node.label
+            _currentTitle = _initTitle
+            _initDescription = node.description
+            _currentDescription = _initDescription
+            _uiState.updateUi {
+                EditableDetailsScreenUi(
+                    title = _initTitle,
+                    description = _initDescription,
+                    isRootNode = node.parentNodeId == null,
+                    testResult = if (node.test == null) EditableTestResultUi.NoTest else EditableTestResultUi.EditTest
+                ).success()
+            }
+        }
+    }
 
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
 
-    fun onEditText(text: String) {
-        _uiState.updateUi { copy(text = text) }
+    fun onEditTitleText(text: String) {
+        _currentTitle = text.trimStart()
+        _uiState.updateUi { copy { it.copy(title = text.trimStart()).validateSaveButton() } }
     }
 
-    fun onTextSaveButtonClick() {
-        _uiState.navigateTo(NavigationTarget.SaveText)
+    fun onEditDescriptionText(text: String) {
+        _currentDescription = text.trimStart()
+        _uiState.updateUi { copy { it.copy(description = text.trimStart()).validateSaveButton() } }
     }
 
-    fun onEditTestClick() {
+    fun onSaveButtonClick() {
+        val mapId = _map?.id ?: return
+        val nodeId = _node?.id ?: return
+        val title = _currentTitle.trim()
+        val description = _currentDescription.trim()
+        screenModelScope.launchCatching {
+            mapInteractor.saveNodeData(mapId, nodeId, title, description)
+            _initTitle = title
+            _currentTitle = _initTitle
+            _initDescription = description
+            _currentDescription = _initDescription
+
+            _uiState.updateUi { copy { it.copy(title = title, description = description).validateSaveButton() } }
+            _uiState.navigateTo(NavigationTarget.SuccessSave)
+        }
+    }
+
+    fun onTestEditButtonClick() {
         _uiState.navigateTo(
             NavigationTarget.EditTest(
                 TestEditScreenParams(
@@ -34,5 +106,31 @@ class EditableDetailsScreenModel(
                 )
             )
         )
+    }
+
+    private fun EditableDetailsScreenUi.validateSaveButton() = copy(
+        isSaveButtonEnabled = (_initTitle != _currentTitle || _initDescription != _currentDescription) && _currentTitle.isNotEmpty()
+    )
+
+    fun onRemoveButtonClick() {
+        val parentNodeTitle = _map?.title?.takeIf { _parentNode?.parentNodeId == null } ?: _parentNode?.label.orEmpty()
+        _uiState.updateUi { copy { it.copy(remoevAlertUi = RemoveAlertUi(parentNodeTitle)) } }
+    }
+
+    fun onRemoveAlertClose() {
+        _uiState.updateUi { copy { it.copy(remoevAlertUi = null) } }
+    }
+
+    fun onRemoveAlertConfirm() {
+        val mapId = _map?.id ?: return
+        val nodeId = _node?.id ?: return
+        screenModelScope.launchCatching(
+            finalBlock = {
+                _uiState.updateUi { copy { it.copy(remoevAlertUi = null) } }
+            }
+        ) {
+            mapInteractor.removeNode(mapId, nodeId)
+            _uiState.navigateTo(NavigationTarget.SuccessRemove)
+        }
     }
 }

@@ -1,0 +1,15 @@
+<resources>
+    <string name="node_details_appbar_title">Node details</string>
+    <string name="node_details_appbar_field_nodes_title">Title</string>
+    <string name="node_details_appbar_field_nodes_description">Description</string>
+    <string name="node_details_create_test">Create test</string>
+    <string name="node_details_edit_test">Edit test</string>
+    <string name="node_details_save_button">Save</string>
+    <string name="node_details_remove_button">Remove node</string>
+    <string name="node_details_snackbar_saved">Saved</string>
+
+    <string name="remove_node_alert_title">Remove node</string>
+    <string name="remove_node_alert_message">Warning: If you delete this node, all its child nodes will be attached to the parent node "%s", and user progress will become inaccessible.</string>
+    <string name="remove_node_alert_confirm">Remove</string>
+    <string name="remove_node_alert_cancel">Cancel</string>
+</resources>
