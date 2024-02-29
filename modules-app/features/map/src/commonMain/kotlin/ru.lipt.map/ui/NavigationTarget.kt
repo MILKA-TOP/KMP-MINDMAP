@@ -10,7 +10,10 @@ sealed class NavigationTarget {
         val params: NodeDetailsScreenParams
     ) : NavigationTarget()
 
-    data class MapDetailsScreenDestination(
+    data class MapDetailsEditScreenDestination(
+        val params: MapScreenParams
+    ) : NavigationTarget()
+    data class MapDetailsViewScreenDestination(
         val params: MapScreenParams
     ) : NavigationTarget()
 

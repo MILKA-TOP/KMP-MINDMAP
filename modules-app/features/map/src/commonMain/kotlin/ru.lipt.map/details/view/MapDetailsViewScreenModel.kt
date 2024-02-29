@@ -1,9 +1,10 @@
-package ru.lipt.map.details.edit
+package ru.lipt.map.details.view
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.asStateFlow
+import ru.lipt.catalog.common.params.CreateMindMapParams
 import ru.lipt.core.LoadingState
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
@@ -13,26 +14,22 @@ import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
 import ru.lipt.domain.map.MindMapInteractor
-import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
+import ru.lipt.domain.map.models.MapRemoveType
+import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.map.common.params.MapScreenParams
-import ru.lipt.map.details.edit.models.MapDetailsEditUi
-import ru.lipt.map.details.edit.models.UserUi
+import ru.lipt.map.details.view.models.MapDetailsViewUi
 
 @Suppress("UnusedPrivateMember")
-class MapDetailsEditScreenModel(
+class MapDetailsViewScreenModel(
     private val params: MapScreenParams,
     private val mapInteractor: MindMapInteractor,
 ) : ScreenModel {
 
-    private val _uiState: MutableScreenUiStateFlow<LoadingState<MapDetailsEditUi, Unit>, NavigationTarget> =
+    private val _uiState: MutableScreenUiStateFlow<LoadingState<MapDetailsViewUi, Unit>, NavigationTarget> =
         MutableScreenUiStateFlow(idle())
     val uiState = _uiState.asStateFlow()
 
-    private var _map: SummaryEditMapResponseRemote? = null
-    private var _initTitle: String = ""
-    private var _currentTitle: String = ""
-    private var _initDescription: String = ""
-    private var _currentDescription: String = ""
+    private var _map: SummaryViewMapResponseRemote? = null
 
     private var deleteMapJob: Job? = null
 
@@ -50,55 +47,48 @@ class MapDetailsEditScreenModel(
             }
         ) {
             _uiState.updateUi { loading() }
-            val map = mapInteractor.getMap(params.id) as SummaryEditMapResponseRemote
+            val map = mapInteractor.getMap(params.id) as SummaryViewMapResponseRemote
             _map = map
-            _initTitle = map.title
-            _currentTitle = _initTitle
-            _initDescription = map.description
-            _currentDescription = _initDescription
             _uiState.updateUi {
-                MapDetailsEditUi(
+                MapDetailsViewUi(
                     title = map.title,
                     description = map.description,
                     inviteUid = map.referralId,
                     admin = map.admin.email,
-                    users = map.accessUsers.map {
-                        UserUi(id = it.id, email = it.email)
-                    },
                     enabledShowDeleteMap = true
                 ).success()
             }
         }
     }
 
-    fun hideDialog() = _uiState.updateUi { copy { it.copy(dialog = null) } }
-
-    fun onUserClick(userId: String) {
-        val user = _map?.accessUsers?.first { it.id == userId } ?: return
+    fun onHideButtonClick() {
         _uiState.updateUi {
             copy { ui ->
                 ui.copy(
-                    dialog = MapDetailsEditUi.Dialog.UserMap(userId, user.email)
+                    dialog = MapDetailsViewUi.Dialog.HideMap()
                 )
             }
         }
     }
 
-    fun onDeleteButtonClick() {
+    fun onRemoveMapClick() {
         _uiState.updateUi {
             copy { ui ->
                 ui.copy(
-                    dialog = MapDetailsEditUi.Dialog.DeleteMap()
+                    dialog = MapDetailsViewUi.Dialog.RemoveMap()
                 )
             }
         }
     }
 
-    @Suppress("UnusedPrivateMember")
-    fun onUserAlertConfirm(userId: String) {
+    fun copyMapClick() {
         _uiState.navigateTo(
-            NavigationTarget.OpenUserMap(
-                params = MapScreenParams(params.id)
+            NavigationTarget.CopyMap(
+                CreateMindMapParams.Referral(
+                    mapId = params.id,
+                    title = _map?.title.orEmpty(),
+                    description = _map?.description.orEmpty()
+                )
             )
         )
     }
@@ -108,7 +98,7 @@ class MapDetailsEditScreenModel(
         hideDialog()
     }
 
-    fun deleteMapAlertConfirm() {
+    fun hideMapAlertConfirm() {
         deleteMapJob?.cancel()
         val map = _map ?: return
 
@@ -120,7 +110,7 @@ class MapDetailsEditScreenModel(
                 _uiState.updateUi {
                     copy { ui ->
                         ui.copy(
-                            dialog = MapDetailsEditUi.Dialog.DeleteMap(inProgress = false)
+                            dialog = MapDetailsViewUi.Dialog.HideMap(inProgress = false)
                         )
                     }
                 }
@@ -129,35 +119,46 @@ class MapDetailsEditScreenModel(
             _uiState.updateUi {
                 copy { ui ->
                     ui.copy(
-                        dialog = MapDetailsEditUi.Dialog.DeleteMap(inProgress = true)
+                        dialog = MapDetailsViewUi.Dialog.HideMap(inProgress = true)
                     )
                 }
             }
 
-            mapInteractor.deleteMap(map.id)
+            mapInteractor.eraseMap(map.id, MapRemoveType.HIDE)
             _uiState.navigateTo(NavigationTarget.CatalogDestination)
         }
     }
 
-    fun onTitleTextChanged(s: String) {
-        _currentTitle = s
-        _uiState.updateUi { copy { it.copy(title = s).setButtonEnabled() } }
-    }
+    fun clearProgressMapAlertConfirm() {
+        deleteMapJob?.cancel()
+        val map = _map ?: return
 
-    fun onDescriptionTextChanged(s: String) {
-        _currentDescription = s
-        _uiState.updateUi { copy { it.copy(description = s).setButtonEnabled() } }
-    }
+        deleteMapJob = screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi {
+                    copy { ui ->
+                        ui.copy(
+                            dialog = MapDetailsViewUi.Dialog.RemoveMap(inProgress = false)
+                        )
+                    }
+                }
+            }
+        ) {
+            _uiState.updateUi {
+                copy { ui ->
+                    ui.copy(
+                        dialog = MapDetailsViewUi.Dialog.RemoveMap(inProgress = true)
+                    )
+                }
+            }
 
-    fun onSaveClick() {
-        screenModelScope.launchCatching {
-            mapInteractor.saveTitleAndData(params.id, _currentTitle, _currentDescription)
-
-            _uiState.navigateTo(NavigationTarget.PopBack)
+            mapInteractor.eraseMap(map.id, MapRemoveType.DELETE)
+            _uiState.navigateTo(NavigationTarget.CatalogDestination)
         }
     }
 
-    private fun MapDetailsEditUi.setButtonEnabled() = copy(
-        buttonIsEnabled = _initTitle != title || _initDescription != description
-    )
+    private fun hideDialog() = _uiState.updateUi { copy { it.copy(dialog = null) } }
 }

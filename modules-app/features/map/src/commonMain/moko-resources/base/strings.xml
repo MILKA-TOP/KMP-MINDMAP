@@ -21,8 +21,19 @@
     <string name="map_screen_alert_remove_message">Are you sure you want to delete this chart? If deleted, all user progress will be lost.</string>
     <string name="map_screen_alert_remove_cancel">Cancel</string>
     <string name="map_screen_alert_remove_remove">Remove</string>
-    <string name="map_screen_alert_user_title">User's progress</string>
-    <string name="map_screen_alert_user_message">Do you want to see the progress of the user '%s'?</string>
+    <string name="map_screen_alert_user_title">User\'s progress</string>
+    <string name="map_screen_alert_user_message">Do you want to see the progress of the user \'%s\'?</string>
     <string name="map_screen_alert_user_cancel">Cancel</string>
     <string name="map_screen_alert_user_ok">Ok</string>
+    <string name="map_screen_details_hide">Hide from saved</string>
+    <string name="map_screen_alert_hide_title">Hide MindMap</string>
+    <string name="map_screen_alert_hide_message">Are you sure you want to hide this Mindmap from your saved ones?\n In the future, you can add it again and see the previous progress.</string>
+    <string name="map_screen_alert_hide_cancel">Cancel</string>
+    <string name="map_screen_alert_hide_remove">Hide</string>
+    <string name="map_screen_details_delete_clear">Clear you progress</string>
+    <string name="map_screen_alert_delete_clear_title">Clear</string>
+    <string name="map_screen_alert_delete_clear_message">Are you sure you want to delete your progress? It will not be possible to restore it in the future.</string>
+    <string name="map_screen_alert_delete_clear_cancel">Cancel</string>
+    <string name="map_screen_alert_delete_clear_remove">Remove</string>
+    <string name="map_screen_copy_map_title">Copy this MindMap</string>
 </resources>

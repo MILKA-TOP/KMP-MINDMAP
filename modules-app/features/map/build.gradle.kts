@@ -46,6 +46,7 @@ kotlin {
                 // Add here you dependencies
                 implementation(project(":modules-app:features:map:common"))
                 implementation(project(":modules-app:features:details:common"))
+                implementation(project(":modules-app:features:catalog:common"))
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
             }

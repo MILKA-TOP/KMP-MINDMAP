@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -37,9 +38,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
 import ru.lipt.catalog.MR
+import ru.lipt.catalog.common.navigation.CatalogNavigationDestinations
 import ru.lipt.catalog.create.models.CreateMindMapModel
-import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.core.compose.OutlinedCountedTextField
+import ru.lipt.core.compose.alert.ErrorAlertDialog
 import ru.lipt.coreui.components.ProgressButton
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.map.common.navigation.MapNavigationDestinations
@@ -57,7 +59,13 @@ fun CreateMindMapContent(
     screenModel.handleNavigation { target ->
         when (target) {
             is NavigationTarget.MindMapScreen -> {
-                navigator.replace(ScreenRegistry.get(MapNavigationDestinations.MapScreenDestination(target.params)))
+                val catalogScreen = ScreenRegistry.get(CatalogNavigationDestinations.CatalogScreenDestination)
+                navigator.popUntil { popScreen ->
+                    popScreen::class == catalogScreen::class.also {
+                        ScreenModelStore.onDispose(popScreen)
+                    }
+                }
+                navigator.push(ScreenRegistry.get(MapNavigationDestinations.MapScreenDestination(target.params)))
             }
         }
     }
