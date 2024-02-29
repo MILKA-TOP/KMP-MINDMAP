@@ -44,6 +44,8 @@ class MapScreenModel(
         init()
     }
 
+    fun onStarted() = init()
+
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
 

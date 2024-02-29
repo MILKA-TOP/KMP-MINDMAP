@@ -1,9 +1,9 @@
-package ru.lipt.map.details.models
+package ru.lipt.map.details.edit.models
 
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class MapDetailsUi(
+data class MapDetailsEditUi(
     val title: String,
     val description: String,
     val inviteUid: String,
@@ -11,6 +11,7 @@ data class MapDetailsUi(
     val users: List<UserUi> = emptyList(),
     val enabledShowDeleteMap: Boolean = false,
     val dialog: Dialog? = null,
+    val buttonIsEnabled: Boolean = false,
 ) {
     sealed class Dialog {
         data class UserMap(val userId: String, val email: String) : Dialog()

@@ -51,7 +51,9 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mohamedrejeb.compose.dnd.reorder.ReorderContainer
@@ -81,8 +83,12 @@ import ru.lipt.map.ui.models.ViewMapNode
 
 @Composable
 fun MapContent(
+    screen: Screen,
     screenModel: MapScreenModel,
 ) {
+    screen.LifecycleEffect(
+        onStarted = screenModel::onStarted
+    )
     val uiState = screenModel.uiState.collectAsState().value
     val ui = uiState.model
 
@@ -102,7 +108,7 @@ fun MapContent(
             )
             is NavigationTarget.MapDetailsScreenDestination -> navigator.push(
                 ScreenRegistry.get(
-                    PrivateMapNavigationDestinations.MapDetails(target.params)
+                    PrivateMapNavigationDestinations.MapEditDetails(target.params)
                 )
             )
             is NavigationTarget.NavigateUp -> navigator.pop()
