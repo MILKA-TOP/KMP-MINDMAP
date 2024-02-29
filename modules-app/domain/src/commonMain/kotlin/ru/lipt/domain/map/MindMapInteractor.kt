@@ -6,6 +6,7 @@ import ru.lipt.domain.catalog.CatalogRepository
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
+import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 
 class MindMapInteractor(
     private val mapRepository: MindMapRepository,
@@ -25,6 +26,9 @@ class MindMapInteractor(
 
     suspend fun getEditableNode(mapId: String, nodeId: String) =
         (getMap(mapId) as SummaryEditMapResponseRemote).nodes.first { it.id == nodeId }
+
+    suspend fun getViewNode(mapId: String, nodeId: String) =
+        (getMap(mapId) as SummaryViewMapResponseRemote).nodes.first { it.id == nodeId }
 
 //    suspend fun createNewNode(mapId: String, parentId: String, title: String) = mapRepository.createNewNode(mapId, parentId, title)
 
@@ -59,6 +63,8 @@ class MindMapInteractor(
     ) {
         (this as? SummaryEditMapResponseRemote)?.copy(title = title, description = description) ?: this
     }
+
+    suspend fun toggleNode(mapId: String, nodeId: String) = mapRepository.toggleNode(mapId, nodeId)
 
     suspend fun saveNodeData(
         mapId: String, nodeId: String, title: String, description: String

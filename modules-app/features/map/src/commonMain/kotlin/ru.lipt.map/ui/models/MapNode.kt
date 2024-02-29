@@ -30,7 +30,7 @@ data class ViewMapNode(
     override val title: String,
     override val priorityPosition: Int,
     override val parentNodeId: String? = null,
-    val isMarked: Boolean = false,
+    val isMarked: Boolean,
 ) : MapNode(
     nodeId = nodeId,
     title = title,
