@@ -15,6 +15,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -71,6 +72,7 @@ fun OutlinedCountedTextField(
         if (maxSymbols != Int.MAX_VALUE) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
+                modifier = Modifier.alpha(0.4f).takeIf { !enabled } ?: Modifier,
                 text = "${value.length} / $maxSymbols",
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.caption,
