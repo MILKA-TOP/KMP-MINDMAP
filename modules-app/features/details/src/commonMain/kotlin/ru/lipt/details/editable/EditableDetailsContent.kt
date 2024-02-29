@@ -32,7 +32,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
@@ -54,8 +56,12 @@ import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @Composable
 fun EditableDetailsContent(
+    screen: Screen,
     screenModel: EditableDetailsScreenModel,
 ) {
+    screen.LifecycleEffect(
+        onStarted = screenModel::onStarted
+    )
     val navigator = LocalNavigator.currentOrThrow
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }

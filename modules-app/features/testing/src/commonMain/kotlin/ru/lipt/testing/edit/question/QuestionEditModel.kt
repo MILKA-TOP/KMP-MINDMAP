@@ -4,6 +4,7 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel
 
 sealed class QuestionEditModel {
 
+    open val questionId: String = ""
     open val questionText: String = ""
     open val answers: List<TableFieldModel> = listOf()
     val isAddAnswerButtonVisible: Boolean get() = answers.size < ANSWERS_MAX_SIZE
@@ -12,6 +13,7 @@ sealed class QuestionEditModel {
     abstract fun addNewItem(): QuestionEditModel
 
     data class SingleChoice(
+        override val questionId: String,
         override val questionText: String = "",
         override val answers: List<TableFieldModel.SingleCheckboxEdit> = emptyList()
     ) : QuestionEditModel() {
@@ -22,6 +24,7 @@ sealed class QuestionEditModel {
     }
 
     data class MultipleChoice(
+        override val questionId: String,
         override val questionText: String = "",
         override val answers: List<TableFieldModel.MultipleCheckboxEdit> = emptyList()
     ) : QuestionEditModel() {

@@ -5,8 +5,10 @@ import ru.lipt.core.uuid.randomUUID
 import ru.lipt.domain.catalog.CatalogRepository
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.NodesEditResponseRemote
+import ru.lipt.domain.map.models.QuestionsEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
+import ru.lipt.domain.map.models.TestsEditResponseRemote
 
 class MindMapInteractor(
     private val mapRepository: MindMapRepository,
@@ -88,6 +90,17 @@ class MindMapInteractor(
             })
         } ?: this
     }
+
+    suspend fun updateQuestions(mapId: String, nodeId: String, testId: String, questions: List<QuestionsEditResponseRemote>) =
+        mapRepository.updateCache(mapId) {
+            (this as? SummaryEditMapResponseRemote)?.let { map ->
+                val currentNode = map.nodes.first { it.id == nodeId }
+                val updatedNode = currentNode.copy(test = TestsEditResponseRemote(id = testId, nodeId = nodeId, questions = questions))
+                map.copy(nodes = map.nodes.map { node ->
+                    if (node.id == nodeId) updatedNode else node
+                })
+            } ?: this
+        }
 
 //    suspend fun sendTestAnswersForNode(mapId: String, nodeId: String, answers: List<RequestAnswer>) =
 //        mapRepository.sendTestAnswersForNode(mapId, nodeId, answers)

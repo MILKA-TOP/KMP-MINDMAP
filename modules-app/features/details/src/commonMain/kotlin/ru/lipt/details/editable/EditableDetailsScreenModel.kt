@@ -40,6 +40,8 @@ class EditableDetailsScreenModel(
         init()
     }
 
+    fun onStarted() = init()
+
     fun init() {
         screenModelScope.launchCatching(catchBlock = {
             _uiState.updateUi { Unit.error() }
@@ -103,6 +105,7 @@ class EditableDetailsScreenModel(
                 TestEditScreenParams(
                     mapId = params.mapId,
                     nodeId = params.nodeId,
+                    testId = _node?.test?.id
                 )
             )
         )

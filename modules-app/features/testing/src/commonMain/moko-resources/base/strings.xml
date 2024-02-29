@@ -1,0 +1,10 @@
+<resources>
+    <string name="testing_edit_screen_title">Test for node:\n</string>
+    <string name="testing_edit_save_button">Save</string>
+    <string name="testing_edit_saved_snack">Saved</string>
+
+    <string name="testing_edit_alert_remove_title">Remove question</string>
+    <string name="testing_edit_alert_remove_message">Are you sure, that you want remove this question?</string>
+    <string name="testing_edit_alert_remove_cancel">Cancel</string>
+    <string name="testing_edit_alert_remove_remove">Remove</string>
+</resources>

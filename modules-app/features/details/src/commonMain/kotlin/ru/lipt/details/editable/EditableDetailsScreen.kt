@@ -13,6 +13,7 @@ class EditableDetailsScreen(
     @Composable
     override fun Content() {
         EditableDetailsContent(
+            screen = this,
             screenModel = getScreenModel(parameters = { parametersOf(params) })
         )
     }
