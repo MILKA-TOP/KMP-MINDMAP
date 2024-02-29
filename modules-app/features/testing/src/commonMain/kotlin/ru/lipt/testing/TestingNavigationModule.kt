@@ -23,7 +23,8 @@ val testingNavigationModule = module {
 
     factory { params ->
         TestingEditScreenModel(
-            params = params.get()
+            params = params.get(),
+            mapInteractor = get(),
         )
     }
     factory { params ->

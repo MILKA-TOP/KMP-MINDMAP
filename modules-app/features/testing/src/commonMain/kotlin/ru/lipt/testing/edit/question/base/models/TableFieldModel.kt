@@ -1,6 +1,7 @@
 package ru.lipt.testing.edit.question.base.models
 
 import androidx.compose.runtime.Immutable
+import ru.lipt.core.uuid.randomUUID
 
 @Immutable
 sealed class TableFieldModel {
@@ -8,8 +9,10 @@ sealed class TableFieldModel {
     data class Caption(val text: String) : TableFieldModel()
 
     data class HeaderEdit(val text: String) : TableFieldModel()
+    data class SelectQuestionType(val type: FieldTypes = FieldTypes.SINGLE) : TableFieldModel()
 
     data class SingleCheckboxSelect(
+        val answerId: String,
         val text: String,
         val isSelected: Boolean = false,
         val enabled: Boolean = true,
@@ -17,14 +20,15 @@ sealed class TableFieldModel {
     ) : TableFieldModel()
 
     data class MultipleCheckboxSelect(
+        val answerId: String,
         val text: String,
         val isSelected: Boolean = false,
         val enabled: Boolean = true,
         val resultType: AnswerResultType = AnswerResultType.NONE,
     ) : TableFieldModel()
 
-    data class SingleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
-    data class MultipleCheckboxEdit(val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
+    data class SingleCheckboxEdit(val answerId: String = randomUUID(), val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
+    data class MultipleCheckboxEdit(val answerId: String = randomUUID(), val text: String = "", val isSelected: Boolean = false) : TableFieldModel()
 
     data object NewItem : TableFieldModel()
 

@@ -59,7 +59,7 @@ class MapScreenModel(
             _map = map
             _mapType = when (map) {
                 is SummaryViewMapResponseRemote -> MapType.VIEW
-                is SummaryEditMapResponseRemote -> MapType.INTRACTABLE
+                is SummaryEditMapResponseRemote -> MapType.EDIT
                 else -> throw IllegalArgumentException()
             }
 
@@ -196,7 +196,7 @@ class MapScreenModel(
 
     fun onConfirm() {
         val parentNodeId = _parentNodeIdAction ?: return
-        val newNodeTitle = newNodeTitle
+        val newNodeTitle = newNodeTitle.trim()
         screenModelScope.launchCatching {
             val updatedMap = mapInteractor.addNewNodeToMap(params.id, parentNodeId, newNodeTitle)
 

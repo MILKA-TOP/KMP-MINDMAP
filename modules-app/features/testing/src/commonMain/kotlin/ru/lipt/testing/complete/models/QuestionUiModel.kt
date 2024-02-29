@@ -6,12 +6,14 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel
 @Immutable
 sealed class QuestionUiModel {
 
+    open val questionId: String = ""
     open val questionText: String = ""
     open val answers: List<TableFieldModel> = listOf()
     open val isQuestionValid: Boolean = false
     open val selectedPositions: List<Int> = emptyList()
 
     data class SingleChoice(
+        override val questionId: String = "",
         override val questionText: String = "",
         override val answers: List<TableFieldModel.SingleCheckboxSelect> = emptyList()
     ) : QuestionUiModel() {
@@ -24,6 +26,7 @@ sealed class QuestionUiModel {
     }
 
     data class MultipleChoice(
+        override val questionId: String = "",
         override val questionText: String = "",
         override val answers: List<TableFieldModel.MultipleCheckboxSelect> = emptyList()
     ) : QuestionUiModel() {

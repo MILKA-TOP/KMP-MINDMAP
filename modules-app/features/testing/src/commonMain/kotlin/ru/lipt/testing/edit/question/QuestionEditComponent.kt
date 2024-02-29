@@ -1,12 +1,12 @@
 package ru.lipt.testing.edit.question
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ru.lipt.testing.edit.question.base.TableField
 import ru.lipt.testing.edit.question.base.models.FieldTypes
 import ru.lipt.testing.edit.question.base.models.TableFieldModel
@@ -14,42 +14,50 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel
 @Composable
 fun QuestionEditComponent(
     model: QuestionEditModel,
-    state: LazyListState = rememberLazyListState(),
+    modifier: Modifier = Modifier,
     onSingleCheckboxSelect: (Int) -> Unit = {},
     onMultipleCheckboxSelect: (Int, Boolean) -> Unit = { _, _ -> },
     onNewItemClick: () -> Unit = {},
+    onCloseClick: () -> Unit = {},
     onHeaderTextChanged: (String) -> Unit = { _ -> },
     onFieldTextChanged: (Int, String) -> Unit = { _, _ -> },
-    updateFieldType: (Int, FieldTypes) -> Unit = { _, _ -> },
+    updateFieldType: (FieldTypes) -> Unit = {  _ -> },
 ) {
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = state,
+    Column(
+        modifier = Modifier.fillMaxWidth().then(modifier),
     ) {
-        item {
-            TableField(
-                TableFieldModel.HeaderEdit(model.questionText),
-                onFieldTextChanged = onHeaderTextChanged,
-            )
-        }
+        TableField(
+            TableFieldModel.HeaderEdit(model.questionText),
+            onFieldTextChanged = onHeaderTextChanged,
+            onCloseClick = onCloseClick,
+        )
+        Spacer(modifier = Modifier.height(32.dp))
 
-        itemsIndexed(model.answers) { position, item ->
+        TableField(
+            TableFieldModel.SelectQuestionType(
+                when (model) {
+                    is QuestionEditModel.MultipleChoice -> FieldTypes.MULTIPLE
+                    is QuestionEditModel.SingleChoice -> FieldTypes.SINGLE
+                }
+            ),
+            updateFieldType = updateFieldType,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        model.answers.mapIndexed { position, item ->
             TableField(
                 model = item,
                 onSingleCheckboxSelect = { onSingleCheckboxSelect(position) },
                 onMultipleCheckboxSelect = { onMultipleCheckboxSelect(position, it) },
                 onFieldTextChanged = { onFieldTextChanged(position, it) },
-                updateFieldType = { updateFieldType(position, it) },
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
         if (model.isAddAnswerButtonVisible) {
-            item {
-                TableField(
-                    model = TableFieldModel.NewItem,
-                    onNewItemClick = onNewItemClick,
-                )
-            }
+            TableField(
+                model = TableFieldModel.NewItem,
+                onNewItemClick = onNewItemClick,
+            )
         }
     }
 }
