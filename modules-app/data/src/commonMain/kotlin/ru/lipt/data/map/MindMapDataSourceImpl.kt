@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import kotlinx.serialization.Serializable
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.MapRemoveType
@@ -36,6 +37,11 @@ class MindMapDataSourceImpl(
             urlString = "${config.baseUrl}/maps/erase?mapId=$mapId&type=${type.name}"
         )
     }
+
+    override suspend fun toggleNode(nodeId: String): Boolean =
+        client.post(
+            urlString = "${config.baseUrl}/nodes/toggle-selection?nodeId=$nodeId"
+        ).body<NodeToggleResponseRemote>().isMarked
 
 //    override suspend fun sendTestAnswersForNode(
 //        mapId: String, nodeId: String, answers: List<RequestAnswer>
@@ -74,4 +80,10 @@ class MindMapDataSourceImpl(
 //            completedQuestions = listOf(question1, question2, question3)
 //        )
 //    }
+
+    @Serializable
+    private data class NodeToggleResponseRemote(
+        val nodeId: String,
+        val isMarked: Boolean,
+    )
 }

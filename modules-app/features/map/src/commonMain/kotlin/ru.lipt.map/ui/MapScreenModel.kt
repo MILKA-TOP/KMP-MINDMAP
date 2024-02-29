@@ -147,7 +147,7 @@ class MapScreenModel(
                 MindMapNodeVertex(
                     nodes = listOf(
                         ViewMapNode(
-                            nodeId = rootNode.id, title = title, priorityPosition = 0
+                            nodeId = rootNode.id, title = title, priorityPosition = 0, isMarked = rootNode.isSelected
                         )
                     )
                 )
