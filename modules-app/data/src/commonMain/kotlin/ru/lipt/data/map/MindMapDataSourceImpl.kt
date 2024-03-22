@@ -4,11 +4,15 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
+import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
 class MindMapDataSourceImpl(
     private val config: ApplicationConfig,
@@ -43,6 +47,14 @@ class MindMapDataSourceImpl(
             urlString = "${config.baseUrl}/nodes/toggle-selection?nodeId=$nodeId"
         ).body<NodeToggleResponseRemote>().isMarked
 
+    override suspend fun updateMindMap(mapId: String, updateRequest: MapsUpdateRequestParams) {
+        client.post(
+            urlString = "${config.baseUrl}/maps/update?mapId=$mapId"
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(updateRequest)
+        }
+    }
 //    override suspend fun sendTestAnswersForNode(
 //        mapId: String, nodeId: String, answers: List<RequestAnswer>
 //    ): QuestionResult {

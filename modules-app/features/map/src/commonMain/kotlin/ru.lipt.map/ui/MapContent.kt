@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -125,52 +127,72 @@ fun MapContent(
         onDismissRequest = screenModel::handleErrorAlertClose,
     )
 
-    Scaffold(topBar = {
-        TopAppBar(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp, title = {
-            val title = ui.data?.title ?: stringResource(MR.strings.map_screen_app_bar_title_placeholder)
-            Text(
-                text = title, style = MindTheme.typography.material.h5
-            )
-        }, navigationIcon = {
-            IconButton(onClick = screenModel::onBackButtonClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = ""
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Scaffold(topBar = {
+            TopAppBar(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp, title = {
+                val title = ui.data?.title ?: stringResource(MR.strings.map_screen_app_bar_title_placeholder)
+                Text(
+                    text = title, style = MindTheme.typography.material.h5
+                )
+            }, navigationIcon = {
+                IconButton(onClick = screenModel::onBackButtonClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = ""
+                    )
+                }
+            }, actions = {
+                IconButton(onClick = screenModel::openMapDetails) {
+                    Icon(
+                        imageVector = Icons.Filled.List, contentDescription = ""
+                    )
+                }
+                if (ui.data?.isSaveButtonVisible == true) {
+                    IconButton(onClick = screenModel::saveMindMap) {
+                        Icon(
+                            imageVector = Icons.Filled.Done, contentDescription = ""
+                        )
+                    }
+                }
+            })
+        }) {
+
+            ui.onSuccess {
+                MindMapScreen(
+                    ui = data,
+                    onCreateNewNode = screenModel::onCreateNewNode,
+                    onFieldTextChanged = screenModel::onFieldTextChanged,
+                    onConfirm = screenModel::onConfirm,
+                    onCancel = screenModel::onCancel,
+//                    onNodeMoved = screenModel::onNodeMoved,
+                    onOpenDetailsNode = screenModel::onEditNodeClick,
+                    onViewNodeClick = screenModel::onViewNodeClick,
                 )
             }
-        }, actions = {
-            IconButton(onClick = screenModel::openMapDetails) {
-                Icon(
-                    imageVector = Icons.Filled.List, contentDescription = ""
-                )
+
+            ui.onLoading {
+                CircularProgressIndicatorLoadingScreen()
             }
-        })
-    }) {
 
-        ui.onSuccess {
-            MindMapScreen(
-                ui = data,
-                onCreateNewNode = screenModel::onCreateNewNode,
-                onFieldTextChanged = screenModel::onFieldTextChanged,
-                onConfirm = screenModel::onConfirm,
-                onCancel = screenModel::onCancel,
-                onNodeMoved = screenModel::onNodeMoved,
-                onOpenDetailsNode = screenModel::onEditNodeClick,
-                onViewNodeClick = screenModel::onViewNodeClick,
-            )
+            ui.onError { ErrorScreen(onRefresh = screenModel::init) }
         }
 
-        ui.onLoading {
-            CircularProgressIndicatorLoadingScreen()
-        }
+        val updateInProgress = ui.data?.updateInProgress == true
 
-        ui.onError { ErrorScreen(onRefresh = screenModel::init) }
+        if (updateInProgress) {
+            Box(
+                Modifier.fillMaxSize().alpha(0.4f).clickable(onClick = {})
+            ) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        }
     }
 }
 
 @Composable
 fun MindMapScreen(
     ui: MapScreenUi,
-    onNodeMoved: (MapNode, Int) -> Unit,
     onCreateNewNode: (String) -> Unit,
     onOpenDetailsNode: (String) -> Unit,
     onFieldTextChanged: (String) -> Unit,
@@ -248,7 +270,6 @@ fun MindMapScreen(
                                 NodeColumn(
                                     group = it,
                                     nodeOffset = nodeOffset,
-                                    onNodeMoved = onNodeMoved,
                                     panOffset = panOffset.value,
                                     nodeSize = nodeSize,
                                     reorderState = reorderState,
@@ -271,7 +292,6 @@ fun MindMapScreen(
 
 @Composable
 fun NodeColumn(
-    onNodeMoved: (MapNode, Int) -> Unit,
     onCreateNewNode: (String) -> Unit,
     onOpenDetailsNode: (String) -> Unit,
     onViewNodeClick: (String) -> Unit,
@@ -338,7 +358,6 @@ fun NodeColumn(
                             isEnabled = dragCatalogInProgress.value == null || it.parentNodeId == dragCatalogInProgress.value,
                             onCreateNewNode = onCreateNewNode,
                             onOpenDetailsNode = onOpenDetailsNode,
-                            onNodeMoved = onNodeMoved,
                             modifier = offsetSizeModifier(it.nodeId),
                             onStartDragging = {
                                 dragCatalogInProgress.value = it
@@ -362,7 +381,6 @@ fun LazyItemScope.NodeItemReorderable(
     nodeOffset: MutableState<MutableMap<String, Offset>>,
     items: MutableState<List<MapNode>>,
     isEnabled: Boolean = true,
-    onNodeMoved: (MapNode, Int) -> Unit,
     onCreateNewNode: (String) -> Unit,
     onOpenDetailsNode: (String) -> Unit,
     onStartDragging: (String?) -> Unit,
@@ -388,10 +406,10 @@ fun LazyItemScope.NodeItemReorderable(
                     )
                 }
             }
-        }, onDrop = { state -> // Data passed from the draggable item
+        }, onDragExit = { state -> // Data passed from the draggable item
             val index = items.value.indexOf(node)
             onEndDragging()
-            onNodeMoved(node, index)
+//            onNodeMoved(node, index)
         }, draggableContent = {
             NodeItem(ui = node,
                 isEnabled = isEnabled,

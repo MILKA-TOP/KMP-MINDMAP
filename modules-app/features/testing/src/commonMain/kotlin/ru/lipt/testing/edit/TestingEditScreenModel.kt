@@ -72,7 +72,6 @@ class TestingEditScreenModel(
         }
     }
 
-
     fun addQuestion() {
         _questionsModel.add(QuestionModel())
         _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
@@ -85,7 +84,6 @@ class TestingEditScreenModel(
         _questionsModel[questionPosition] = updatedQuestion
 
         _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
-
     }
 
     fun onItemTextChanged(questionPosition: Int, itemPosition: Int, text: String) {
@@ -127,20 +125,16 @@ class TestingEditScreenModel(
     }
 
     fun onSaveButtonClick() {
-        screenModelScope.launchCatching(
-            catchBlock = { throwable ->
-                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
-            },
-            finalBlock = {
-                _uiState.updateUi { copy { it.copy(isButtonInProgress = false) } }
-            }
-        ) {
+        screenModelScope.launchCatching(catchBlock = { throwable ->
+            _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+        }, finalBlock = {
+            _uiState.updateUi { copy { it.copy(isButtonInProgress = false) } }
+        }) {
             _uiState.updateUi { copy { it.copy(isButtonInProgress = true) } }
 
             val testId = params.testId ?: randomUUID()
             val questions = _questionsModel.map { question ->
-                QuestionsEditResponseRemote(
-                    id = question.id,
+                QuestionsEditResponseRemote(id = question.id,
                     testId = testId,
                     questionText = question.question.trim(),
                     questionType = question.type,
@@ -151,8 +145,7 @@ class TestingEditScreenModel(
                             answerText = answer.text.trim(),
                             isCorrect = answer.isCorrect,
                         )
-                    }
-                )
+                    })
             }
 
             mapInteractor.updateQuestions(params.mapId, params.nodeId, testId, questions)
@@ -167,14 +160,16 @@ class TestingEditScreenModel(
     private fun QuestionModel.toUi(): QuestionEditModel {
         val type = this.type
         return when (type) {
-            QuestionType.SINGLE_CHOICE -> QuestionEditModel.SingleChoice(questionId = this.id,
+            QuestionType.SINGLE_CHOICE -> QuestionEditModel.SingleChoice(
+                questionId = this.id,
                 questionText = this.question,
                 answers = answers.map { answer ->
                     TableFieldModel.SingleCheckboxEdit(
                         answerId = answer.id, text = answer.text, isSelected = answer.isCorrect
                     )
                 })
-            QuestionType.MULTIPLE_CHOICE -> QuestionEditModel.MultipleChoice(questionId = this.id,
+            QuestionType.MULTIPLE_CHOICE -> QuestionEditModel.MultipleChoice(
+                questionId = this.id,
                 questionText = this.question,
                 answers = answers.map { answer ->
                     TableFieldModel.MultipleCheckboxEdit(
@@ -187,7 +182,8 @@ class TestingEditScreenModel(
     private fun validate(): Boolean = _questionsModel.isNotEmpty() && _questionsModel.all { question ->
         question.question.isNotEmpty() && question.answers.isNotEmpty() && question.answers.all { answer ->
             answer.text.isNotEmpty()
-        } && (question.type == QuestionType.SINGLE_CHOICE && question.answers.count { it.isCorrect } == 1 || question.type == QuestionType.MULTIPLE_CHOICE && question.answers.count { it.isCorrect } >= 1)
+        } && (question.type == QuestionType.SINGLE_CHOICE && question.answers.count { it.isCorrect } == 1
+                || question.type == QuestionType.MULTIPLE_CHOICE && question.answers.count { it.isCorrect } >= 1)
     }
 
     fun updateFieldType(position: Int, type: FieldTypes) {
@@ -218,7 +214,6 @@ class TestingEditScreenModel(
             _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
             onCloseAlert()
         }
-
     }
 
     fun onCloseAlert() {
@@ -238,7 +233,4 @@ class TestingEditScreenModel(
         val text: String = "",
         val isCorrect: Boolean = false,
     )
-
-
-    companion object {}
 }

@@ -6,6 +6,8 @@ import androidx.compose.runtime.Immutable
 data class MapScreenUi(
     val title: String = "",
     val box: MindMapBox = MindMapBox(),
+    val updateInProgress: Boolean = false,
+    val isSaveButtonVisible: Boolean = false,
     val alert: MapScreenUi.EnterNewNodeTitle? = null,
 ) {
     data class EnterNewNodeTitle(val title: String = "", val inProgress: Boolean = false) {
