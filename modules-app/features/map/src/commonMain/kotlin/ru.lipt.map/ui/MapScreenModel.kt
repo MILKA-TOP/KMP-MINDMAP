@@ -5,8 +5,10 @@ package ru.lipt.map.ui
 // import ru.lipt.map.ui.models.MapNode.Companion.toUi
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.LoadingState
+import ru.lipt.core.cache.CachePolicy
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
@@ -55,16 +57,7 @@ class MapScreenModel(
             _uiState.updateUi { Unit.error() }
         }) {
             _uiState.updateUi { loading() }
-            val map = mapInteractor.getMap(params.id)
-            _map = map
-            _mapType = when (map) {
-                is SummaryViewMapResponseRemote -> MapType.VIEW
-                is SummaryEditMapResponseRemote -> MapType.EDIT
-                else -> throw IllegalArgumentException()
-            }
-
-            val mapUi = map.toUI()
-
+            val mapUi = getMap()
             _uiState.updateUi { mapUi.success() }
         }
     }
@@ -89,11 +82,11 @@ class MapScreenModel(
     }
 
     private fun SummaryViewMapResponseRemote.toViewUi() = MapScreenUi(
-        title = title, box = toViewBoxUi()
+        title = title, isSaveButtonVisible = false, box = toViewBoxUi()
     )
 
     private fun SummaryEditMapResponseRemote.toEditUi() = MapScreenUi(
-        title = title, box = toEditBoxUi()
+        title = title, isSaveButtonVisible = true, box = toEditBoxUi()
     )
 
     private fun SummaryEditMapResponseRemote.toEditBoxUi(): MindMapBox {
@@ -219,6 +212,23 @@ class MapScreenModel(
         }
     }
 
+    fun saveMindMap() {
+        screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            },
+            finalBlock = {
+                _uiState.updateUi { copy { it.copy(updateInProgress = false) } }
+            }
+        ) {
+            _uiState.updateUi { copy { it.copy(updateInProgress = true) } }
+            delay(250L)
+            val mapUi = updateMap()
+
+            _uiState.updateUi { copy { mapUi } }
+        }
+    }
+
     fun onNodeMoved(node: MapNode, index: Int) {
         screenModelScope.launchCatching {
             val updatedMap = mapInteractor.updateNodePosition(params.id, node.nodeId, index)
@@ -237,6 +247,29 @@ class MapScreenModel(
 
     fun onViewNodeClick(nodeId: String) {
         _uiState.navigateTo(NavigationTarget.UneditableDetailsScreen(NodeDetailsScreenParams(params.id, nodeId)))
+    }
+
+    private suspend fun updateMap(): MapScreenUi {
+        val map = mapInteractor.updateMindMap(params.id)
+        updateUiMap(map)
+
+        return map.toUI()
+    }
+
+    private suspend fun getMap(cachePolicy: CachePolicy = CachePolicy.ALWAYS): MapScreenUi {
+        val map = mapInteractor.getMap(params.id, cachePolicy)
+        updateUiMap(map)
+
+        return map.toUI()
+    }
+
+    private fun updateUiMap(map: SummaryMapResponseRemote) {
+        _map = map
+        _mapType = when (map) {
+            is SummaryViewMapResponseRemote -> MapType.VIEW
+            is SummaryEditMapResponseRemote -> MapType.EDIT
+            else -> throw IllegalArgumentException()
+        }
     }
 
     private fun SummaryMapResponseRemote.toUI() = when (this) {

@@ -110,7 +110,6 @@ fun TestingEditContent(
 
         ui.onError { ErrorScreen(onRefresh = screenModel::init) }
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -196,7 +195,6 @@ private fun Content(
                             textAlign = TextAlign.Center,
                         )
                     }
-
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
@@ -208,7 +206,6 @@ private fun Content(
             )
         }
     }
-
 }
 
 @Composable

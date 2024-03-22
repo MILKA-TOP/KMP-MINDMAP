@@ -21,7 +21,7 @@ fun QuestionEditComponent(
     onCloseClick: () -> Unit = {},
     onHeaderTextChanged: (String) -> Unit = { _ -> },
     onFieldTextChanged: (Int, String) -> Unit = { _, _ -> },
-    updateFieldType: (FieldTypes) -> Unit = {  _ -> },
+    updateFieldType: (FieldTypes) -> Unit = { _ -> },
 ) {
 
     Column(
