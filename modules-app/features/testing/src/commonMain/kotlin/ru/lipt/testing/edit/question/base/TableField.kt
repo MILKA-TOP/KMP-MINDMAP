@@ -1,7 +1,8 @@
 package ru.lipt.testing.edit.question.base
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,13 +16,17 @@ import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import ru.lipt.core.compose.OutlinedCountedTextField
+import ru.lipt.coreui.shapes.RoundedCornerShape12
 import ru.lipt.coreui.shapes.RoundedCornerShape16
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.testing.edit.question.base.models.AnswerResultType
@@ -54,6 +60,7 @@ fun TableField(
 
     when (model) {
         is TableFieldModel.Header -> Header(model)
+        is TableFieldModel.QuestionResultHeader -> QuestionResultHeader(model)
         is TableFieldModel.Caption -> Caption(model)
         is TableFieldModel.HeaderEdit -> HeaderEdit(model, onFieldTextChanged, onCloseClick)
         is TableFieldModel.SelectQuestionType -> SelectQuestionType(model, onPopUpOpen)
@@ -91,6 +98,36 @@ private fun Header(model: TableFieldModel.Header) {
 }
 
 @Composable
+private fun QuestionResultHeader(model: TableFieldModel.QuestionResultHeader) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val color = if (model.isCorrect) MindTheme.colors.success else MindTheme.colors.error
+        CompositionLocalProvider(
+            LocalContentColor provides color,
+        ) {
+            if (model.isCorrect) {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = "",
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "",
+                )
+            }
+            Text(
+                modifier = Modifier.weight(1f),
+                text = model.text,
+                style = MindTheme.typography.material.h6
+            )
+        }
+    }
+}
+
+@Composable
 private fun Caption(model: TableFieldModel.Caption) {
     Text(modifier = Modifier.fillMaxWidth(), text = model.text)
 }
@@ -123,22 +160,26 @@ private fun SingleCheckboxSelect(
     model: TableFieldModel.SingleCheckboxSelect,
     onClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().border(
-            width = 4.dp, color = when (model.resultType) {
+    Box(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape12).background(
+            color = when (model.resultType) {
                 AnswerResultType.NONE -> Color.Unspecified
-                AnswerResultType.ERROR -> Color.Red
-                AnswerResultType.CORRECT -> Color.Green
+                AnswerResultType.ERROR -> MindTheme.colors.errorLight
+                AnswerResultType.CORRECT -> MindTheme.colors.successLight
             }
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = model.isSelected,
-            onClick = onClick,
-            enabled = model.enabled,
         )
-        Text(modifier = Modifier.weight(1f), text = model.text)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = model.isSelected,
+                onClick = onClick,
+                enabled = model.enabled,
+            )
+            Text(modifier = Modifier.weight(1f), text = model.text)
+        }
     }
 }
 
@@ -162,22 +203,26 @@ private fun MultipleCheckboxSelect(
     model: TableFieldModel.MultipleCheckboxSelect,
     onClick: (Boolean) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().border(
-            width = 4.dp, color = when (model.resultType) {
+    Box(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape12).background(
+            color = when (model.resultType) {
                 AnswerResultType.NONE -> Color.Unspecified
-                AnswerResultType.ERROR -> Color.Red
-                AnswerResultType.CORRECT -> Color.Green
+                AnswerResultType.ERROR -> MindTheme.colors.errorLight
+                AnswerResultType.CORRECT -> MindTheme.colors.successLight
             }
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = model.isSelected,
-            onCheckedChange = onClick,
-            enabled = model.enabled,
         )
-        Text(modifier = Modifier.weight(1f), text = model.text)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = model.isSelected,
+                onCheckedChange = onClick,
+                enabled = model.enabled,
+            )
+            Text(modifier = Modifier.weight(1f), text = model.text)
+        }
     }
 }
 

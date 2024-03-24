@@ -129,7 +129,7 @@ class TestingCompleteScreenModel(
             )
             _uiState.navigateTo(
                 NavigationTarget.Result(
-                    TestingResultParams()
+                    TestingResultParams(result)
                 )
             )
         }

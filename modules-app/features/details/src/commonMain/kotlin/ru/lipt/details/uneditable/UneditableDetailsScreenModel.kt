@@ -98,10 +98,10 @@ class UneditableDetailsScreenModel(
     )
 
     fun onTestResultButtonClick() {
-//        val result = _node?.test?.testResult ?: return
+        val result = _node?.test?.testResult ?: return
         _uiState.navigateTo(
             NavigationTarget.TestResult(
-                params = TestingResultParams()
+                params = TestingResultParams(result)
             )
         )
     }
