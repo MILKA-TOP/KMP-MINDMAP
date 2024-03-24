@@ -11,6 +11,8 @@ import kotlinx.serialization.Serializable
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.MapRemoveType
+import ru.lipt.domain.map.models.TestResultViewResponseRemote
+import ru.lipt.domain.map.models.TestingCompleteRequestRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
@@ -55,47 +57,19 @@ class MindMapDataSourceImpl(
             setBody(updateRequest)
         }
     }
-//    override suspend fun sendTestAnswersForNode(
-//        mapId: String, nodeId: String, answers: List<RequestAnswer>
-//    ): QuestionResult {
-//        val question1 = CompletedQuestion(
-//            id = "1", nodeId = "node1", questionText = "What is your favorite color?", type = QuestionType.SINGLE_CHOICE, answers = listOf(
-//                CompletedAnswer("1", "Red", true, false),
-//                CompletedAnswer("2", "Blue", false, true),
-//                CompletedAnswer("3", "Green", false, false)
-//            )
-//        )
-//
-//        val question2 = CompletedQuestion(
-//            id = "2", nodeId = "node2", questionText = "Select all that apply.", type = QuestionType.MULTIPLE_CHOICE, answers = listOf(
-//                CompletedAnswer("4", "Option A", true, true),
-//                CompletedAnswer("5", "Option B", false, false),
-//                CompletedAnswer("6", "Option C", true, false)
-//            )
-//        )
-//
-//        val question3 = CompletedQuestion(
-//            id = "3",
-//            nodeId = "node3",
-//            questionText = "What is the capital of France?",
-//            type = QuestionType.SINGLE_CHOICE,
-//            answers = listOf(
-//                CompletedAnswer("7", "Berlin", false, false),
-//                CompletedAnswer("8", "Paris", true, true),
-//                CompletedAnswer("9", "London", false, false)
-//            )
-//        )
-//
-//        return QuestionResult(
-//            questionsCount = answers.size,
-//            correctQuestionsCount = answers.size / 2,
-//            completedQuestions = listOf(question1, question2, question3)
-//        )
-//    }
 
-    @Serializable
-    private data class NodeToggleResponseRemote(
-        val nodeId: String,
-        val isMarked: Boolean,
-    )
+    override suspend fun sendTestAnswersForNode(testId: String, testAnswers: TestingCompleteRequestRemote): TestResultViewResponseRemote {
+        return client.post(
+            urlString = "${config.baseUrl}/tests/submit-test?testId=$testId"
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(testAnswers)
+        }.body()
+    }
+
+        @Serializable
+        private data class NodeToggleResponseRemote(
+            val nodeId: String,
+            val isMarked: Boolean,
+        )
 }
