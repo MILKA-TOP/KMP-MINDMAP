@@ -87,7 +87,7 @@ fun TableField(
 
 @Composable
 private fun Header(model: TableFieldModel.Header) {
-    Text(modifier = Modifier.fillMaxWidth(), text = model.text)
+    Text(modifier = Modifier.fillMaxWidth(), text = model.text, style = MindTheme.typography.material.h6)
 }
 
 @Composable
@@ -130,7 +130,8 @@ private fun SingleCheckboxSelect(
                 AnswerResultType.ERROR -> Color.Red
                 AnswerResultType.CORRECT -> Color.Green
             }
-        )
+        ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
             selected = model.isSelected,
@@ -168,7 +169,8 @@ private fun MultipleCheckboxSelect(
                 AnswerResultType.ERROR -> Color.Red
                 AnswerResultType.CORRECT -> Color.Green
             }
-        )
+        ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
             checked = model.isSelected,

@@ -7,4 +7,7 @@
     <string name="testing_edit_alert_remove_message">Are you sure, that you want remove this question?</string>
     <string name="testing_edit_alert_remove_cancel">Cancel</string>
     <string name="testing_edit_alert_remove_remove">Remove</string>
+
+    <string name="testing_complete_button">Complete test</string>
+    <string name="testing_header">"%s" Test</string>
 </resources>

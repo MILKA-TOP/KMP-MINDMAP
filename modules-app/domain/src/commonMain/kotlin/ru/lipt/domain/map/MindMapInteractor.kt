@@ -8,6 +8,8 @@ import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.QuestionsEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
+import ru.lipt.domain.map.models.TestResultViewResponseRemote
+import ru.lipt.domain.map.models.TestingCompleteRequestRemote
 import ru.lipt.domain.map.models.TestsEditResponseRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.domain.map.models.update.AnswerUpdateParam
@@ -255,12 +257,12 @@ class MindMapInteractor(
                 questions = UpdatedListComponent(
                     insert = this.questions.insert + newInsertQuestions,
                     updated = this.questions.updated + newUpdatedQuestions,
-                    removed = this.questions.removed + oldQuestionsForRemoval.distinct()
+                    removed = (this.questions.removed + oldQuestionsForRemoval).distinct()
                 ),
                 answers = UpdatedListComponent(
                     insert = this.answers.insert + newInsertAnswers,
                     updated = this.answers.updated + newUpdatedAnswers,
-                    removed = this.answers.removed + oldAnswersForRemoval.distinct()
+                    removed = (this.answers.removed + oldAnswersForRemoval).distinct()
                 )
             )
         }.also {
@@ -295,5 +297,21 @@ class MindMapInteractor(
             else -> updatedNodes.elseUpdate()
         }
         )
+    }
+
+    suspend fun sendTestAnswersForNode(
+        mapId: String,
+        nodeId: String,
+        testId: String,
+        testAnswers: TestingCompleteRequestRemote
+    ): TestResultViewResponseRemote {
+        val result = mapRepository.sendTestAnswersForNode(testId, testAnswers)
+        mapRepository.updateCache(mapId) {
+            (this as? SummaryViewMapResponseRemote)?.let { map ->
+                val nodesUpdate = map.nodes.map { if (it.id == nodeId) it.copy(test = it.test?.copy(testResult = result)) else it }
+                map.copy(nodes = nodesUpdate)
+            } ?: this
+        }
+        return result
     }
 }

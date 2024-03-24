@@ -92,6 +92,7 @@ class UneditableDetailsScreenModel(
             params = TestCompleteScreenParams(
                 mapId = params.mapId,
                 nodeId = params.nodeId,
+                testId = _node?.test?.id!!
             )
         )
     )

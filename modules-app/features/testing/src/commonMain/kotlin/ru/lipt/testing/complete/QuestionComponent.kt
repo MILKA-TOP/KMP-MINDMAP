@@ -1,12 +1,13 @@
 package ru.lipt.testing.complete
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ru.lipt.testing.complete.models.QuestionUiModel
 import ru.lipt.testing.edit.question.base.TableField
 import ru.lipt.testing.edit.question.base.models.TableFieldModel
@@ -14,27 +15,25 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel
 @Composable
 fun QuestionCompleteComponent(
     model: QuestionUiModel,
-    state: LazyListState = rememberLazyListState(),
     onSingleCheckboxSelect: (Int) -> Unit = {},
     onMultipleCheckboxSelect: (Int, Boolean) -> Unit = { _, _ -> },
 ) {
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = state,
+    Column(
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        item {
-            TableField(
-                TableFieldModel.Header(model.questionText),
-            )
-        }
+        TableField(
+            TableFieldModel.Header(model.questionText),
+        )
+        Spacer(modifier = Modifier.height(32.dp))
 
-        itemsIndexed(model.answers) { position, item ->
+        model.answers.forEachIndexed { position, item ->
             TableField(
                 model = item,
                 onSingleCheckboxSelect = { onSingleCheckboxSelect(position) },
                 onMultipleCheckboxSelect = { onMultipleCheckboxSelect(position, it) },
             )
+            Divider(modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

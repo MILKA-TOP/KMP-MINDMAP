@@ -2,24 +2,19 @@ package ru.lipt.testing.edit
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -36,11 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -55,9 +48,9 @@ import ru.lipt.core.compose.onError
 import ru.lipt.core.compose.onLoading
 import ru.lipt.core.compose.onSuccess
 import ru.lipt.coreui.components.ProgressButton
-import ru.lipt.coreui.shapes.RoundedCornerShape12
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.testing.MR
+import ru.lipt.testing.common.NumberRow
 import ru.lipt.testing.edit.models.TestingEditScreenUi
 import ru.lipt.testing.edit.question.QuestionEditComponent
 
@@ -168,35 +161,13 @@ private fun Content(
                     updateFieldType = { type -> screenModel.updateFieldType(position, type) },
                 )
             }
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().heightIn(max = 64.dp), state = lazyRowState
-            ) {
-                items(ui.questions.size) { index ->
-                    Card(
-                        modifier = Modifier.sizeIn(minWidth = 36.dp, minHeight = 36.dp).clip(RoundedCornerShape12)
-                            .clickable(onClick = { screenModel.onIndicatorPageClick(index) }),
-                        backgroundColor = if (index == horizontalPagerState.currentPage) MaterialTheme.colors.surface
-                        else MindTheme.colors.unmarkedNode
-                    ) {
-                        Text(
-                            text = (index + 1).toString(), textAlign = TextAlign.Center
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-                item {
-                    Card(
-                        modifier = Modifier.sizeIn(minWidth = 36.dp, minHeight = 36.dp).clip(RoundedCornerShape12)
-                            .clickable(onClick = screenModel::addQuestion),
-                        backgroundColor = MindTheme.colors.unmarkedNode,
-                    ) {
-                        Text(
-                            text = "+",
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
+            NumberRow(
+                list = ui.questions,
+                horizontalPagerState = horizontalPagerState,
+                lazyRowState = lazyRowState,
+                onIndicatorPageClick = screenModel::onIndicatorPageClick,
+                addQuestion = screenModel::addQuestion
+            )
             Spacer(modifier = Modifier.height(32.dp))
             ProgressButton(
                 modifier = Modifier.fillMaxWidth(),

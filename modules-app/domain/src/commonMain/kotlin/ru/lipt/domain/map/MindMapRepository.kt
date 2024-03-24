@@ -5,6 +5,8 @@ import ru.lipt.core.cache.CachePolicyRepository
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
+import ru.lipt.domain.map.models.TestResultViewResponseRemote
+import ru.lipt.domain.map.models.TestingCompleteRequestRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
@@ -49,4 +51,6 @@ class MindMapRepository(
         remoteDataSource.updateMindMap(mapId, updateParams)
         updateDataSource.remove(mapId)
     }
+    suspend fun sendTestAnswersForNode(testId: String, testAnswers: TestingCompleteRequestRemote): TestResultViewResponseRemote =
+        remoteDataSource.sendTestAnswersForNode(testId, testAnswers)
 }

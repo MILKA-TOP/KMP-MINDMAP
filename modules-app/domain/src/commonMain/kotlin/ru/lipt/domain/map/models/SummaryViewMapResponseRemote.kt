@@ -44,7 +44,7 @@ data class QuestionsViewResponseRemote(
     val id: String,
     val testId: String,
     val questionText: String,
-    val questionType: QuestionType,
+    val type: QuestionType,
     val answers: List<AnswersViewResponseRemote> = emptyList(),
 )
 
