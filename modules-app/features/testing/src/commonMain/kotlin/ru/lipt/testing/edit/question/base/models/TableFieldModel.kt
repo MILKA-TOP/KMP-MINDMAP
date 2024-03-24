@@ -6,6 +6,7 @@ import ru.lipt.core.uuid.randomUUID
 @Immutable
 sealed class TableFieldModel {
     data class Header(val text: String) : TableFieldModel()
+    data class QuestionResultHeader(val text: String, val isCorrect: Boolean) : TableFieldModel()
     data class Caption(val text: String) : TableFieldModel()
 
     data class HeaderEdit(val text: String) : TableFieldModel()

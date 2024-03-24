@@ -1,8 +1,7 @@
 package ru.lipt.testing.common.params
 
-// import ru.lipt.domain.map.models.QuestionResult
+import ru.lipt.domain.map.models.TestResultViewResponseRemote
 
-@Suppress("EmptyDefaultConstructor")
 class TestingResultParams(
-//    val questionResult: QuestionResult
+    val testResults: TestResultViewResponseRemote
 )

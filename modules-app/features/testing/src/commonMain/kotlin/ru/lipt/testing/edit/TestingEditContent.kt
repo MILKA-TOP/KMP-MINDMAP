@@ -73,11 +73,7 @@ fun TestingEditContent(
     Scaffold(topBar = {
         TopAppBar(
             backgroundColor = MaterialTheme.colors.background,
-            title = {
-//                    Text(
-//                        text = stringResource(MR.strings.map_screen_details_title_appbar)
-//                    )
-            },
+            title = {},
             navigationIcon = {
                 IconButton(onClick = navigator::pop) {
                     Icon(

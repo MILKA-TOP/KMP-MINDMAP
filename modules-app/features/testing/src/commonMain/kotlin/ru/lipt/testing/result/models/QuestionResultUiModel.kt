@@ -8,12 +8,14 @@ sealed class QuestionResultUiModel {
 
     open val id: String = ""
     open val questionText: String = ""
+    open val isCorrectQuestion: Boolean = false
     open val allAnswers: List<TableFieldModel> = listOf()
     open val correctAnswers: List<TableFieldModel> = listOf()
 
     data class SingleChoice(
         override val id: String,
         override val questionText: String = "",
+        override val isCorrectQuestion: Boolean,
         override val allAnswers: List<TableFieldModel.SingleCheckboxSelect> = emptyList(),
         override val correctAnswers: List<TableFieldModel.SingleCheckboxSelect> = emptyList(),
     ) : QuestionResultUiModel()
@@ -21,6 +23,7 @@ sealed class QuestionResultUiModel {
     data class MultipleChoice(
         override val id: String,
         override val questionText: String = "",
+        override val isCorrectQuestion: Boolean,
         override val allAnswers: List<TableFieldModel.MultipleCheckboxSelect> = emptyList(),
         override val correctAnswers: List<TableFieldModel.SingleCheckboxSelect> = emptyList(),
     ) : QuestionResultUiModel()

@@ -184,6 +184,7 @@ class MindMapInteractor(
     }
 
     // questions
+    @Suppress("LongMethod")
     suspend fun updateQuestions(mapId: String, nodeId: String, testId: String, questions: List<QuestionsEditResponseRemote>) =
         mapRepository.updateRequestCache(mapId) { map ->
             val node = map.nodes.first { it.id == nodeId }
@@ -194,8 +195,10 @@ class MindMapInteractor(
                     tests = updatedTests.copy(insert = updatedTests.insert + TestUpdateParam(testId, nodeId))
                 )
             }
+            val cachedQuestions = node.test?.questions.orEmpty()
+            val cachedAnswers = node.test?.questions?.flatMap { it.answers }.orEmpty()
 
-            val updatedQuestions = questions.map { question ->
+            val inputQuestions = questions.map { question ->
                 QuestionUpdateParam(
                     questionId = question.id,
                     testId = question.testId,
@@ -203,9 +206,15 @@ class MindMapInteractor(
                     title = question.questionText
                 )
             }
+            val insertedQuestions = inputQuestions.filter { inputQuestion ->
+                cachedQuestions.none { it.id == inputQuestion.questionId }
+            }
+            val updatedQuestions = inputQuestions.filter { inputQuestion ->
+                cachedQuestions.any { it.id == inputQuestion.questionId }
+            }
 
             // Mapping updated answers to AnswerUpdateParam
-            val updatedAnswers = questions.flatMap { question ->
+            val inputAnswers = questions.flatMap { question ->
                 question.answers.map { answer ->
                     AnswerUpdateParam(
                         questionId = answer.questionId,
@@ -216,52 +225,79 @@ class MindMapInteractor(
                 }
             }
 
+            val insertedAnswers = inputAnswers.filter { inputAnswer ->
+                cachedAnswers.none { it.id == inputAnswer.answerId }
+            }
+            val updatedAnswers = inputAnswers.filter { inputAnswer ->
+                cachedAnswers.any { it.id == inputAnswer.answerId }
+            }
+
             // Identify old questions that are not in the new list for removal
             val oldQuestionsForRemoval = this.questions.insert.filter { oldQuestion ->
-                updatedQuestions.none { it.questionId == oldQuestion.questionId }
+                inputQuestions.none { it.questionId == oldQuestion.questionId }
             }.map { it.questionId } + this.questions.updated.filter { oldQuestion ->
-                updatedQuestions.none { it.questionId == oldQuestion.questionId }
+                inputQuestions.none { it.questionId == oldQuestion.questionId }
             }.map { it.questionId }
 
             // Identify old answers that are not in the new list for removal
             val oldAnswersForRemoval = this.answers.insert.filter { oldAnswer ->
-                updatedAnswers.none { it.answerId == oldAnswer.answerId }
+                inputAnswers.none { it.answerId == oldAnswer.answerId }
             }.map { it.answerId } + this.answers.updated.filter { oldAnswer ->
-                updatedAnswers.none { it.answerId == oldAnswer.answerId }
+                inputAnswers.none { it.answerId == oldAnswer.answerId }
             }.map { it.answerId }
 
             // Processing questions: insert, update, and remove
-            val newInsertQuestions = updatedQuestions.filter { updatedQuestion ->
-                this.questions.insert.none { it.questionId == updatedQuestion.questionId } &&
-                        this.questions.updated.none { it.questionId == updatedQuestion.questionId }
+            val updatedInsertQuestions = this.questions.insert.map { cachedQuestionRequest ->
+                val updatedInsertQuestion = insertedQuestions.firstOrNull { it.questionId == cachedQuestionRequest.questionId }
+                updatedInsertQuestion ?: cachedQuestionRequest
+            }
+
+            val updatedUpdateQuestions = this.questions.updated.map { cachedQuestionRequest ->
+                val updatedUpdateQuestion = updatedQuestions.firstOrNull { it.questionId == cachedQuestionRequest.questionId }
+                updatedUpdateQuestion ?: cachedQuestionRequest
+            }
+
+            val newInsertQuestions = insertedQuestions.filter { updatedQuestion ->
+                updatedInsertQuestions.none { it.questionId == updatedQuestion.questionId } &&
+                        updatedUpdateQuestions.none { it.questionId == updatedQuestion.questionId }
             }
 
             val newUpdatedQuestions = updatedQuestions.filter { updatedQuestion ->
-                this.questions.insert.any { it.questionId == updatedQuestion.questionId } ||
-                        this.questions.updated.any { it.questionId == updatedQuestion.questionId }
+                updatedInsertQuestions.none { it.questionId == updatedQuestion.questionId } &&
+                        updatedUpdateQuestions.none { it.questionId == updatedQuestion.questionId }
             }
 
             // Processing answers: insert, update, and remove
-            val newInsertAnswers = updatedAnswers.filter { updatedAnswer ->
-                this.answers.insert.none { it.answerId == updatedAnswer.answerId } &&
-                        this.answers.updated.none { it.answerId == updatedAnswer.answerId }
+            val updatedInsertAnswers = this.answers.insert.map { cachedAnswerRequest ->
+                val updatedInsertAnswer = insertedAnswers.firstOrNull { it.answerId == cachedAnswerRequest.answerId }
+                updatedInsertAnswer ?: cachedAnswerRequest
+            }
+
+            val updatedUpdateAnswers = this.answers.updated.map { cachedAnswerRequest ->
+                val updatedUpdateAnswer = updatedAnswers.firstOrNull { it.answerId == cachedAnswerRequest.answerId }
+                updatedUpdateAnswer ?: cachedAnswerRequest
+            }
+
+            val newInsertAnswers = insertedAnswers.filter { updatedAnswer ->
+                updatedInsertAnswers.none { it.answerId == updatedAnswer.answerId } &&
+                        updatedUpdateAnswers.none { it.answerId == updatedAnswer.answerId }
             }
 
             val newUpdatedAnswers = updatedAnswers.filter { updatedAnswer ->
-                this.answers.insert.any { it.answerId == updatedAnswer.answerId } ||
-                        this.answers.updated.any { it.answerId == updatedAnswer.answerId }
+                updatedInsertAnswers.none { it.answerId == updatedAnswer.answerId } &&
+                        updatedUpdateAnswers.none { it.answerId == updatedAnswer.answerId }
             }
 
             // Create a new instance of MapsUpdateRequestParams with updated lists
             updatedMapParams.copy(
                 questions = UpdatedListComponent(
-                    insert = this.questions.insert + newInsertQuestions,
-                    updated = this.questions.updated + newUpdatedQuestions,
+                    insert = updatedInsertQuestions + newInsertQuestions,
+                    updated = updatedUpdateQuestions + newUpdatedQuestions,
                     removed = (this.questions.removed + oldQuestionsForRemoval).distinct()
                 ),
                 answers = UpdatedListComponent(
-                    insert = this.answers.insert + newInsertAnswers,
-                    updated = this.answers.updated + newUpdatedAnswers,
+                    insert = updatedInsertAnswers + newInsertAnswers,
+                    updated = updatedUpdateAnswers + newUpdatedAnswers,
                     removed = (this.answers.removed + oldAnswersForRemoval).distinct()
                 )
             )
