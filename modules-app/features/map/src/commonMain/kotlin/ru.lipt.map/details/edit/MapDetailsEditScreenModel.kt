@@ -15,6 +15,7 @@ import ru.lipt.core.success
 import ru.lipt.domain.map.MindMapInteractor
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.map.common.params.MapScreenParams
+import ru.lipt.map.common.params.MapViewScreenParams
 import ru.lipt.map.details.edit.models.MapDetailsEditUi
 import ru.lipt.map.details.edit.models.UserUi
 
@@ -94,11 +95,11 @@ class MapDetailsEditScreenModel(
         }
     }
 
-    @Suppress("UnusedPrivateMember")
     fun onUserAlertConfirm(userId: String) {
+        hideDialog()
         _uiState.navigateTo(
             NavigationTarget.OpenUserMap(
-                params = MapScreenParams(params.id)
+                params = MapViewScreenParams(params.id, userId)
             )
         )
     }

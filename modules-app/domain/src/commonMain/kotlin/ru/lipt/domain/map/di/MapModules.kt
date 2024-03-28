@@ -7,10 +7,13 @@ import ru.lipt.domain.map.MindMapInteractor
 import ru.lipt.domain.map.MindMapLocalDataSource
 import ru.lipt.domain.map.MindMapRepository
 import ru.lipt.domain.map.MindMapUpdateLocalDataSource
+import ru.lipt.domain.map.MindViewMapLocalDataSource
+import ru.lipt.domain.map.MindViewMapRepository
 
 val mapModules = module {
     scope(USER_SESSION_SCOPE_QUALIFIER) {
         scoped { MindMapLocalDataSource() }
+        scoped { MindViewMapLocalDataSource() }
         scoped { MindMapUpdateLocalDataSource() }
         scoped {
             MindMapRepository(
@@ -20,9 +23,16 @@ val mapModules = module {
             )
         }
         scoped {
+            MindViewMapRepository(
+                localDataSource = getUserSessionScope().get(),
+                remoteDataSource = getUserSessionScope().get(),
+            )
+        }
+        scoped {
             MindMapInteractor(
                 mapRepository = getUserSessionScope().get(),
                 catalogRepository = getUserSessionScope().get(),
+                mapViewRepository = getUserSessionScope().get(),
             )
         }
     }

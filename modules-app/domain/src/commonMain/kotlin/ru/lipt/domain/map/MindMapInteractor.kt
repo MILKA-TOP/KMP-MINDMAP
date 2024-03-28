@@ -21,9 +21,13 @@ import ru.lipt.domain.map.models.update.UpdatedListComponent
 
 class MindMapInteractor(
     private val mapRepository: MindMapRepository,
+    private val mapViewRepository: MindViewMapRepository,
     private val catalogRepository: CatalogRepository,
 ) {
     suspend fun getMap(id: String, cachePolicy: CachePolicy = CachePolicy.ALWAYS) = mapRepository.fetch(id, cachePolicy)!!
+
+    suspend fun fetchViewMap(mapId: String, userId: String, cachePolicy: CachePolicy = CachePolicy.ALWAYS): SummaryViewMapResponseRemote =
+        mapViewRepository.fetch(Pair(mapId, userId), cachePolicy)!!
 
     // 1
     suspend fun addNewNodeToMap(mapId: String, parentId: String, title: String): SummaryMapResponseRemote {

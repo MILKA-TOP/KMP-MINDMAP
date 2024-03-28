@@ -1,6 +1,5 @@
 package ru.lipt.details.uneditable
 
-// import ru.lipt.domain.map.models.Node
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +32,7 @@ class UneditableDetailsScreenModel(
     val uiState = _uiState.asStateFlow()
 
     private var _node: NodesViewResponseRemote? = null
+    private val isMapViewType = params.otherUserId != null
 
     fun handleNavigation(navigate: (NavigationTarget) -> Unit) = _uiState.handleNavigation(navigate)
     fun handleErrorAlertClose() = _uiState.handleErrorAlertClose()
@@ -49,8 +49,8 @@ class UneditableDetailsScreenModel(
         }) {
             _uiState.updateUi { loading() }
 
-            val map = mapInteractor.getMap(params.mapId) as SummaryViewMapResponseRemote
-            val node = mapInteractor.getViewNode(params.mapId, params.nodeId)
+            val map = getMap()
+            val node = map.nodes.first { it.id == params.nodeId }
             _node = node
             val test = node.test
             val result = test?.testResult
@@ -60,6 +60,7 @@ class UneditableDetailsScreenModel(
                     description = node.description,
                     links = highlightLinkPositions(node.description),
                     isNodeMarked = node.isSelected,
+                    isButtonEnabled = !isMapViewType,
                     testResult = when {
                         result != null -> {
                             UneditableTestResultUi.Result(
@@ -68,7 +69,7 @@ class UneditableDetailsScreenModel(
                                 message = result.message,
                             )
                         }
-                        node.test?.questions.orEmpty().isNotEmpty() -> UneditableTestResultUi.CompleteTest
+                        node.test?.questions.orEmpty().isNotEmpty() && !isMapViewType -> UneditableTestResultUi.CompleteTest
                         else -> UneditableTestResultUi.NoTest
                     }).success()
             }
@@ -104,6 +105,12 @@ class UneditableDetailsScreenModel(
                 params = TestingResultParams(result)
             )
         )
+    }
+
+    private suspend fun getMap(): SummaryViewMapResponseRemote {
+        return params.otherUserId?.let { userId ->
+            mapInteractor.fetchViewMap(params.mapId, userId)
+        } ?: mapInteractor.getMap(params.mapId) as SummaryViewMapResponseRemote
     }
 
     private fun highlightLinkPositions(input: String): List<DescriptionLink> {

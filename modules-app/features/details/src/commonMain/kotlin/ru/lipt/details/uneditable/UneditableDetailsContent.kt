@@ -163,6 +163,7 @@ private fun Content(
             ProgressButton(
                 modifier = Modifier.fillMaxWidth(), text = ui.buttonText, colors = ui.buttonColor,
                 inProgress = ui.isButtonInProgress,
+                enabled = ui.isButtonEnabled,
                 onClick = onMarkButtonClick,
             )
         }
