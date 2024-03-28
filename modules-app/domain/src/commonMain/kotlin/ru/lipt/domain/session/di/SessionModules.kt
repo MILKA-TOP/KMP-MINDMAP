@@ -6,6 +6,7 @@ import ru.lipt.domain.session.SessionRepository
 val sessionModules = module {
     single {
         SessionRepository(
+            koin = getKoin(),
             dataSource = get(),
         )
     }

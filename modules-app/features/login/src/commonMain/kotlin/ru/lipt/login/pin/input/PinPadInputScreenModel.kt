@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
-import ru.lipt.domain.login.LoginInteractor
+import ru.lipt.domain.login.UnAuthedLoginInteractor
 import ru.lipt.login.pin.extensions.PIN_SIZE
 import ru.lipt.login.pin.input.model.PinPadInputModel
 
 class PinPadInputScreenModel(
-    private val loginInteractor: LoginInteractor,
+    private val loginInteractor: UnAuthedLoginInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<PinPadInputModel, NavigationTarget> =

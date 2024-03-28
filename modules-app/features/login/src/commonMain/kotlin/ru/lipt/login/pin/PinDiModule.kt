@@ -2,6 +2,7 @@ package ru.lipt.login.pin
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
+import ru.lipt.core.di.getUserSessionScope
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.login.pin.create.PinPadCreateScreen
 import ru.lipt.login.pin.create.PinPadCreateScreenModel
@@ -18,7 +19,7 @@ val pinDiModule = module {
 
     factory { params ->
         PinPadCreateScreenModel(
-            loginInteractor = get()
+            loginInteractor = getUserSessionScope().get()
         )
     }
     factory { params ->

@@ -62,7 +62,6 @@ import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
 import ru.lipt.map.common.navigation.MapNavigationDestinations
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CatalogContent(
     screen: Screen,

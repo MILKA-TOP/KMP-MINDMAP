@@ -3,6 +3,7 @@ package ru.lipt.catalog.create
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
 import ru.lipt.catalog.common.navigation.CatalogNavigationDestinations
+import ru.lipt.core.di.getUserSessionScope
 
 val createMindMapNavigationModule = module {
     ScreenRegistry.register<CatalogNavigationDestinations.CreateMapDestination> { provider ->
@@ -13,7 +14,7 @@ val createMindMapNavigationModule = module {
     factory { params ->
         CreateMindMapScreenModel(
             params = params.get(),
-            catalogInteractor = get(),
+            catalogInteractor = getUserSessionScope().get(),
         )
     }
 }
