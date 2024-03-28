@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
@@ -54,6 +55,7 @@ import ru.lipt.core.compose.onSuccess
 import ru.lipt.coreui.components.ProgressButton
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.map.MR
+import ru.lipt.map.common.navigation.MapNavigationDestinations
 import ru.lipt.map.details.edit.models.MapDetailsEditUi
 import ru.lipt.map.details.edit.models.UserUi
 
@@ -70,8 +72,9 @@ fun MapDetailsEditContent(
     screenModel.handleNavigation { target ->
         when (target) {
             NavigationTarget.CatalogDestination -> navigator.popUntilRoot()
-            is NavigationTarget.OpenUserMap -> Unit
-            is NavigationTarget.CopyMap -> Unit
+            is NavigationTarget.OpenUserMap -> {
+                navigator.push(ScreenRegistry.get(MapNavigationDestinations.MapViewScreenDestination(target.params)))
+            }
             NavigationTarget.PopBack -> navigator.pop()
         }
     }

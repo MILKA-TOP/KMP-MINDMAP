@@ -16,6 +16,12 @@ data class MapScreenUi(
 }
 
 @Immutable
+data class MapViewScreenUi(
+    val title: String = "",
+    val box: MindMapBox = MindMapBox(),
+)
+
+@Immutable
 data class MindMapNodeVertex(
     val parentNodeId: String? = null,
     val nodes: List<MapNode> = emptyList()

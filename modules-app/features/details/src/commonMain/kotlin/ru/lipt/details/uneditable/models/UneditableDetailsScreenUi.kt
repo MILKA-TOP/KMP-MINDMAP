@@ -18,6 +18,7 @@ data class UneditableDetailsScreenUi(
     val links: List<DescriptionLink> = emptyList(),
     val isNodeMarked: Boolean = false,
     val isButtonInProgress: Boolean = false,
+    val isButtonEnabled: Boolean = true,
     val testResult: UneditableTestResultUi = UneditableTestResultUi.NoTest,
 ) {
 
