@@ -16,6 +16,7 @@ class CatalogDataSourceImpl(
     private val client: HttpClient,
     private val config: ApplicationConfig,
 ) : CatalogDataSource {
+
     override suspend fun createMap(title: String, description: String, password: String?, mapRefId: String?): String =
         client.post(
             urlString = "${config.baseUrl}/maps/create"

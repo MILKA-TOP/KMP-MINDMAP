@@ -2,6 +2,7 @@ package ru.lipt.details.editable
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
+import ru.lipt.core.di.getUserSessionScope
 import ru.lipt.details.common.navigation.NodeDetailsNavigationDestinations
 
 val editableDetailsNavigationModule = module {
@@ -12,7 +13,7 @@ val editableDetailsNavigationModule = module {
     factory { params ->
         EditableDetailsScreenModel(
             params = params.get(),
-            mapInteractor = get()
+            mapInteractor = getUserSessionScope().get()
         )
     }
 }

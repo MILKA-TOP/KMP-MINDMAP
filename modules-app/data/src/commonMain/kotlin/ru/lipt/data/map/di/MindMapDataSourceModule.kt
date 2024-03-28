@@ -1,15 +1,19 @@
 package ru.lipt.data.map.di
 
 import org.koin.dsl.module
+import ru.lipt.core.di.USER_SESSION_SCOPE_QUALIFIER
+import ru.lipt.core.di.getUserSessionScope
 import ru.lipt.core.network.AUTHED_CLIENT_QUALIFIER
 import ru.lipt.data.map.MindMapDataSourceImpl
 import ru.lipt.domain.map.MindMapDataSource
 
 val mindMapDataSourceModule = module {
-    single<MindMapDataSource> {
-        MindMapDataSourceImpl(
-            config = get(),
-            client = get(AUTHED_CLIENT_QUALIFIER)
-        )
+    scope(USER_SESSION_SCOPE_QUALIFIER) {
+        scoped<MindMapDataSource> {
+            MindMapDataSourceImpl(
+                config = get(),
+                client = getUserSessionScope().get(AUTHED_CLIENT_QUALIFIER)
+            )
+        }
     }
 }

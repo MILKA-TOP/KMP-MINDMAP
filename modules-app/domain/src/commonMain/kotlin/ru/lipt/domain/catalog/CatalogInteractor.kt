@@ -6,7 +6,6 @@ import ru.lipt.domain.catalog.models.CatalogMindMap
 class CatalogInteractor(
     private val catalogRepository: CatalogRepository,
 ) {
-
     suspend fun getMaps(): List<CatalogMindMap> = catalogRepository.fetch(Unit, CachePolicy.ALWAYS).orEmpty()
     suspend fun fetchMaps(): List<CatalogMindMap> = catalogRepository.fetch(Unit, CachePolicy.REFRESH).orEmpty()
 

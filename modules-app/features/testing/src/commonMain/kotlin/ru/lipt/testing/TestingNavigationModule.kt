@@ -2,6 +2,7 @@ package ru.lipt.testing
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
+import ru.lipt.core.di.getUserSessionScope
 import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 import ru.lipt.testing.complete.TestingCompleteScreen
 import ru.lipt.testing.complete.TestingCompleteScreenModel
@@ -24,13 +25,13 @@ val testingNavigationModule = module {
     factory { params ->
         TestingEditScreenModel(
             params = params.get(),
-            mapInteractor = get(),
+            mapInteractor = getUserSessionScope().get(),
         )
     }
     factory { params ->
         TestingCompleteScreenModel(
             params = params.get(),
-            mapInteractor = get(),
+            mapInteractor = getUserSessionScope().get(),
         )
     }
     factory { params ->
