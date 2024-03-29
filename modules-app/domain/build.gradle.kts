@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     kotlin("plugin.serialization")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 private val iosBaseName = "base.domain"

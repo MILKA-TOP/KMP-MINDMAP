@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.compose")
 //    kotlin("native.cocoapods")
     id("dev.icerock.mobile.multiplatform-resources")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 private val iosBaseName = "shared"
@@ -113,3 +114,5 @@ android {
 multiplatformResources {
     resourcesPackage.set("ru.lipt.shared") // required
 }
+
+
