@@ -3,6 +3,7 @@ package ru.lipt.domain.map.di
 import org.koin.dsl.module
 import ru.lipt.core.di.USER_SESSION_SCOPE_QUALIFIER
 import ru.lipt.core.di.getUserSessionScope
+import ru.lipt.core.kover.IgnoreKover
 import ru.lipt.domain.map.MindMapInteractor
 import ru.lipt.domain.map.MindMapLocalDataSource
 import ru.lipt.domain.map.MindMapRepository
@@ -10,6 +11,7 @@ import ru.lipt.domain.map.MindMapUpdateLocalDataSource
 import ru.lipt.domain.map.MindViewMapLocalDataSource
 import ru.lipt.domain.map.MindViewMapRepository
 
+@IgnoreKover
 val mapModules = module {
     scope(USER_SESSION_SCOPE_QUALIFIER) {
         scoped { MindMapLocalDataSource() }

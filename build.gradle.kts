@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
     id("io.gitlab.arturbosch.detekt") version ("1.19.0")
     kotlin("native.cocoapods")
+    id("org.jetbrains.kotlinx.kover") version "0.7.6"
 }
 
 buildscript {
@@ -65,4 +66,67 @@ tasks.register("clean", Delete::class) {
 
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.19.0")
+}
+
+koverReport {
+    filters {
+        excludes {
+            packages(
+                "*hilt_aggregated_deps*",
+                "*codegen*",
+                "*resources*",
+
+                // App Specific
+                "org.jdc.template.ui",
+            )
+
+            classes(
+                "*Fragment",
+                "*Fragment\$*",
+                "*Activity",
+                "*Activity\$*",
+                "*.databinding.*",
+                "*.BuildConfig",
+                "*Factory",
+                    "*_HiltModules*",
+                "*_Impl*",
+                "*Screen",
+                "*Screen\$Content*",
+                "*ComposableSingletons*",
+                "*NavigationTarget*",
+                "*Hilt*",
+                "*Initializer*",
+
+                // App Specific
+                "*MainAppScaffoldWithNavBarKt*",
+                "*Destinations*",
+                "*MR*",
+                "*ModuleKt*",
+                "*ModulesKt*",
+            )
+
+            annotatedBy(
+                "*Composable*",
+                "*HiltAndroidApp*",
+                "*HiltViewModel*",
+                "*HiltWorker*",
+                "*AndroidEntryPoint*",
+                "*Immutable*",
+                "*Module*",
+                "*SuppressCoverage*",
+                "*IgnoreKover*",
+            )
+        }
+    }
+}
+dependencies {
+    kover(project(":shared"))
+    kover(project(":modules-app:features:catalog"))
+    kover(project(":modules-app:features:catalog"))
+    kover(project(":modules-app:features:map"))
+    kover(project(":modules-app:features:details"))
+    kover(project(":modules-app:features:testing"))
+    kover(project(":modules-app:features:login"))
+    kover(project(":modules-app:domain"))
+    kover(project(":modules-app:data"))
 }

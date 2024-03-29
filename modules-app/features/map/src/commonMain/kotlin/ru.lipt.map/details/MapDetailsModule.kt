@@ -3,12 +3,14 @@ package ru.lipt.map.details
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.dsl.module
 import ru.lipt.core.di.getUserSessionScope
+import ru.lipt.core.kover.IgnoreKover
 import ru.lipt.map.PrivateMapNavigationDestinations
 import ru.lipt.map.details.edit.MapDetailsEditScreen
 import ru.lipt.map.details.edit.MapDetailsEditScreenModel
 import ru.lipt.map.details.view.MapDetailsViewScreen
 import ru.lipt.map.details.view.MapDetailsViewScreenModel
 
+@IgnoreKover
 val mapDetailsModule = module {
     ScreenRegistry.register<PrivateMapNavigationDestinations.MapEditDetails> { provider ->
         MapDetailsEditScreen(provider.params)

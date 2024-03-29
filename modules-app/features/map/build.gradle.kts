@@ -2,7 +2,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("dev.icerock.mobile.multiplatform-resources")
+      id("dev.icerock.mobile.multiplatform-resources")
+      id("org.jetbrains.kotlinx.kover")
 }
 
 private val iosBaseName = "feature.map"
