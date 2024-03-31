@@ -16,6 +16,9 @@ class CatalogInteractor(
         mapRefId: String? = null
     ): String = catalogRepository.createMap(title, description, password, mapRefId)
 
+    suspend fun migrate(text: String, password: String? = null, type: MigrateType = MigrateType.MINDOMO_TEXT): String =
+        catalogRepository.migrate(text, password, type)
+
     suspend fun search(query: String): List<CatalogMindMap> = catalogRepository.search(query)
 
     suspend fun addMap(mapId: String, password: String? = null) =

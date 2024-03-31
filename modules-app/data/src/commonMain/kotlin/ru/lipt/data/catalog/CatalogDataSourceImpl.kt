@@ -10,6 +10,7 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import ru.lipt.core.device.ApplicationConfig
 import ru.lipt.domain.catalog.CatalogDataSource
+import ru.lipt.domain.catalog.MigrateType
 import ru.lipt.domain.catalog.models.CatalogMindMap
 
 class CatalogDataSourceImpl(
@@ -47,6 +48,12 @@ class CatalogDataSourceImpl(
     }
 
     override suspend fun addPrivateMap(mapId: String, password: String) = Unit
+    override suspend fun migrate(text: String, password: String?, type: MigrateType): String = client.post(
+        urlString = "${config.baseUrl}/maps/migrate"
+    ) {
+        contentType(ContentType.Application.Json)
+        setBody(MapsMigrateRequestParams(text, type, password))
+    }.body<MapIdResponseRemote>().mapId
 
     override suspend fun fetch(request: Unit): List<CatalogMindMap> =
         client.get(
@@ -62,6 +69,13 @@ class CatalogDataSourceImpl(
         val description: String,
         val password: String? = null,
         val ref: String? = null,
+    )
+
+    @Serializable
+    private data class MapsMigrateRequestParams(
+        val text: String,
+        val type: MigrateType,
+        val password: String? = null,
     )
 
     @Serializable

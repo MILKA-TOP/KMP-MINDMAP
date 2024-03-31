@@ -8,4 +8,5 @@ interface CatalogDataSource : RemoteDataSource<Unit, List<CatalogMindMap>> {
     suspend fun search(query: String): List<CatalogMindMap>
     suspend fun addMap(mapId: String, password: String?)
     suspend fun addPrivateMap(mapId: String, password: String)
+    suspend fun migrate(text: String, password: String? = null, type: MigrateType = MigrateType.MINDOMO_TEXT): String
 }

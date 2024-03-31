@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 private val iosBaseName = "modules.coreui"
@@ -18,6 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export("dev.icerock.moko:resources:0.24.0-alpha-5")
             baseName = iosBaseName
             isStatic = true
         }
@@ -35,6 +37,8 @@ kotlin {
                 implementation("co.touchlab:stately-common:2.0.6")
                 implementation("co.touchlab:stately-concurrent-collections:2.0.6")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
+                api(Dependencies.Resources.mokoBase)
+                api(Dependencies.Resources.mokoCompose)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
@@ -85,4 +89,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+
+multiplatformResources {
+    resourcesPackage.set(androidNamespace) // required
 }

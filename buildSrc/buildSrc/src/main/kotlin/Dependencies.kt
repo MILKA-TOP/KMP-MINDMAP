@@ -68,4 +68,13 @@ object Dependencies {
         const val jvm = "io.ktor:ktor-client-java:$ktorVersion"
         const val auth = "io.ktor:ktor-client-auth:$ktorVersion"
     }
+
+    object FilePicker {
+        private const val pickerVersion = "3.1.0"
+        const val picker = "com.darkrockstudios:mpfilepicker:$pickerVersion"
+    }
+    object Uri {
+        private const val uriKmpVersion = "0.0.18"
+        const val uriKmp = "com.eygraber:uri-kmp:$uriKmpVersion"
+    }
 }
