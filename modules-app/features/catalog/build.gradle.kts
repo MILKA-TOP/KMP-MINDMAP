@@ -40,6 +40,8 @@ kotlin {
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Logs.napier)
+                api(Dependencies.FilePicker.picker)
+                implementation(Dependencies.Uri.uriKmp)
                 api(Dependencies.Resources.mokoBase)
                 api(Dependencies.Resources.mokoCompose)
                 implementation(project(":modules-app:core"))

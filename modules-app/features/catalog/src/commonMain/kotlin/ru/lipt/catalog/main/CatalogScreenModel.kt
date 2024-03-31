@@ -77,6 +77,10 @@ class CatalogScreenModel(
         }
     }
 
+    fun onMigrateButtonClick() {
+        _uiState.navigateTo(NavigationTarget.MigrateMapDestination)
+    }
+
     companion object {
         private const val REFRESH_DELAY = 250L
     }

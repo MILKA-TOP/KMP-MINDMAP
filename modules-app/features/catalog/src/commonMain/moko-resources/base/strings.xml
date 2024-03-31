@@ -19,4 +19,5 @@
     <string name="create_map_field_password_size">Minimum 8 characters</string>
     <string name="create_map_field_create_button">Create</string>
     <string name="create_map_copy_caption">You will create copy of mind map "%s"</string>
+    <string name="migrate_map_title">Migrate from "Mindomo"</string>
 </resources>

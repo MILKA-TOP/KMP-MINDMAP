@@ -43,6 +43,7 @@ kotlin {
                 implementation(Dependencies.Voyager.navigator)
                 implementation(Dependencies.Voyager.screenModel)
                 implementation(Dependencies.Koin.core)
+                implementation(Dependencies.Uri.uriKmp)
                 // Add here you dependencies
                 implementation(project(":modules-app:navigation"))
             }

@@ -10,6 +10,6 @@
 
     <string name="testing_complete_button">Complete test</string>
     <string name="testing_header">"%s" Test</string>
-    <string name="test_result_header">Test's result</string>
+    <string name="test_result_header">Test\'s result</string>
     <string name="test_correct_answers_text">Correct answers: </string>
 </resources>

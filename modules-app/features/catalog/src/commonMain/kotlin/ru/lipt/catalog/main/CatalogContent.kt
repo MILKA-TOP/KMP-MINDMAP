@@ -57,6 +57,7 @@ import ru.lipt.catalog.main.models.CatalogScreenUi
 import ru.lipt.catalog.models.MapCatalogElement
 import ru.lipt.catalog.navigation.PrivateCatalogDestinations
 import ru.lipt.core.compose.alert.ErrorAlertDialog
+import ru.lipt.coreui.icons.DragVert
 import ru.lipt.coreui.shapes.RoundedCornerShape12
 import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.login.common.navigation.LoginNavigationDestinations
@@ -104,6 +105,13 @@ fun CatalogContent(
                     )
                 )
             }
+            NavigationTarget.MigrateMapDestination -> {
+                navigator.push(
+                    ScreenRegistry.get(
+                        CatalogNavigationDestinations.MigrateScreenDestination
+                    )
+                )
+            }
         }
     }
 
@@ -134,6 +142,12 @@ fun CatalogContent(
                     IconButton(onClick = screenModel::onPullToRefresh) {
                         Icon(
                             imageVector = Icons.Rounded.Refresh,
+                            contentDescription = ""
+                        )
+                    }
+                    IconButton(onClick = screenModel::onMigrateButtonClick) {
+                        Icon(
+                            painter = DragVert,
                             contentDescription = ""
                         )
                     }

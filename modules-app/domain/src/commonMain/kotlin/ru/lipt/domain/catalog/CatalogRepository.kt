@@ -17,6 +17,10 @@ class CatalogRepository(
 
     suspend fun search(query: String): List<CatalogMindMap> = remoteDataSource.search(query)
 
+    suspend fun migrate(text: String, password: String? = null, type: MigrateType = MigrateType.MINDOMO_TEXT): String =
+        remoteDataSource.migrate(text, password, type)
+            .also { runCatching { fetch(Unit, CachePolicy.REFRESH) } }
+
     suspend fun addMap(mapId: String, password: String? = null) = remoteDataSource.addMap(mapId, password)
     suspend fun removeMap(mapId: String) = updateCache(Unit) {
         this.filter { it.id != mapId }

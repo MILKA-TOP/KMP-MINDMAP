@@ -7,4 +7,5 @@ sealed class NavigationTarget {
     data object EnterPinScreenDestination : NavigationTarget()
     data object CreateMindMapDestination : NavigationTarget()
     data object SearchMapDestination : NavigationTarget()
+    data object MigrateMapDestination : NavigationTarget()
 }
