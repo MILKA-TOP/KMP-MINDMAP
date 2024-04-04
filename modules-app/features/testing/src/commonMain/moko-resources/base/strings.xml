@@ -8,8 +8,14 @@
     <string name="testing_edit_alert_remove_cancel">Cancel</string>
     <string name="testing_edit_alert_remove_remove">Remove</string>
 
+    <string name="testing_edit_alert_generate_title">Generate questions</string>
+    <string name="testing_edit_alert_generate_message">Do you want generate questions and answers for current node?</string>
+    <string name="testing_edit_alert_generate_cancel">Cancel</string>
+    <string name="testing_edit_alert_generate_remove">Generate</string>
+
     <string name="testing_complete_button">Complete test</string>
     <string name="testing_header">"%s" Test</string>
     <string name="test_result_header">Test\'s result</string>
     <string name="test_correct_answers_text">Correct answers: </string>
+    <string name="generate_questions_button_text">Generate questions</string>
 </resources>

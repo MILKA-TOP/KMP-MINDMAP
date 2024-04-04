@@ -16,13 +16,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CircularProgressIndicatorLoadingScreen(
-    message: String = ""
+    message: String = "",
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(bottom = 64.dp),
+            .padding(bottom = 64.dp)
+            .then(modifier),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

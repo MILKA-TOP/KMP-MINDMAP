@@ -18,6 +18,7 @@ fun QuestionEditComponent(
     onSingleCheckboxSelect: (Int) -> Unit = {},
     onMultipleCheckboxSelect: (Int, Boolean) -> Unit = { _, _ -> },
     onNewItemClick: () -> Unit = {},
+    onFieldRemoveClick: (Int) -> Unit = {},
     onCloseClick: () -> Unit = {},
     onHeaderTextChanged: (String) -> Unit = { _ -> },
     onFieldTextChanged: (Int, String) -> Unit = { _, _ -> },
@@ -50,6 +51,7 @@ fun QuestionEditComponent(
                 onSingleCheckboxSelect = { onSingleCheckboxSelect(position) },
                 onMultipleCheckboxSelect = { onMultipleCheckboxSelect(position, it) },
                 onFieldTextChanged = { onFieldTextChanged(position, it) },
+                onFieldRemoveClick = { onFieldRemoveClick(position) },
             )
             Spacer(modifier = Modifier.height(16.dp))
         }

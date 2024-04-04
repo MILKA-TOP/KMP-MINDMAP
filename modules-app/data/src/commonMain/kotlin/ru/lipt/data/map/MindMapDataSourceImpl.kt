@@ -13,6 +13,7 @@ import ru.lipt.domain.map.MindMapDataSource
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.TestResultViewResponseRemote
 import ru.lipt.domain.map.models.TestingCompleteRequestRemote
+import ru.lipt.domain.map.models.TestsEditResponseRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
@@ -67,9 +68,14 @@ class MindMapDataSourceImpl(
         }.body()
     }
 
-        @Serializable
-        private data class NodeToggleResponseRemote(
-            val nodeId: String,
-            val isMarked: Boolean,
-        )
+    override suspend fun generateTest(nodeId: String): TestsEditResponseRemote =
+        client.post(
+            urlString = "${config.baseUrl}/tests/generate?nodeId=$nodeId"
+        ).body()
+
+    @Serializable
+    private data class NodeToggleResponseRemote(
+        val nodeId: String,
+        val isMarked: Boolean,
+    )
 }

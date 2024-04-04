@@ -6,8 +6,15 @@ import ru.lipt.testing.edit.question.QuestionEditModel
 @Immutable
 data class TestingEditScreenUi(
     val nodeTitle: String = "",
-    val isButtonEnabled: Boolean = false,
-    val isButtonInProgress: Boolean = false,
-    val showAlertRemoveQuestion: Boolean = false,
+    val isSaveButtonEnabled: Boolean = false,
+    val isSaveButtonInProgress: Boolean = false,
+    val alert: Alert? = null,
+    val isGenerateInProgress: Boolean = false,
     val questions: List<QuestionEditModel> = listOf(),
-)
+    val isGenerateButtonEnabled: Boolean = isSaveButtonEnabled || questions.size <= 1,
+) {
+    sealed class Alert {
+        data object Remove : Alert()
+        data object Generate : Alert()
+    }
+}

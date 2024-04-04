@@ -51,7 +51,6 @@ import ru.lipt.coreui.theme.MindTheme
 import ru.lipt.details.MR
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
 import ru.lipt.details.editable.models.EditableTestResultUi
-import ru.lipt.details.editable.models.RemoveAlertUi
 import ru.lipt.testing.common.navigation.TestingNavigationDestinations
 
 @Composable
@@ -74,7 +73,7 @@ fun EditableDetailsContent(
             backgroundColor = MaterialTheme.colors.background,
             title = {},
             navigationIcon = {
-                IconButton(onClick = navigator::pop) {
+                IconButton(onClick = screenModel::onNavigateUpClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = ""
                     )
@@ -97,6 +96,7 @@ fun EditableDetailsContent(
                     snackBarHostState.showSnackbar(savedDataButton)
                 }
                 NavigationTarget.SuccessRemove -> navigator.pop()
+                NavigationTarget.NavigateUp -> navigator.pop()
             }
         }
 
@@ -112,7 +112,10 @@ fun EditableDetailsContent(
                 onSaveButtonClick = screenModel::onSaveButtonClick,
                 onRemoveButtonClick = screenModel::onRemoveButtonClick,
                 onConfirmRemoveNode = screenModel::onRemoveAlertConfirm,
-                onCancelRemoveNode = screenModel::onRemoveAlertClose,
+                onCancelAlert = screenModel::onAlertClose,
+                onBackConfirmAlertButtonClick = screenModel::onBackConfirmAlertButtonClick,
+                onNextConfirmAlertButtonClick = screenModel::onNextConfirmAlertButtonClick,
+
                 scrollState = scrollState,
             )
         }
@@ -136,16 +139,28 @@ private fun Content(
     onSaveButtonClick: () -> Unit,
     onRemoveButtonClick: () -> Unit,
     onConfirmRemoveNode: () -> Unit,
-    onCancelRemoveNode: () -> Unit,
+    onCancelAlert: () -> Unit,
+    onBackConfirmAlertButtonClick: () -> Unit,
+    onNextConfirmAlertButtonClick: () -> Unit,
 ) {
     SnackbarHost(hostState = snackBarHostState)
 
-    ui.remoevAlertUi?.let {
-        RemoveNodeAlertDialog(
-            ui = it,
-            onCancel = onCancelRemoveNode,
-            onConfirm = onConfirmRemoveNode,
-        )
+    ui.alertUi?.let { alert ->
+        when (alert) {
+            is EditableDetailsScreenUi.Alert.RemoveAlertUi -> RemoveNodeAlertDialog(
+                ui = alert,
+                onCancel = onCancelAlert,
+                onConfirm = onConfirmRemoveNode,
+            )
+            EditableDetailsScreenUi.Alert.BackAndSave -> BackSaveAlertDialog(
+                onCancel = onCancelAlert,
+                onConfirm = onBackConfirmAlertButtonClick,
+            )
+            EditableDetailsScreenUi.Alert.NextAndSave -> TestNavigationSaveAlertDialog(
+                onCancel = onCancelAlert,
+                onConfirm = onNextConfirmAlertButtonClick,
+            )
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -169,6 +184,7 @@ private fun Content(
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                enabled = !ui.isRootNode,
                 value = ui.description,
                 onValueChange = onDescriptionChange,
                 label = { Text(stringResource(MR.strings.node_details_appbar_field_nodes_description)) },
@@ -177,6 +193,7 @@ private fun Content(
             Spacer(modifier = Modifier.height(16.dp))
 
             ProgressButton(
+                enabled = !ui.isRootNode,
                 onClick = onTestEditButtonClick, modifier = Modifier.fillMaxWidth(), text = when (ui.testResult) {
                     is EditableTestResultUi.NoTest -> stringResource(MR.strings.node_details_create_test)
                     is EditableTestResultUi.EditTest -> stringResource(MR.strings.node_details_edit_test)
@@ -207,7 +224,7 @@ private fun Content(
 
 @Composable
 private fun RemoveNodeAlertDialog(
-    ui: RemoveAlertUi,
+    ui: EditableDetailsScreenUi.Alert.RemoveAlertUi,
     onCancel: () -> Unit,
     onConfirm: () -> Unit,
 ) {
@@ -216,6 +233,36 @@ private fun RemoveNodeAlertDialog(
         text = stringResource(MR.strings.remove_node_alert_message, ui.parentTitle),
         confirmText = stringResource(MR.strings.remove_node_alert_confirm),
         cancelText = stringResource(MR.strings.remove_node_alert_cancel),
+        onCancel = onCancel,
+        onConfirm = onConfirm,
+    )
+}
+
+@Composable
+private fun BackSaveAlertDialog(
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        title = stringResource(MR.strings.alert_back_node_alert_title),
+        text = stringResource(MR.strings.alert_back_node_alert_message),
+        confirmText = stringResource(MR.strings.alert_back_node_alert_confirm),
+        cancelText = stringResource(MR.strings.alert_back_node_alert_cancel),
+        onCancel = onCancel,
+        onConfirm = onConfirm,
+    )
+}
+
+@Composable
+private fun TestNavigationSaveAlertDialog(
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        title = stringResource(MR.strings.alert_test_node_alert_title),
+        text = stringResource(MR.strings.alert_test_node_alert_message),
+        confirmText = stringResource(MR.strings.alert_test_node_alert_confirm),
+        cancelText = stringResource(MR.strings.alert_test_node_alert_cancel),
         onCancel = onCancel,
         onConfirm = onConfirm,
     )

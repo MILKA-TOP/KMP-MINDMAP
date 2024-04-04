@@ -13,6 +13,16 @@
     <string name="remove_node_alert_confirm">Remove</string>
     <string name="remove_node_alert_cancel">Cancel</string>
 
+    <string name="alert_back_node_alert_title">Navigate up</string>
+    <string name="alert_back_node_alert_message">Do you want navigate up and save input data?</string>
+    <string name="alert_back_node_alert_confirm">Save</string>
+    <string name="alert_back_node_alert_cancel">Cancel</string>
+
+    <string name="alert_test_node_alert_title">Test</string>
+    <string name="alert_test_node_alert_message">Do you want navigate to test and save input data?</string>
+    <string name="alert_test_node_alert_confirm">Save</string>
+    <string name="alert_test_node_alert_cancel">Cancel</string>
+
     <string name="node_text_for_unmarked_node_button_text">Mark node as completed</string>
     <string name="node_text_for_marked_node_button_text">Unmark node</string>
     <string name="node_text_complete_test">Complete test</string>

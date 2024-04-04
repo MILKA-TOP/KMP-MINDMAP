@@ -13,7 +13,6 @@ import ru.lipt.core.success
 import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
 import ru.lipt.details.editable.models.EditableTestResultUi
-import ru.lipt.details.editable.models.RemoveAlertUi
 import ru.lipt.domain.map.MindMapInteractor
 import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
@@ -35,6 +34,10 @@ class EditableDetailsScreenModel(
     private var _currentTitle: String = ""
     private var _initDescription: String = ""
     private var _currentDescription: String = ""
+
+    private val _isDataWasEditable: Boolean
+        get() = (_initTitle != _currentTitle || _initDescription != _currentDescription)
+                && _currentTitle.isNotEmpty()
 
     init {
         init()
@@ -83,6 +86,78 @@ class EditableDetailsScreenModel(
     }
 
     fun onSaveButtonClick() {
+        saveAction {
+            _uiState.navigateTo(NavigationTarget.SuccessSave)
+        }
+    }
+
+    fun onBackConfirmAlertButtonClick() {
+        saveAction {
+            _uiState.navigateTo(NavigationTarget.NavigateUp)
+        }
+    }
+
+    fun onNextConfirmAlertButtonClick() {
+        saveAction {
+            onTestNavigate()
+        }
+    }
+
+    fun onTestEditButtonClick() {
+        if (_isDataWasEditable) {
+            _uiState.updateUi { copy { it.copy(alertUi = EditableDetailsScreenUi.Alert.NextAndSave) } }
+        } else {
+            onTestNavigate()
+        }
+    }
+
+    fun onNavigateUpClick() {
+        if (_isDataWasEditable) {
+            _uiState.updateUi { copy { it.copy(alertUi = EditableDetailsScreenUi.Alert.BackAndSave) } }
+        } else {
+            _uiState.navigateTo(NavigationTarget.NavigateUp)
+        }
+    }
+
+    private fun EditableDetailsScreenUi.validateSaveButton() = copy(
+        isSaveButtonEnabled = _isDataWasEditable
+    )
+
+    fun onRemoveButtonClick() {
+        val parentNodeTitle = _map?.title?.takeIf { _parentNode?.parentNodeId == null } ?: _parentNode?.label.orEmpty()
+        _uiState.updateUi { copy { it.copy(alertUi = EditableDetailsScreenUi.Alert.RemoveAlertUi(parentNodeTitle)) } }
+    }
+
+    fun onAlertClose() {
+        _uiState.updateUi { copy { it.copy(alertUi = null) } }
+    }
+
+    fun onRemoveAlertConfirm() {
+        val mapId = _map?.id ?: return
+        val nodeId = _node?.id ?: return
+        screenModelScope.launchCatching(
+            finalBlock = {
+                _uiState.updateUi { copy { it.copy(alertUi = null) } }
+            }
+        ) {
+            mapInteractor.removeNode(mapId, nodeId)
+            _uiState.navigateTo(NavigationTarget.SuccessRemove)
+        }
+    }
+
+    private fun onTestNavigate() {
+        _uiState.navigateTo(
+            NavigationTarget.EditTest(
+                TestEditScreenParams(
+                    mapId = params.mapId,
+                    nodeId = params.nodeId,
+                    testId = _node?.test?.id
+                )
+            )
+        )
+    }
+
+    private fun saveAction(onSuccessAction: () -> Unit) {
         val mapId = _map?.id ?: return
         val nodeId = _node?.id ?: return
         val title = _currentTitle.trim()
@@ -95,45 +170,7 @@ class EditableDetailsScreenModel(
             _currentDescription = _initDescription
 
             _uiState.updateUi { copy { it.copy(title = title, description = description).validateSaveButton() } }
-            _uiState.navigateTo(NavigationTarget.SuccessSave)
-        }
-    }
-
-    fun onTestEditButtonClick() {
-        _uiState.navigateTo(
-            NavigationTarget.EditTest(
-                TestEditScreenParams(
-                    mapId = params.mapId,
-                    nodeId = params.nodeId,
-                    testId = _node?.test?.id
-                )
-            )
-        )
-    }
-
-    private fun EditableDetailsScreenUi.validateSaveButton() = copy(
-        isSaveButtonEnabled = (_initTitle != _currentTitle || _initDescription != _currentDescription) && _currentTitle.isNotEmpty()
-    )
-
-    fun onRemoveButtonClick() {
-        val parentNodeTitle = _map?.title?.takeIf { _parentNode?.parentNodeId == null } ?: _parentNode?.label.orEmpty()
-        _uiState.updateUi { copy { it.copy(remoevAlertUi = RemoveAlertUi(parentNodeTitle)) } }
-    }
-
-    fun onRemoveAlertClose() {
-        _uiState.updateUi { copy { it.copy(remoevAlertUi = null) } }
-    }
-
-    fun onRemoveAlertConfirm() {
-        val mapId = _map?.id ?: return
-        val nodeId = _node?.id ?: return
-        screenModelScope.launchCatching(
-            finalBlock = {
-                _uiState.updateUi { copy { it.copy(remoevAlertUi = null) } }
-            }
-        ) {
-            mapInteractor.removeNode(mapId, nodeId)
-            _uiState.navigateTo(NavigationTarget.SuccessRemove)
+            onSuccessAction()
         }
     }
 }
