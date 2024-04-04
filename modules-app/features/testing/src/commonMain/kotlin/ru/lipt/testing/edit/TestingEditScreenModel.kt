@@ -17,6 +17,7 @@ import ru.lipt.domain.map.models.AnswersEditResponseRemote
 import ru.lipt.domain.map.models.QuestionType
 import ru.lipt.domain.map.models.QuestionsEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
+import ru.lipt.domain.map.models.TestsEditResponseRemote
 import ru.lipt.testing.common.params.TestEditScreenParams
 import ru.lipt.testing.edit.models.TestingEditScreenUi
 import ru.lipt.testing.edit.question.QuestionEditModel
@@ -48,25 +49,14 @@ class TestingEditScreenModel(
         }) {
             _uiState.updateUi { loading() }
             val map = mapInteractor.getMap(params.mapId) as SummaryEditMapResponseRemote
-            val node = mapInteractor.getEditableNode(params.mapId, params.nodeId)
+            val node = map.nodes.first { it.id == params.nodeId }
             val nodeTitle = node.label.takeIf { node.parentNodeId != null } ?: map.title
-            val testModel = node.test?.questions?.map { question ->
-                QuestionModel(id = question.id,
-                    type = question.questionType,
-                    question = question.questionText,
-                    answers = question.answers.map { answer ->
-                        AnswerModel(
-                            id = answer.id, text = answer.answerText, isCorrect = answer.isCorrect
-                        )
-                    })
-            } ?: listOf(QuestionModel())
-
-            _questionsModel = testModel.toMutableList()
-
+            val testModel = updateUiByTestModel(node.test)
             _uiState.updateUi {
                 TestingEditScreenUi(
                     nodeTitle = nodeTitle,
                     questions = testModel.map { it.toUi() },
+                    isSaveButtonEnabled = validate(),
                 ).success()
             }
         }
@@ -74,7 +64,7 @@ class TestingEditScreenModel(
 
     fun addQuestion() {
         _questionsModel.add(QuestionModel())
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
         _uiState.navigateTo(NavigationTarget.OpenQuestions(_questionsModel.size - 1))
     }
 
@@ -83,7 +73,7 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(answers = question.answers + AnswerModel())
         _questionsModel[questionPosition] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onItemTextChanged(questionPosition: Int, itemPosition: Int, text: String) {
@@ -93,7 +83,7 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(answers = answers)
         _questionsModel[questionPosition] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onMultipleSelectChanged(questionPosition: Int, itemPosition: Int, boolean: Boolean) {
@@ -103,7 +93,7 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(answers = answers)
         _questionsModel[questionPosition] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onSingleSelectChanged(questionPosition: Int, itemPosition: Int) {
@@ -113,7 +103,7 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(answers = answers)
         _questionsModel[questionPosition] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onHeaderTextChanged(questionPosition: Int, text: String) {
@@ -121,16 +111,16 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(question = text.trimStart())
         _questionsModel[questionPosition] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onSaveButtonClick() {
         screenModelScope.launchCatching(catchBlock = { throwable ->
             _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
         }, finalBlock = {
-            _uiState.updateUi { copy { it.copy(isButtonInProgress = false) } }
+            _uiState.updateUi { copy { it.copy(isSaveButtonInProgress = false) } }
         }) {
-            _uiState.updateUi { copy { it.copy(isButtonInProgress = true) } }
+            _uiState.updateUi { copy { it.copy(isSaveButtonInProgress = true) } }
 
             val testId = params.testId ?: randomUUID()
             val questions = _questionsModel.map { question ->
@@ -150,6 +140,35 @@ class TestingEditScreenModel(
 
             mapInteractor.updateQuestions(params.mapId, params.nodeId, testId, questions)
             _uiState.navigateTo(NavigationTarget.SuccessQuestionsSave)
+        }
+    }
+
+    fun onGenerateButtonClick() {
+        _uiState.updateUi { copy { it.copy(alert = TestingEditScreenUi.Alert.Generate) } }
+    }
+
+    fun onGenerateConfirm() {
+        onCloseAlert()
+        screenModelScope.launchCatching(
+            catchBlock = { throwable ->
+                _uiState.showAlertError(UiError.Alert.Default(message = throwable.message))
+            }, finalBlock = {
+                _uiState.updateUi { copy { it.copy(isGenerateInProgress = false) } }
+            }
+        ) {
+            _uiState.updateUi { copy { it.copy(isGenerateInProgress = true) } }
+
+            val test = mapInteractor.generateTest(params.mapId, params.nodeId)
+            val testModel = updateUiByTestModel(test)
+
+            _uiState.updateUi {
+                copy {
+                    it.copy(
+                        questions = testModel.map { it.toUi() },
+                        isSaveButtonEnabled = validate()
+                    )
+                }
+            }
         }
     }
 
@@ -197,13 +216,13 @@ class TestingEditScreenModel(
         val updatedQuestion = question.copy(type = updatedType, answers = answers)
         _questionsModel[position] = updatedQuestion
 
-        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
     }
 
     fun onCloseClick(position: Int) {
         if (_questionsModel.size <= 1) return
         _savedQuestionPosition = position
-        _uiState.updateUi { copy { it.copy(showAlertRemoveQuestion = true) } }
+        _uiState.updateUi { copy { it.copy(alert = TestingEditScreenUi.Alert.Remove) } }
     }
 
     fun onRemoveQuestion() {
@@ -211,14 +230,40 @@ class TestingEditScreenModel(
         screenModelScope.launchCatching {
             _questionsModel.removeAt(questionPosition)
 
-            _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isButtonEnabled = validate()) } }
+            _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
             onCloseAlert()
         }
     }
 
+    fun onRemoveAnswer(questionPosition: Int, itemPosition: Int) {
+        val question = _questionsModel[questionPosition]
+        val answers = question.answers.toMutableList()
+        answers.removeAt(itemPosition)
+        val updatedQuestion = question.copy(answers = answers)
+        _questionsModel[questionPosition] = updatedQuestion
+
+        _uiState.updateUi { copy { it.copy(questions = _questionsModel.map { it.toUi() }, isSaveButtonEnabled = validate()) } }
+    }
+
     fun onCloseAlert() {
         _savedQuestionPosition = null
-        _uiState.updateUi { copy { it.copy(showAlertRemoveQuestion = false) } }
+        _uiState.updateUi { copy { it.copy(alert = null) } }
+    }
+
+    private fun updateUiByTestModel(test: TestsEditResponseRemote?): List<QuestionModel> {
+        val testModel = test?.questions?.map { question ->
+            QuestionModel(id = question.id,
+                type = question.questionType,
+                question = question.questionText,
+                answers = question.answers.map { answer ->
+                    AnswerModel(
+                        id = answer.id, text = answer.answerText, isCorrect = answer.isCorrect
+                    )
+                })
+        } ?: listOf(QuestionModel())
+
+        _questionsModel = testModel.toMutableList()
+        return testModel
     }
 
     private data class QuestionModel(

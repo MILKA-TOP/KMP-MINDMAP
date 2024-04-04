@@ -354,4 +354,16 @@ class MindMapInteractor(
         }
         return result
     }
+
+    suspend fun generateTest(mapId: String, nodeId: String): TestsEditResponseRemote {
+        updateMindMap(mapId)
+        return mapRepository.generateTest(nodeId).also { testModel ->
+            mapRepository.updateCache(mapId) {
+                (this as? SummaryEditMapResponseRemote)?.let {
+                    it.copy(
+                        nodes = it.nodes.map { if (it.id == nodeId) it.copy(test = testModel) else it })
+                } ?: this
+            }
+        }
+    }
 }

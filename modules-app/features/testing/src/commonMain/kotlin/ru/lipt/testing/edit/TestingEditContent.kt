@@ -2,6 +2,7 @@ package ru.lipt.testing.edit
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -127,11 +130,16 @@ private fun Content(
             }
         }
     }
-    if (ui.showAlertRemoveQuestion) {
-        RemoveAlert(
+    when (ui.alert) {
+        TestingEditScreenUi.Alert.Remove -> RemoveAlert(
             onCancel = screenModel::onCloseAlert,
             onConfirm = screenModel::onRemoveQuestion,
         )
+        TestingEditScreenUi.Alert.Generate -> GenerateAlert(
+            onCancel = screenModel::onCloseAlert,
+            onConfirm = screenModel::onGenerateConfirm,
+        )
+        null -> Unit
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -155,6 +163,7 @@ private fun Content(
                     onCloseClick = { screenModel.onCloseClick(position) },
                     onFieldTextChanged = { pos, text -> screenModel.onItemTextChanged(position, pos, text) },
                     updateFieldType = { type -> screenModel.updateFieldType(position, type) },
+                    onFieldRemoveClick = { screenModel.onRemoveAnswer(position, it) }
                 )
             }
             NumberRow(
@@ -168,9 +177,20 @@ private fun Content(
             ProgressButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(MR.strings.testing_edit_save_button),
-                enabled = ui.isButtonEnabled,
+                enabled = ui.isSaveButtonEnabled,
                 onClick = screenModel::onSaveButtonClick
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            ProgressButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(MR.strings.generate_questions_button_text),
+                enabled = ui.isGenerateButtonEnabled,
+                onClick = screenModel::onGenerateButtonClick,
+                colors = ButtonDefaults.outlinedButtonColors()
+            )
+        }
+        if (ui.isGenerateInProgress) {
+            CircularProgressIndicatorLoadingScreen(modifier = Modifier.fillMaxSize().alpha(0.3f).clickable(onClick = {}))
         }
     }
 }
@@ -201,6 +221,21 @@ private fun RemoveAlert(
         text = stringResource(MR.strings.testing_edit_alert_remove_message),
         confirmText = stringResource(MR.strings.testing_edit_alert_remove_remove),
         cancelText = stringResource(MR.strings.testing_edit_alert_remove_cancel),
+        onCancel = onCancel,
+        onConfirm = onConfirm,
+    )
+}
+
+@Composable
+private fun GenerateAlert(
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        title = stringResource(MR.strings.testing_edit_alert_generate_title),
+        text = stringResource(MR.strings.testing_edit_alert_generate_message),
+        confirmText = stringResource(MR.strings.testing_edit_alert_generate_remove),
+        cancelText = stringResource(MR.strings.testing_edit_alert_generate_cancel),
         onCancel = onCancel,
         onConfirm = onConfirm,
     )

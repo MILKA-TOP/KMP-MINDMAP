@@ -28,6 +28,7 @@ fun OutlinedCountedTextField(
     maxSymbols: Int = Int.MAX_VALUE,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    fieldModifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -46,7 +47,9 @@ fun OutlinedCountedTextField(
     shape: Shape = MaterialTheme.shapes.small,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
-    Column {
+    Column(
+        modifier = fieldModifier
+    ) {
         OutlinedTextField(
             value = value,
             onValueChange = { updateValue -> if (updateValue.length <= maxSymbols) onValueChange(updateValue) },

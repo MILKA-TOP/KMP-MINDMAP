@@ -54,6 +54,7 @@ fun TableField(
     onCloseClick: () -> Unit = {},
     onFieldTextChanged: (String) -> Unit = {},
     updateFieldType: (FieldTypes) -> Unit = {},
+    onFieldRemoveClick: () -> Unit = {},
 ) {
     var popUpState by remember { mutableStateOf(false) }
     var onPopUpOpen: () -> Unit = { popUpState = true }
@@ -66,8 +67,13 @@ fun TableField(
         is TableFieldModel.SelectQuestionType -> SelectQuestionType(model, onPopUpOpen)
         is TableFieldModel.SingleCheckboxSelect -> SingleCheckboxSelect(model, onSingleCheckboxSelect)
         is TableFieldModel.MultipleCheckboxSelect -> MultipleCheckboxSelect(model, onMultipleCheckboxSelect)
-        is TableFieldModel.SingleCheckboxEdit -> SingleCheckboxEdit(model, onSingleCheckboxSelect, onFieldTextChanged)
-        is TableFieldModel.MultipleCheckboxEdit -> MultipleCheckboxEdit(model, onMultipleCheckboxSelect, onFieldTextChanged)
+        is TableFieldModel.SingleCheckboxEdit -> SingleCheckboxEdit(model, onSingleCheckboxSelect, onFieldTextChanged, onFieldRemoveClick)
+        is TableFieldModel.MultipleCheckboxEdit -> MultipleCheckboxEdit(
+            model,
+            onMultipleCheckboxSelect,
+            onFieldTextChanged,
+            onFieldRemoveClick
+        )
 
         is TableFieldModel.NewItem -> NewItem(onNewItemClick)
     }
@@ -140,6 +146,7 @@ private fun HeaderEdit(
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         OutlinedCountedTextField(
+            fieldModifier = Modifier.weight(1f),
             maxSymbols = 200,
             label = {
                 Text("Question")
@@ -188,13 +195,20 @@ private fun SingleCheckboxEdit(
     model: TableFieldModel.SingleCheckboxEdit,
     onClick: () -> Unit,
     onValueChange: (String) -> Unit,
+    onRemoveClick: () -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         RadioButton(
             selected = model.isSelected,
             onClick = onClick,
         )
         OutlinedTextField(modifier = Modifier.weight(1f), value = model.text, onValueChange = onValueChange, singleLine = true)
+        IconButton(onClick = onRemoveClick) {
+            Icon(imageVector = Icons.Filled.Close, contentDescription = "")
+        }
     }
 }
 
@@ -231,13 +245,20 @@ private fun MultipleCheckboxEdit(
     model: TableFieldModel.MultipleCheckboxEdit,
     onClick: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
+    onRemoveClick: () -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Checkbox(
             checked = model.isSelected,
             onCheckedChange = onClick,
         )
         OutlinedTextField(modifier = Modifier.weight(1f), value = model.text, onValueChange = onValueChange, singleLine = true)
+        IconButton(onClick = onRemoveClick) {
+            Icon(imageVector = Icons.Filled.Close, contentDescription = "")
+        }
     }
 }
 

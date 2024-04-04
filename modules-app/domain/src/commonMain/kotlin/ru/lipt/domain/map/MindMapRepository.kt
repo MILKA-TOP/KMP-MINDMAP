@@ -7,6 +7,7 @@ import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.domain.map.models.TestResultViewResponseRemote
 import ru.lipt.domain.map.models.TestingCompleteRequestRemote
+import ru.lipt.domain.map.models.TestsEditResponseRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
@@ -53,4 +54,6 @@ class MindMapRepository(
     }
     suspend fun sendTestAnswersForNode(testId: String, testAnswers: TestingCompleteRequestRemote): TestResultViewResponseRemote =
         remoteDataSource.sendTestAnswersForNode(testId, testAnswers)
+
+    suspend fun generateTest(nodeId: String): TestsEditResponseRemote = remoteDataSource.generateTest(nodeId)
 }
