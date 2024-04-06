@@ -7,11 +7,11 @@ import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
 import ru.lipt.core.validate.isEmailValid
-import ru.lipt.domain.login.UnAuthedLoginInteractor
+import ru.lipt.domain.login.IUnAuthedLoginInteractor
 import ru.lipt.login.login.models.LoginUiModel
 
 class LoginScreenModel(
-    private val loginInteractor: UnAuthedLoginInteractor
+    private val loginInteractor: IUnAuthedLoginInteractor
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<LoginUiModel, NavigationTarget> =

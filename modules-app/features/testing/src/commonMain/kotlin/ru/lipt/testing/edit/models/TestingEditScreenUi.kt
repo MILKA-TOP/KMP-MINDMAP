@@ -11,7 +11,7 @@ data class TestingEditScreenUi(
     val alert: Alert? = null,
     val isGenerateInProgress: Boolean = false,
     val questions: List<QuestionEditModel> = listOf(),
-    val isGenerateButtonEnabled: Boolean = isSaveButtonEnabled || questions.size <= 1,
+    val isGenerateButtonEnabled: Boolean = true,
 ) {
     sealed class Alert {
         data object Remove : Alert()

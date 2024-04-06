@@ -6,10 +6,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.coroutines.launchCatching
-import ru.lipt.domain.login.UnAuthedLoginInteractor
+import ru.lipt.domain.login.IUnAuthedLoginInteractor
 
 class SplashScreenModel(
-    private val loginInteractor: UnAuthedLoginInteractor
+    private val loginInteractor: IUnAuthedLoginInteractor
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<Unit, NavigationTarget> =

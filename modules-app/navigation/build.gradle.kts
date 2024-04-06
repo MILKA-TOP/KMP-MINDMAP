@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("com.android.library")
     id("org.jetbrains.compose")
 }
@@ -44,8 +45,7 @@ kotlin {
                 api("androidx.core:core-ktx:1.10.1")
             }
         }
-        val iosX64Main by getting
-        val iosArm64Main by getting
+        val iosX64Main by gettingval iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
             dependsOn(commonMain)

@@ -2,6 +2,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("org.jetbrains.compose")
 }
 

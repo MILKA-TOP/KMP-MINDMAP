@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("com.android.library")
     id("org.jetbrains.compose")
 }
@@ -31,7 +32,7 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
@@ -49,6 +50,7 @@ kotlin {
                 api("androidx.core:core-ktx:1.10.1")
             }
         }
+        
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting

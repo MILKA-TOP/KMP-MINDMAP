@@ -157,7 +157,6 @@ class TestingEditScreenModel(
             }
         ) {
             _uiState.updateUi { copy { it.copy(isGenerateInProgress = true) } }
-
             val test = mapInteractor.generateTest(params.mapId, params.nodeId)
             val testModel = updateUiByTestModel(test)
 
