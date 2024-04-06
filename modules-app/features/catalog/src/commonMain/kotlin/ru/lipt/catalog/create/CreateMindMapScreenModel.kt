@@ -8,12 +8,12 @@ import ru.lipt.catalog.create.models.CreateMindMapModel
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
-import ru.lipt.domain.catalog.CatalogInteractor
+import ru.lipt.domain.catalog.ICatalogInteractor
 import ru.lipt.map.common.params.MapScreenParams
 
 class CreateMindMapScreenModel(
     params: CreateMindMapParams,
-    private val catalogInteractor: CatalogInteractor,
+    private val catalogInteractor: ICatalogInteractor,
 ) : ScreenModel {
 
     private val referralParams: CreateMindMapParams.Referral? = (params as? CreateMindMapParams.Referral)

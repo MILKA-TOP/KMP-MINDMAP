@@ -9,11 +9,11 @@ import ru.lipt.catalog.main.models.CatalogScreenUi.Companion.toUi
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
-import ru.lipt.domain.catalog.CatalogInteractor
+import ru.lipt.domain.catalog.ICatalogInteractor
 import ru.lipt.map.common.params.MapScreenParams
 
 class CatalogScreenModel(
-    private val catalogInteractor: CatalogInteractor,
+    private val catalogInteractor: ICatalogInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<CatalogScreenUi, NavigationTarget> =

@@ -3,8 +3,9 @@ plugins {
     alias(libs.plugins.ksp)
     id("com.android.library")
     id("org.jetbrains.compose")
-      id("dev.icerock.mobile.multiplatform-resources")
-      id("org.jetbrains.kotlinx.kover")
+    id("dev.icerock.mobile.multiplatform-resources")
+    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.mockmp)
 }
 
 private val iosBaseName = "feature.catalog"
@@ -56,6 +57,15 @@ kotlin {
                 implementation(project(":modules-app:domain"))
             }
         }
+        commonTest.dependencies {
+            implementation(kotlin("test-junit"))
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.bundles.commonTest)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // Check for the latest version
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.8.0") // Check for the latest version
+        }
         val androidMain by getting {
             dependencies {
                 api("androidx.activity:activity-compose:1.7.2")
@@ -104,4 +114,8 @@ android {
 
 multiplatformResources {
     resourcesPackage.set(androidNamespace) // required
+}
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }

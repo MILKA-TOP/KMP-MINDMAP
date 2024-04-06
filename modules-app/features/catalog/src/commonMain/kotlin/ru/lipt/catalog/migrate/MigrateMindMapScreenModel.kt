@@ -9,11 +9,11 @@ import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
 import ru.lipt.core.uri.uri
-import ru.lipt.domain.catalog.CatalogInteractor
+import ru.lipt.domain.catalog.ICatalogInteractor
 import ru.lipt.map.common.params.MapScreenParams
 
 class MigrateMindMapScreenModel(
-    private val catalogInteractor: CatalogInteractor,
+    private val catalogInteractor: ICatalogInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<MigrateMindMapModel, NavigationTarget> =
