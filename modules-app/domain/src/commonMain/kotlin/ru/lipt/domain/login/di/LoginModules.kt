@@ -9,6 +9,7 @@ import ru.lipt.domain.login.LoginInteractor
 import ru.lipt.domain.login.UnAuthedLoginInteractor
 import ru.lipt.domain.login.LoginRepository
 import ru.lipt.domain.login.UnAuthedLoginRepository
+import ru.lipt.domain.login.models.ILoginInteractor
 
 @IgnoreKover
 val loginModules = module {
@@ -18,7 +19,7 @@ val loginModules = module {
                 remoteDataSource = get()
             )
         }
-        scoped {
+        scoped<ILoginInteractor> {
             LoginInteractor(
                 loginRepository = getUserSessionScope().get(),
                 sessionRepository = get(),

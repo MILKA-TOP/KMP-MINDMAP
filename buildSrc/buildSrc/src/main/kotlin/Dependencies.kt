@@ -30,7 +30,7 @@ object Dependencies {
     }
 
     object Koin {
-        private const val koin_version = "3.5.0"
+        private const val koin_version = "3.5.3"
 
         const val core = "io.insert-koin:koin-core:$koin_version"
         const val android = "io.insert-koin:koin-android:$koin_version"
