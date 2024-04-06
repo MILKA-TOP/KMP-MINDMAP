@@ -74,6 +74,7 @@ class PinPadCreateScreenModelTest : TestsWithMocks() {
     }
 
     @Test
+    @Suppress("TooGenericExceptionThrown")
     fun `submitPin shows error on loginInteractor failure`() = runTest {
         val validPin = "1234"
         val errorMessage = "Error setting PIN"

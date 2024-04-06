@@ -68,6 +68,7 @@ kotlin {
             implementation(libs.bundles.commonTest)
 
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // Check for the latest version
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.8.0") // Check for the latest version
         }
         
         val iosX64Main by getting

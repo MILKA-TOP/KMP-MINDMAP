@@ -7,7 +7,7 @@ import ru.lipt.domain.session.SessionRepository
 class LoginInteractor(
     private val loginRepository: LoginRepository,
     private val sessionRepository: SessionRepository,
-): ILoginInteractor {
+) : ILoginInteractor {
 
     override suspend fun setPin(pin: String) {
         val session = sessionRepository.getSession()

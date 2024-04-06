@@ -75,6 +75,7 @@ class RegistryInputScreenModelTest : TestsWithMocks() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    @Suppress("TooGenericExceptionThrown")
     fun `show error alert on registry failure`() = runTest {
         everySuspending { unAuthedLoginInteractor.register(isAny(), isAny()) } runs { throw Exception() }
         prepareValidInputs()
@@ -82,7 +83,6 @@ class RegistryInputScreenModelTest : TestsWithMocks() {
         advanceTimeBy(3_000) // Allow for coroutine to complete
         assertFalse(registryInputScreenModel.uiState.value.alertErrors.isEmpty())
     }
-
 
     @Test
     fun `onRegistryButtonClick with valid input triggers navigation`() = runTest {
@@ -101,11 +101,9 @@ class RegistryInputScreenModelTest : TestsWithMocks() {
         assertFalse(registryInputScreenModel.uiState.value.model.registryButtonEnable)
     }
 
-
     private fun prepareValidInputs() {
         registryInputScreenModel.onEmailTextChanged("test@example.com")
         registryInputScreenModel.onPasswordTextChanged("password123")
         registryInputScreenModel.onPasswordRepeatTextChanged("password123")
     }
-
 }

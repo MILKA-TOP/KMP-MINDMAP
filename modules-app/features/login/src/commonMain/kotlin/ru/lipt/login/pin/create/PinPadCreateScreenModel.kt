@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
-import ru.lipt.domain.login.LoginInteractor
 import ru.lipt.domain.login.models.ILoginInteractor
 import ru.lipt.login.pin.create.models.PinPadCreateModel
 import ru.lipt.login.pin.extensions.PIN_SIZE
