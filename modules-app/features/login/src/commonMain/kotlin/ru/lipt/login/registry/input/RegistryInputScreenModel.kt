@@ -59,7 +59,6 @@ class RegistryInputScreenModel(
             }
         ) {
             _uiState.updateUi { copy(buttonInProgress = true) }
-            delay(2_500L)
             loginInteractor.register(email = ui.email.trim(), password = ui.password.trim())
 
             _uiState.navigateTo(NavigationTarget.PinCreateNavigate)
