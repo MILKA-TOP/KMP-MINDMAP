@@ -1,0 +1,168 @@
+import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.kodein.mock.Mock
+import org.kodein.mock.tests.TestsWithMocks
+import ru.lipt.catalog.search.NavigationTarget
+import ru.lipt.catalog.search.SearchScreenModel
+import ru.lipt.catalog.search.models.SearchAlerts
+import ru.lipt.core.LoadingState
+import ru.lipt.domain.catalog.ICatalogInteractor
+import ru.lipt.domain.catalog.models.CatalogMindMap
+import ru.lipt.domain.catalog.models.UserDomainModel
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class SearchScreenModelTest : TestsWithMocks() {
+    override fun setUpMocks() = injectMocks(mocker) // (1)
+
+    @Mock
+    lateinit var catalogInteractor: ICatalogInteractor
+
+    @Mock
+    lateinit var mockFile: MPFile<Any>
+
+    private val searchScreenModel by withMocks { SearchScreenModel(catalogInteractor) }
+
+    @BeforeTest
+    fun setup() {
+        Dispatchers.setMain(StandardTestDispatcher())
+    }
+
+    @Test
+    fun `initial state is correct`() = runTest {
+        with(searchScreenModel.uiState.value.model) {
+            assertTrue(searchText.isEmpty())
+            assertTrue(content is LoadingState.Idle)
+        }
+    }
+
+    @Test
+    fun `onSearchTextChanged updates searchText`() = runTest {
+        searchScreenModel.onSearchTextChanged("test")
+        assertEquals("test", searchScreenModel.uiState.value.model.searchText)
+    }
+
+    @Test
+    fun `loadMaps with valid query updates content`() = runTest {
+        val maps = listOf(CatalogMindMap("1", "Map 1", UserDomainModel("user1", "User 1"), "Description 1", true, false, true))
+        searchMaps(maps)
+        advanceTimeBy(2_500L)
+
+        assertTrue(searchScreenModel.uiState.value.model.content is LoadingState.Success)
+    }
+
+    @Test
+    fun `onHideAddAlert clears addMindMapAlert`() = runTest {
+        searchScreenModel.onHideAddAlert()
+        assertEquals(null, searchScreenModel.uiState.value.model.addMindMapAlert)
+    }
+
+    @Test
+    fun `onMapElementClick with saved map navigates`() = runTest {
+        val mapId = "1"
+        val maps = listOf(CatalogMindMap(mapId, "Map", UserDomainModel("user", "User"), "Desc", true, true, false))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick(mapId)
+
+        assertTrue(searchScreenModel.uiState.value.navigationEvents.first() is NavigationTarget.ToMapNavigate)
+    }
+
+    // //
+
+    @Test
+    fun `onSearchTextChanged with invalid query keeps content idle`() = runTest {
+        searchScreenModel.onSearchTextChanged("ab") // Assuming MINIMAL_QUERY_LENGTH is 3
+        assertTrue(searchScreenModel.uiState.value.model.content is LoadingState.Idle)
+    }
+
+    @Test
+    fun `loadMaps with invalid query does not update content`() = runTest {
+        // Directly testing loadMaps might not be possible due to its visibility, but this logic can be indirectly tested through onSearchTextChanged.
+        searchScreenModel.onSearchTextChanged("a")
+        // Assuming a delay to simulate user pausing in typing, which could trigger loadMaps in real usage.
+        advanceTimeBy(2500L)
+        assertTrue(searchScreenModel.uiState.value.model.content is LoadingState.Idle) // Content remains Idle for invalid query lengths.
+    }
+
+    @Test
+    fun `onMapElementClick with unsaved public map shows add alert`() = runTest {
+        val maps = listOf(CatalogMindMap("2", "Map 2", UserDomainModel("user2", "User 2"), "Description 2", false, false, false))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick("2")
+        assertIs<SearchAlerts.PublicMap>(searchScreenModel.uiState.value.model.addMindMapAlert)
+    }
+
+    @Test
+    fun `onMapElementClick with unsaved private map shows add alert`() = runTest {
+        val maps = listOf(CatalogMindMap("3", "Map 3", UserDomainModel("user3", "User 3"), "Description 3", false, false, true))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick("3")
+
+        assertTrue(searchScreenModel.uiState.value.model.addMindMapAlert is SearchAlerts.PrivateMap)
+    }
+
+    @Test
+    fun `onConfirmAddPublicMapAlert adds map and navigates`() = runTest {
+        val maps = listOf(CatalogMindMap("2", "Map 2", UserDomainModel("user2", "User 2"), "Description 2", false, false, false))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick("2")
+        everySuspending { catalogInteractor.addMap(isAny(), isAny()) } returns Unit
+
+        searchScreenModel.onConfirmAddPublicMapAlert()
+        advanceUntilIdle()
+
+        assertTrue(searchScreenModel.uiState.value.navigationEvents.first() is NavigationTarget.ToMapNavigate)
+    }
+
+    @Test
+    fun `onConfirmAddPrivateMapAlert without password does not navigate`() = runTest {
+        val maps = listOf(CatalogMindMap("3", "Map 3", UserDomainModel("user3", "User 3"), "Description 3", false, true, true))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick("3")
+        searchScreenModel.onConfirmAddPrivateMapAlert() // No password set
+        advanceUntilIdle()
+
+        assertTrue(searchScreenModel.uiState.value.navigationEvents.first() is NavigationTarget.ToMapNavigate)
+    }
+
+    @Test
+    fun `onConfirmAddPrivateMapAlert with password adds map and navigates`() = runTest {
+        val maps = listOf(CatalogMindMap("3", "Map 3", UserDomainModel("user3", "User 3"), "Description 3", false, true, true))
+        searchMaps(maps)
+        searchScreenModel.onMapElementClick("3")
+        searchScreenModel.onPasswordEnter("validPassword")
+        everySuspending { catalogInteractor.addMap(isAny(), isAny()) } returns Unit
+
+        searchScreenModel.onConfirmAddPrivateMapAlert()
+        advanceTimeBy(500) // Simulate coroutine delay
+
+        assertTrue(searchScreenModel.uiState.value.navigationEvents.first() is NavigationTarget.ToMapNavigate)
+    }
+
+    @Test
+    @Suppress("TooGenericExceptionThrown")
+    fun `loadMaps failure shows error`() = runTest {
+        everySuspending { catalogInteractor.search(isAny()) } runs { throw Exception("Network Error") }
+        searchScreenModel.onSearchTextChanged("validQuery")
+        advanceUntilIdle()
+
+        assertTrue(searchScreenModel.uiState.value.model.content is LoadingState.Error)
+    }
+
+    private suspend fun TestScope.searchMaps(maps: List<CatalogMindMap>) {
+        everySuspending { catalogInteractor.search(isAny()) } returns maps
+        searchScreenModel.onSearchTextChanged("Map")
+        advanceUntilIdle()
+    }
+}

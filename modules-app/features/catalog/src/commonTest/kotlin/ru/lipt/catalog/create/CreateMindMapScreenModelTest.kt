@@ -1,3 +1,5 @@
+package ru.lipt.catalog.create
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -8,8 +10,6 @@ import kotlinx.coroutines.test.setMain
 import org.kodein.mock.Mock
 import org.kodein.mock.tests.TestsWithMocks
 import ru.lipt.catalog.common.params.CreateMindMapParams
-import ru.lipt.catalog.create.CreateMindMapScreenModel
-import ru.lipt.catalog.create.NavigationTarget
 import ru.lipt.domain.catalog.ICatalogInteractor
 import kotlin.test.BeforeTest
 import kotlin.test.Test
