@@ -23,14 +23,14 @@ class MindMapInteractor(
     private val mapRepository: MindMapRepository,
     private val mapViewRepository: MindViewMapRepository,
     private val catalogRepository: CatalogRepository,
-) {
-    suspend fun getMap(id: String, cachePolicy: CachePolicy = CachePolicy.ALWAYS) = mapRepository.fetch(id, cachePolicy)!!
+) : IMindMapInteractor {
+    override suspend fun getMap(id: String, cachePolicy: CachePolicy) = mapRepository.fetch(id, cachePolicy)!!
 
-    suspend fun fetchViewMap(mapId: String, userId: String, cachePolicy: CachePolicy = CachePolicy.ALWAYS): SummaryViewMapResponseRemote =
+    override suspend fun fetchViewMap(mapId: String, userId: String, cachePolicy: CachePolicy): SummaryViewMapResponseRemote =
         mapViewRepository.fetch(Pair(mapId, userId), cachePolicy)!!
 
     // 1
-    suspend fun addNewNodeToMap(mapId: String, parentId: String, title: String): SummaryMapResponseRemote {
+    override suspend fun addNewNodeToMap(mapId: String, parentId: String, title: String): SummaryMapResponseRemote {
         val newNodeId = randomUUID()
         return mapRepository.updateCache(mapId) {
             (this as? SummaryEditMapResponseRemote)?.let {
@@ -62,27 +62,27 @@ class MindMapInteractor(
         }.let { getMap(mapId) }
     }
 
-    suspend fun getEditableNode(mapId: String, nodeId: String) =
+    override suspend fun getEditableNode(mapId: String, nodeId: String) =
         (getMap(mapId) as SummaryEditMapResponseRemote).nodes.first { it.id == nodeId }
 
-    suspend fun getViewNode(mapId: String, nodeId: String) = (getMap(mapId) as SummaryViewMapResponseRemote).nodes.first { it.id == nodeId }
+    override suspend fun getViewNode(mapId: String, nodeId: String) = (getMap(mapId) as SummaryViewMapResponseRemote).nodes.first { it.id == nodeId }
 
     // 1
-    suspend fun deleteMap(mapId: String) = mapRepository.deleteMap(mapId).also {
+    override suspend fun deleteMap(mapId: String) = mapRepository.deleteMap(mapId).also {
         catalogRepository.removeMap(mapId)
     }
 
-    suspend fun eraseMap(mapId: String, type: MapRemoveType) = mapRepository.eraseMap(mapId, type).also {
+    override suspend fun eraseMap(mapId: String, type: MapRemoveType) = mapRepository.eraseMap(mapId, type).also {
         catalogRepository.removeMap(mapId)
     }
 
-    suspend fun updateMindMap(mapId: String): SummaryMapResponseRemote {
+    override suspend fun updateMindMap(mapId: String): SummaryMapResponseRemote {
         mapRepository.updateMindMap(mapId)
         return mapRepository.fetch(mapId, CachePolicy.REFRESH)!!
     }
 
     // 1
-    suspend fun updateNodePosition(mapId: String, nodeId: String, index: Int) = mapRepository.updateCache(mapId) {
+    override suspend fun updateNodePosition(mapId: String, nodeId: String, index: Int) = mapRepository.updateCache(mapId) {
         (this as? SummaryEditMapResponseRemote)?.let { map ->
             val parentNodeId = map.nodes.first { it.id == nodeId }.parentNodeId
             val catalogSection = map.nodes.filter { it.parentNodeId == parentNodeId }.sortedBy { it.priorityPosition }.map {
@@ -121,7 +121,7 @@ class MindMapInteractor(
     }.let { getMap(mapId) }
 
     // 1
-    suspend fun saveTitleAndData(mapId: String, title: String, description: String) = mapRepository.updateCache(
+    override suspend fun saveTitleAndData(mapId: String, title: String, description: String) = mapRepository.updateCache(
         mapId
     ) {
         (this as? SummaryEditMapResponseRemote)?.copy(title = title, description = description) ?: this
@@ -131,12 +131,12 @@ class MindMapInteractor(
         }
     }
 
-    suspend fun toggleNode(mapId: String, nodeId: String) = mapRepository.toggleNode(mapId, nodeId)
+    override suspend fun toggleNode(mapId: String, nodeId: String): Boolean = mapRepository.toggleNode(mapId, nodeId)
 
     // 1
-    suspend fun saveNodeData(
+    override suspend fun saveNodeData(
         mapId: String, nodeId: String, title: String, description: String
-    ) = mapRepository.updateCache(mapId) {
+    ): Unit = mapRepository.updateCache(mapId) {
         (this as? SummaryEditMapResponseRemote)?.let { map ->
             copy(nodes = nodes.map { node ->
                 if (node.id == nodeId) node.copy(
@@ -164,7 +164,7 @@ class MindMapInteractor(
     }
 
     // 1
-    suspend fun removeNode(mapId: String, nodeId: String) = mapRepository.updateCache(mapId) {
+    override suspend fun removeNode(mapId: String, nodeId: String): Unit = mapRepository.updateCache(mapId) {
         (this as? SummaryEditMapResponseRemote)?.let { map ->
             val currentNode = map.nodes.first { it.id == nodeId }
             val parentNodeId = currentNode.parentNodeId
@@ -189,7 +189,7 @@ class MindMapInteractor(
 
     // questions
     @Suppress("LongMethod")
-    suspend fun updateQuestions(mapId: String, nodeId: String, testId: String, questions: List<QuestionsEditResponseRemote>) =
+    override suspend fun updateQuestions(mapId: String, nodeId: String, testId: String, questions: List<QuestionsEditResponseRemote>) =
         mapRepository.updateRequestCache(mapId) { map ->
             val node = map.nodes.first { it.id == nodeId }
             var updatedMapParams = this
@@ -339,7 +339,7 @@ class MindMapInteractor(
         )
     }
 
-    suspend fun sendTestAnswersForNode(
+    override suspend fun sendTestAnswersForNode(
         mapId: String,
         nodeId: String,
         testId: String,
@@ -355,7 +355,7 @@ class MindMapInteractor(
         return result
     }
 
-    suspend fun generateTest(mapId: String, nodeId: String): TestsEditResponseRemote {
+    override suspend fun generateTest(mapId: String, nodeId: String): TestsEditResponseRemote {
         updateMindMap(mapId)
         return mapRepository.generateTest(nodeId).also { testModel ->
             mapRepository.updateCache(mapId) {
