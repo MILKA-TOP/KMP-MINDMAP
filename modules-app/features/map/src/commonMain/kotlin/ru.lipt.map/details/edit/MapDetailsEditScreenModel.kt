@@ -159,6 +159,6 @@ class MapDetailsEditScreenModel(
     }
 
     private fun MapDetailsEditUi.setButtonEnabled() = copy(
-        buttonIsEnabled = _initTitle != title || _initDescription != description
+        buttonIsEnabled = (_initTitle != title || _initDescription != description) && title.isNotBlank()
     )
 }

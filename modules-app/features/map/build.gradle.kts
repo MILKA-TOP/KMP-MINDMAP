@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.ksp)
     id("com.android.library")
     id("org.jetbrains.compose")
-      id("dev.icerock.mobile.multiplatform-resources")
-      id("org.jetbrains.kotlinx.kover")
+    id("dev.icerock.mobile.multiplatform-resources")
+    alias(libs.plugins.mockmp)
 }
 
 private val iosBaseName = "feature.map"
@@ -60,6 +60,15 @@ kotlin {
                 api("androidx.core:core-ktx:1.10.1")
             }
         }
+        commonTest.dependencies {
+            implementation(kotlin("test-junit"))
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.bundles.commonTest)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // Check for the latest version
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.8.0") // Check for the latest version
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -99,4 +108,8 @@ android {
 }
 multiplatformResources {
     resourcesPackage.set(androidNamespace) // required
+}
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }
