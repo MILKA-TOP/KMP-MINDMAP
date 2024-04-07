@@ -98,6 +98,7 @@ class TestingCompleteScreenModel(
     }
 
     fun onIndicatorPageClick(position: Int) {
+        if (position !in _questions.indices) return
         _uiState.navigateTo(NavigationTarget.OpenQuestions(position))
     }
 
