@@ -33,7 +33,7 @@ class TestingResultScreenModel(
                         QuestionType.SINGLE_CHOICE -> QuestionResultUiModel.SingleChoice(
                             id = question.id,
                             questionText = question.questionText,
-                            isCorrectQuestion = question.answers.all { it.isCorrect && it.isSelected || !it.isSelected },
+                            isCorrectQuestion = question.answers.all { it.isCorrect && it.isSelected || !it.isCorrect && !it.isSelected },
                             allAnswers = question.answers.map { answer ->
                                 TableFieldModel.SingleCheckboxSelect(
                                     answerId = answer.id,
@@ -59,7 +59,7 @@ class TestingResultScreenModel(
                         QuestionType.MULTIPLE_CHOICE -> QuestionResultUiModel.MultipleChoice(
                             id = question.id,
                             questionText = question.questionText,
-                            isCorrectQuestion = question.answers.all { it.isCorrect && it.isSelected || !it.isSelected },
+                            isCorrectQuestion = question.answers.all { it.isCorrect && it.isSelected || !it.isCorrect && !it.isSelected },
                             allAnswers = question.answers.map { answer ->
                                 TableFieldModel.MultipleCheckboxSelect(
                                     answerId = answer.id,
