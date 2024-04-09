@@ -4,7 +4,7 @@ import ru.lipt.core.encrypt.PinCrypt
 import ru.lipt.domain.session.ISessionRepository
 
 class UnAuthedLoginInteractor(
-    private val unAuthedLoginRepository: UnAuthedLoginRepository,
+    private val unAuthedLoginRepository: IUnAuthedLoginRepository,
     private val sessionRepository: ISessionRepository,
 ) : IUnAuthedLoginInteractor {
 

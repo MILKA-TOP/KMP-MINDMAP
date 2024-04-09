@@ -6,6 +6,7 @@ import ru.lipt.core.di.getUserSessionScope
 import ru.lipt.core.kover.IgnoreKover
 import ru.lipt.domain.login.ILoginRepository
 import ru.lipt.domain.login.IUnAuthedLoginInteractor
+import ru.lipt.domain.login.IUnAuthedLoginRepository
 import ru.lipt.domain.login.LoginInteractor
 import ru.lipt.domain.login.LoginRepository
 import ru.lipt.domain.login.UnAuthedLoginInteractor
@@ -27,7 +28,7 @@ val loginModules = module {
             )
         }
     }
-    factory {
+    factory<IUnAuthedLoginRepository> {
         UnAuthedLoginRepository(
             remoteDataSource = get()
         )

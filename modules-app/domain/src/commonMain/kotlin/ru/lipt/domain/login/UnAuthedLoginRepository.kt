@@ -6,18 +6,18 @@ import ru.lipt.domain.session.models.Session
 
 class UnAuthedLoginRepository(
     private val remoteDataSource: UnAuthedLoginDataSource
-) {
+) : IUnAuthedLoginRepository {
 
-    suspend fun register(email: String, password: String): Session = remoteDataSource.register(
+    override suspend fun register(email: String, password: String): Session = remoteDataSource.register(
         AuthRequestModel(email, password)
     )
 
-    suspend fun enterAuthData(email: String, password: String): Session = remoteDataSource.enterAuthData(
+    override suspend fun enterAuthData(email: String, password: String): Session = remoteDataSource.enterAuthData(
         AuthRequestModel(email, password)
     )
 
-    suspend fun login(userId: String, encryptedPin: String): Session =
+    override suspend fun login(userId: String, encryptedPin: String): Session =
         remoteDataSource.login(LoginRequestRemote(userId, encryptedPin))
 
-    suspend fun revokeDeviceTokens(userId: String) = remoteDataSource.revokeDeviceTokens(userId)
+    override suspend fun revokeDeviceTokens(userId: String): Unit = remoteDataSource.revokeDeviceTokens(userId)
 }
