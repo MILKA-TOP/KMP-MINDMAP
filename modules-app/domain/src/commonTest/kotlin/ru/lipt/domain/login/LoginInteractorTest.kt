@@ -30,7 +30,6 @@ class LoginInteractorTest : TestsWithMocks() {
         userEmail = "user@mail.com"
     )
 
-    // Test 1: Successfully setting a PIN when session is enabled
     @Test
     fun `setPin successfully sets encrypted pin when session is enabled`() = runTest {
         val session = Session(userId = "1", userEmail = "u", sessionId = "1")
@@ -50,7 +49,6 @@ class LoginInteractorTest : TestsWithMocks() {
         }
     }
 
-    // Test 2: Verifying IllegalArgumentException is thrown for disabled sessions
     @Test
     fun `setPin throws IllegalArgumentException for disabled session`() = runTest {
         everySuspending { sessionRepository.getSession() } returns Session()
@@ -60,7 +58,6 @@ class LoginInteractorTest : TestsWithMocks() {
         }
     }
 
-    // Test 3: Verifying behavior when PIN token generation fails
     @Test
     fun `setPin handles exceptions from generatePinToken`() = runTest {
         everySuspending { sessionRepository.getSession() } returns enabledSession
@@ -71,7 +68,6 @@ class LoginInteractorTest : TestsWithMocks() {
         }
     }
 
-    // Test 5: Verifying behavior when saving data fails
     @Test
     fun `setPin handles exceptions from saveData`() = runTest {
         val pin = "1234"
