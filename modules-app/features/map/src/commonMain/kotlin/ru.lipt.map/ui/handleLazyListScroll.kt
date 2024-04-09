@@ -4,7 +4,9 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import ru.lipt.core.kover.IgnoreKover
 
+@IgnoreKover
 suspend fun handleLazyListScroll(
     lazyListState: LazyListState,
     dropIndex: Int,

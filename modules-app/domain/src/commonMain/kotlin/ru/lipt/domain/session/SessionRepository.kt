@@ -9,12 +9,12 @@ import ru.lipt.domain.session.models.Session
 class SessionRepository(
     private val koin: Koin,
     private val dataSource: SessionDataSource,
-) {
+) : ISessionRepository {
 
     private var _session: Session = DEFAULT_SESSION
     private var _koinScope: Scope? = null
 
-    suspend fun getSession(): Session {
+    override suspend fun getSession(): Session {
         if (_session == DEFAULT_SESSION) {
             _session = Session(
                 userId = getSavedUserId(),
@@ -23,29 +23,29 @@ class SessionRepository(
         return _session
     }
 
-    suspend fun start(session: Session) {
+    override suspend fun start(session: Session) {
         closeScope()
         _koinScope = koin.createScope(USER_SESSION_SCOPE_ID, USER_SESSION_SCOPE_QUALIFIER)
         _session = session
     }
 
-    suspend fun saveData(pinKey: String) {
+    override suspend fun saveData(pinKey: String) {
         if (!_session.isEnabled) throw IllegalArgumentException()
 
         dataSource.saveSession(_session, pinKey)
     }
 
-    suspend fun reset() {
+    override suspend fun reset() {
         closeScope()
         _session = DEFAULT_SESSION
     }
 
-    suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
+    override suspend fun containsSavedData(): Boolean = dataSource.isContainsAuthData()
 
-    suspend fun getSavedPinKey(): String = dataSource.getPinKey()
-    suspend fun getSavedUserId(): String = dataSource.getUserId()
+    override suspend fun getSavedPinKey(): String = dataSource.getPinKey()
+    override suspend fun getSavedUserId(): String = dataSource.getUserId()
 
-    suspend fun logOut() {
+    override suspend fun logOut() {
 //        _koinScope?.close()?.also { _koinScope = null }
         closeScope()
         _session = DEFAULT_SESSION

@@ -1,11 +1,11 @@
 package ru.lipt.domain.login
 
 import ru.lipt.core.encrypt.PinCrypt
-import ru.lipt.domain.session.SessionRepository
+import ru.lipt.domain.session.ISessionRepository
 
 class UnAuthedLoginInteractor(
     private val unAuthedLoginRepository: UnAuthedLoginRepository,
-    private val sessionRepository: SessionRepository,
+    private val sessionRepository: ISessionRepository,
 ) : IUnAuthedLoginInteractor {
 
     override suspend fun enterAuthData(email: String, password: String) {
