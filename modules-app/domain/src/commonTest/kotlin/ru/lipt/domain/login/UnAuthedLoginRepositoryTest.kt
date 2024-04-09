@@ -35,7 +35,6 @@ class UnAuthedLoginRepositoryTest : TestsWithMocks() {
         verifyWithSuspend(exhaustive = false) { remoteDataSource.register(AuthRequestModel(email, password)) }
     }
 
-    // Test for the enterAuthData function
     @Test
     fun `enterAuthData calls remote data source with correct parameters`() = runTest {
         val email = "user@example.com"
@@ -50,7 +49,6 @@ class UnAuthedLoginRepositoryTest : TestsWithMocks() {
         verifyWithSuspend(exhaustive = false) { remoteDataSource.enterAuthData(AuthRequestModel(email, password)) }
     }
 
-    // Test for the login function
     @Test
     fun `login calls remote data source with correct parameters`() = runTest {
         val userId = "userId"
@@ -65,7 +63,6 @@ class UnAuthedLoginRepositoryTest : TestsWithMocks() {
         verifyWithSuspend(exhaustive = false) { remoteDataSource.login(LoginRequestRemote(userId, encryptedPin)) }
     }
 
-    // Test for the revokeDeviceTokens function
     @Test
     fun `revokeDeviceTokens calls remote data source with correct parameters`() = runTest {
         val userId = "userId"
