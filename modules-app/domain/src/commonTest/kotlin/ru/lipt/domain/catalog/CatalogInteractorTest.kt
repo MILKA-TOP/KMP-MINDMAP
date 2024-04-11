@@ -3,6 +3,7 @@ package ru.lipt.domain.catalog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.kodein.mock.Fake
 import org.kodein.mock.Mock
 import org.kodein.mock.UsesFakes
 import org.kodein.mock.tests.TestsWithMocks
@@ -18,7 +19,9 @@ class CatalogInteractorTest : TestsWithMocks() {
 
     @Mock
     lateinit var catalogRemoteDataSource: CatalogDataSource
-    private val catalogLocalDataSource: CatalogLocalDataSource = CatalogLocalDataSource()
+
+    @Fake
+    lateinit var catalogLocalDataSource: CatalogLocalDataSource
     private val catalogRepository: CatalogRepository by withMocks { CatalogRepository(catalogLocalDataSource, catalogRemoteDataSource) }
 
     private val interactor: CatalogInteractor by withMocks { CatalogInteractor(catalogRepository) }

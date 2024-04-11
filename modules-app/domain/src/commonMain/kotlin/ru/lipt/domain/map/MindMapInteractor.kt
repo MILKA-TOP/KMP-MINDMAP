@@ -65,7 +65,8 @@ class MindMapInteractor(
     override suspend fun getEditableNode(mapId: String, nodeId: String) =
         (getMap(mapId) as SummaryEditMapResponseRemote).nodes.first { it.id == nodeId }
 
-    override suspend fun getViewNode(mapId: String, nodeId: String) = (getMap(mapId) as SummaryViewMapResponseRemote).nodes.first { it.id == nodeId }
+    override suspend fun getViewNode(mapId: String, nodeId: String) =
+        (getMap(mapId) as SummaryViewMapResponseRemote).nodes.first { it.id == nodeId }
 
     // 1
     override suspend fun deleteMap(mapId: String) = mapRepository.deleteMap(mapId).also {
@@ -84,18 +85,32 @@ class MindMapInteractor(
     // 1
     override suspend fun updateNodePosition(mapId: String, nodeId: String, index: Int) = mapRepository.updateCache(mapId) {
         (this as? SummaryEditMapResponseRemote)?.let { map ->
-            val parentNodeId = map.nodes.first { it.id == nodeId }.parentNodeId
-            val catalogSection = map.nodes.filter { it.parentNodeId == parentNodeId }.sortedBy { it.priorityPosition }.map {
-                when {
-                    it.id == nodeId -> it.copy(priorityPosition = index)
-                    it.priorityPosition < index -> it
-                    else -> it.copy(priorityPosition = it.priorityPosition + 1)
-                }
-            }.associateBy { it.id }
+            val nodeToMove = map.nodes.first { it.id == nodeId }
+            val parentNodeId = nodeToMove.parentNodeId
 
-            map.copy(nodes = nodes.map {
-                if (it.id in catalogSection) catalogSection[it.id]!! else it
-            })
+            // Filter nodes by the parent node ID and sort them by their priority positions.
+            val siblings = map.nodes.filter { it.parentNodeId == parentNodeId }.sortedBy { it.priorityPosition }
+
+            // Remove the node to be moved from its original position.
+            val siblingsMinusMovedNode = siblings.filterNot { it.id == nodeId }
+
+            // Insert the node into its new position.
+            val updatedSiblings = siblingsMinusMovedNode.toMutableList().apply {
+                add((index - 1).coerceIn(0, size), nodeToMove.copy(priorityPosition = index - 1))
+            }
+
+            // Re-index the sibling nodes to ensure continuous priority positions.
+            val reIndexedSiblings = updatedSiblings.mapIndexed { index, node ->
+                node.copy(priorityPosition = index)
+            }
+
+            // Prepare the updated nodes list for the map.
+            val updatedNodes = map.nodes.map { node ->
+                reIndexedSiblings.first { it.id == node.id }
+            }.map { it.copy(priorityPosition = it.priorityPosition + 1) }
+
+            // Return the updated map.
+            map.copy(nodes = updatedNodes)
         } ?: this
     }.let {
         mapRepository.updateRequestCache(mapId) { map ->

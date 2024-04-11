@@ -13,7 +13,8 @@ import ru.lipt.domain.map.models.update.MapsUpdateRequestParams
 
 class MindMapRepository(
     private val updateDataSource: MindMapUpdateLocalDataSource,
-    private val localDataSource: MindMapLocalDataSource, private val remoteDataSource: MindMapDataSource
+    private val localDataSource: MindMapLocalDataSource,
+    private val remoteDataSource: MindMapDataSource
 ) : CachePolicyRepository<String, SummaryMapResponseRemote>(
     localDataSource = localDataSource,
     remoteDataSource = remoteDataSource,
@@ -41,10 +42,12 @@ class MindMapRepository(
         update: MapsUpdateRequestParams.(map: SummaryEditMapResponseRemote) -> MapsUpdateRequestParams
     ) {
         val mapCache = localDataSource.get(mapId) ?: throw IllegalStateException("Nothing to update in cache!")
-        val map = mapCache.value as SummaryEditMapResponseRemote
-        val oldValue: MapsUpdateRequestParams =
-            updateDataSource.get(mapId)?.value ?: MapsUpdateRequestParams(title = map.title, description = map.description)
-        updateDataSource.set(mapId, CacheEntry(key = mapId, value = oldValue.update(map)))
+        val map = mapCache.value as? SummaryEditMapResponseRemote
+        map?.let { map ->
+            val oldValue: MapsUpdateRequestParams =
+                updateDataSource.get(mapId)?.value ?: MapsUpdateRequestParams(title = map.title, description = map.description)
+            updateDataSource.set(mapId, CacheEntry(key = mapId, value = oldValue.update(map)))
+        }
     }
 
     suspend fun updateMindMap(mapId: String) {
