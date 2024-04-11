@@ -258,6 +258,31 @@ class TestingCompleteScreenModelTest : TestsWithMocks() {
         assertTrue(model.uiState.value.navigationEvents.isEmpty(), "Invalid position should not trigger navigation")
     }
 
+    @Test
+    fun `onIndicatorPageClick with invalid position MaxItn does not trigger navigation`() = runTest {
+        fakeLoad()
+        val invalidPosition = Int.MAX_VALUE
+        model.onIndicatorPageClick(invalidPosition)
+        advanceUntilIdle()
+
+        assertTrue(model.uiState.value.navigationEvents.isEmpty(), "Invalid position should not trigger navigation")
+    }
+
+    @Test
+    fun `onMultipleSelectChanged toggles answer correctness multiple answer ignore error`() = runTest {
+        val ui = model.uiState.value.model
+        assertTrue(ui is LoadingState.Error)
+        model.onMultipleSelectChanged(0, 0, true)
+        assertEquals(ui, model.uiState.value.model)
+    }
+    @Test
+    fun `onSingleSelectChanged toggles answer correctness multiple answer ignore error`() = runTest {
+        val ui = model.uiState.value.model
+        assertTrue(ui is LoadingState.Error)
+        model.onSingleSelectChanged(0, 0)
+        assertEquals(ui, model.uiState.value.model)
+    }
+
     private suspend fun TestScope.fakeLoad() {
         val map = initMap
         everySuspending { mapInteractor.getMap(isAny(), isAny()) } returns map
