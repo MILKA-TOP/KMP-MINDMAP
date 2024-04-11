@@ -13,20 +13,24 @@ import org.kodein.mock.tests.TestsWithMocks
 import ru.lipt.core.LoadingState
 import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
+import ru.lipt.details.editable.models.EditableTestResultUi
 import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
+import ru.lipt.domain.map.models.TestsEditResponseRemote
 import ru.lipt.domain.map.models.fakeNodesEditResponseRemote
 import ru.lipt.domain.map.models.fakeSummaryEditMapResponseRemote
+import ru.lipt.domain.map.models.fakeTestsEditResponseRemote
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@UsesFakes(SummaryEditMapResponseRemote::class, NodesEditResponseRemote::class)
+@UsesFakes(SummaryEditMapResponseRemote::class, NodesEditResponseRemote::class, TestsEditResponseRemote::class)
 class EditableDetailsScreenModelTest : TestsWithMocks() {
     override fun setUpMocks() = injectMocks(mocker)
 
@@ -52,7 +56,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `initial load fetches map and node data successfully`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onStarted()
 
         // Assertions to validate the state after successful data loading
@@ -62,8 +66,20 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
     }
 
     @Test
+    fun `initial load fetches map and node data successfully with test`() = runTest {
+        setupTestFakeLoad()
+        assertTrue(model.uiState.value.model.data?.testResult is EditableTestResultUi.EditTest)
+    }
+
+    @Test
+    fun `initial load fetches map and node data successfully without test`() = runTest {
+        setupBaseFakeLoad()
+        assertTrue(model.uiState.value.model.data?.testResult is EditableTestResultUi.NoTest)
+    }
+
+    @Test
     fun `onEditTitleText updates title`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
 
         val newTitle = "New Title"
         model.onEditTitleText(newTitle)
@@ -72,7 +88,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onEditDescriptionText updates description`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
 
         val newDescription = "New Description"
         model.onEditDescriptionText(newDescription)
@@ -81,7 +97,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onSaveButtonClick triggers save operation and navigates on success`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
 
         val title = "Saved Title"
         val description = "Saved Description"
@@ -114,8 +130,30 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
     }
 
     @Test
+    fun `onRemoveButtonClick displays remove alert with correct title for parent node`() = runTest {
+        val nodesEditResponseRemote =
+            fakeNodesEditResponseRemote().copy(label = "Node title", id = "nodeId1", parentNodeId = "parentNodeId")
+        val parentEditNode = fakeNodesEditResponseRemote().copy(label = "Parent title", id = "parentNodeId", parentNodeId = null)
+        val summaryEditMapResponseRemote = fakeSummaryEditMapResponseRemote().copy(
+            title = "Map Title",
+            id = "mapId1",
+            nodes = listOf(parentEditNode, nodesEditResponseRemote)
+        )
+        everySuspending { mapInteractor.getMap(isAny(), isAny()) } returns summaryEditMapResponseRemote
+        everySuspending { mapInteractor.getEditableNode(isAny(), isEqual("nodeId1")) } returns nodesEditResponseRemote
+        everySuspending { mapInteractor.getEditableNode(isAny(), isEqual("parentNodeId")) } returns parentEditNode
+        model.onStarted()
+        advanceUntilIdle()
+
+        model.onRemoveButtonClick()
+        advanceUntilIdle()
+        assertTrue(model.uiState.value.model.data?.alertUi is EditableDetailsScreenUi.Alert.RemoveAlertUi)
+        assertEquals("Parent title", (model.uiState.value.model.data?.alertUi as? EditableDetailsScreenUi.Alert.RemoveAlertUi)?.parentTitle)
+    }
+
+    @Test
     fun `onAlertClose clears current alert UI`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditDescriptionText("Edited Description")
         advanceUntilIdle()
 
@@ -128,19 +166,34 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `onTestEditButtonClick navigates directly if no edits were made`() = runTest {
-        setupFakeLoad()
+    fun `onTestEditButtonClick navigates directly if no edits were made without test`() = runTest {
+        setupBaseFakeLoad()
         // Assuming no edits to title or description
         model.onTestEditButtonClick()
         advanceUntilIdle()
 
         // Verify navigation to the test edit screen
-        assertTrue(model.uiState.value.navigationEvents.first() is NavigationTarget.EditTest)
+        val navigationEvent = model.uiState.value.navigationEvents.first()
+        assertTrue(navigationEvent is NavigationTarget.EditTest)
+        assertNull(navigationEvent.params.testId)
+    }
+
+    @Test
+    fun `onTestEditButtonClick navigates directly if no edits were made with test`() = runTest {
+        setupTestFakeLoad()
+        // Assuming no edits to title or description
+        model.onTestEditButtonClick()
+        advanceUntilIdle()
+
+        // Verify navigation to the test edit screen
+        val navigationEvent = model.uiState.value.navigationEvents.first()
+        assertTrue(navigationEvent is NavigationTarget.EditTest)
+        assertNotNull(navigationEvent.params.testId)
     }
 
     @Test
     fun `onTestEditButtonClick shows next and save alert if edits were made`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         // Simulate edits were made
         model.onEditTitleText("Edited Title")
         advanceUntilIdle()
@@ -153,7 +206,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onNavigateUpClick navigates up directly if no edits were made`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onNavigateUpClick()
         advanceUntilIdle()
 
@@ -163,7 +216,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onNavigateUpClick shows back and save alert if edits were made`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         // Simulate edits
         model.onEditDescriptionText("Edited Description")
         advanceUntilIdle()
@@ -176,7 +229,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onSaveButtonClick with editable data saves and navigates to success`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditTitleText("New Title")
         model.onEditDescriptionText("New Description")
 
@@ -191,7 +244,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onBackConfirmAlertButtonClick with editable data saves and navigates up`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditTitleText("Changed Title")
 
         everySuspending { mapInteractor.saveNodeData(isAny(), isAny(), isAny(), isAny()) } returns Unit
@@ -205,7 +258,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `onNextConfirmAlertButtonClick with editable data saves and navigates to test editing`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditDescriptionText("Changed Description")
 
         everySuspending { mapInteractor.saveNodeData(isAny(), isAny(), isAny(), isAny()) } returns Unit
@@ -220,7 +273,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
     @Test
     fun `edit actions without change do not enable save button`() = runTest {
         val initialTitle = "Initial Title"
-        setupFakeLoad(initialTitle, initialTitle)
+        setupBaseFakeLoad(initialTitle, initialTitle)
         // Simulate initial state
         model.onEditTitleText(initialTitle)
         // Reset edits to initial state
@@ -232,7 +285,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `edit actions with change enable save button`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditTitleText("New Title")
         model.onEditDescriptionText("New Description")
 
@@ -240,9 +293,25 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
     }
 
     @Test
+    fun `saveButton disabled when title empty`() = runTest {
+        setupBaseFakeLoad()
+        model.onEditTitleText("")
+
+        assertFalse(model.uiState.value.model.data?.isSaveButtonEnabled ?: false)
+    }
+
+    @Test
+    fun `saveButton disabled when title blank`() = runTest {
+        setupBaseFakeLoad()
+        model.onEditTitleText("    ")
+
+        assertFalse(model.uiState.value.model.data?.isSaveButtonEnabled ?: false)
+    }
+
+    @Test
     fun `reverting edits disables save button`() = runTest {
         val _initTitle = "_initTitle"
-        setupFakeLoad(_initTitle, _initTitle)
+        setupBaseFakeLoad(_initTitle, _initTitle)
         model.onEditTitleText("New Title")
         // Revert change
         model.onEditTitleText(_initTitle)
@@ -252,7 +321,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `saving with no changes does not invoke interactor`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         everySuspending { mapInteractor.saveNodeData(isAny(), isAny(), isAny(), isAny()) } returns Unit
         assertFalse(model.uiState.value.model.data?.isSaveButtonEnabled ?: true)
 
@@ -262,7 +331,7 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `saving with changes invokes interactor and updates state`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditTitleText("Changed Title")
         everySuspending { mapInteractor.saveNodeData(isAny(), isAny(), isEqual("Changed Title"), isAny()) } returns Unit
         advanceUntilIdle()
@@ -273,17 +342,46 @@ class EditableDetailsScreenModelTest : TestsWithMocks() {
 
     @Test
     fun `navigating up with changes prompts correct alert`() = runTest {
-        setupFakeLoad()
+        setupBaseFakeLoad()
         model.onEditTitleText("Title for Navigation")
         model.onNavigateUpClick()
         advanceUntilIdle()
         assertTrue(model.uiState.value.model.data?.alertUi is EditableDetailsScreenUi.Alert.BackAndSave)
     }
 
+    @Test
+    fun `onRemoveAlertConfirm mapId error return`() = runTest {
+        model.onRemoveAlertConfirm()
+        advanceUntilIdle()
+        assertTrue(model.uiState.value.model is LoadingState.Error)
+    }
+
+    @Test
+    fun `onRemoveAlertConfirm mapId success return`() = runTest {
+        setupBaseFakeLoad()
+
+        everySuspending { mapInteractor.removeNode(isAny(), isAny()) } returns Unit
+        model.onRemoveAlertConfirm()
+        advanceUntilIdle()
+        val ui = model.uiState.value.model
+        assertTrue(ui is LoadingState.Success)
+        assertNull(ui.data.alertUi)
+    }
+
     // /////
-    private suspend fun TestScope.setupFakeLoad(title: String = "Map title", node: String = "Node label") {
+    private suspend fun TestScope.setupBaseFakeLoad(title: String = "Map title", node: String = "Node label") {
         val summaryEditMapResponseRemote = fakeSummaryEditMapResponseRemote().copy(title = title)
         val nodesEditResponseRemote = fakeNodesEditResponseRemote().copy(label = node, parentNodeId = "anyNodeId")
+        everySuspending { mapInteractor.getMap(isAny(), isAny()) } returns summaryEditMapResponseRemote
+        everySuspending { mapInteractor.getEditableNode(isAny(), isAny()) } returns nodesEditResponseRemote
+        model.init()
+        advanceUntilIdle()
+    }
+
+    private suspend fun TestScope.setupTestFakeLoad(title: String = "Map title", node: String = "Node label") {
+        val summaryEditMapResponseRemote = fakeSummaryEditMapResponseRemote().copy(title = title)
+        val nodesEditResponseRemote =
+            fakeNodesEditResponseRemote().copy(label = node, parentNodeId = "anyNodeId", test = fakeTestsEditResponseRemote())
         everySuspending { mapInteractor.getMap(isAny(), isAny()) } returns summaryEditMapResponseRemote
         everySuspending { mapInteractor.getEditableNode(isAny(), isAny()) } returns nodesEditResponseRemote
         model.init()
