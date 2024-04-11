@@ -1,8 +1,10 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("com.android.library")
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.mockmp)
 }
 
 private val iosBaseName = "base.domain"
@@ -37,6 +39,15 @@ kotlin {
                 implementation(project(":modules-app:core-ui"))
                 // Add here you dependencies
             }
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test-junit"))
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.bundles.commonTest)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // Check for the latest version
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.8.0") // Check for the latest version
         }
         val androidMain by getting {
             dependencies {
@@ -77,4 +88,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }

@@ -12,7 +12,7 @@ import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
 import ru.lipt.core.uuid.randomUUID
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.AnswersEditResponseRemote
 import ru.lipt.domain.map.models.QuestionType
 import ru.lipt.domain.map.models.QuestionsEditResponseRemote
@@ -26,7 +26,7 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel
 
 class TestingEditScreenModel(
     private val params: TestEditScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<LoadingState<TestingEditScreenUi, Unit>, NavigationTarget> =
         MutableScreenUiStateFlow(idle())
@@ -157,7 +157,6 @@ class TestingEditScreenModel(
             }
         ) {
             _uiState.updateUi { copy { it.copy(isGenerateInProgress = true) } }
-
             val test = mapInteractor.generateTest(params.mapId, params.nodeId)
             val testModel = updateUiByTestModel(test)
 

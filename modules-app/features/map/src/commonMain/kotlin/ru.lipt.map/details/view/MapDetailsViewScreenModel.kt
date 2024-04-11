@@ -13,7 +13,7 @@ import ru.lipt.core.error
 import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.MapRemoveType
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.map.common.params.MapScreenParams
@@ -22,7 +22,7 @@ import ru.lipt.map.details.view.models.MapDetailsViewUi
 @Suppress("UnusedPrivateMember")
 class MapDetailsViewScreenModel(
     private val params: MapScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<LoadingState<MapDetailsViewUi, Unit>, NavigationTarget> =

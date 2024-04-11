@@ -1,9 +1,11 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("com.android.library")
     id("org.jetbrains.compose")
-      id("dev.icerock.mobile.multiplatform-resources")
-      id("org.jetbrains.kotlinx.kover")
+    id("dev.icerock.mobile.multiplatform-resources")
+    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.mockmp)
 }
 
 private val iosBaseName = "feature.testing"
@@ -34,7 +36,7 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
                 implementation(Dependencies.Koin.core)
                 implementation(Dependencies.Voyager.koin)
                 implementation(Dependencies.Voyager.navigator)
@@ -48,6 +50,15 @@ kotlin {
                 implementation(project(":modules-app:navigation"))
                 implementation(project(":modules-app:domain"))
             }
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test-junit"))
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.bundles.commonTest)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // Check for the latest version
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.8.0") // Check for the latest version
         }
         val androidMain by getting {
             dependencies {
@@ -96,4 +107,8 @@ android {
 }
 multiplatformResources {
     resourcesPackage.set(androidNamespace) // required
+}
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }

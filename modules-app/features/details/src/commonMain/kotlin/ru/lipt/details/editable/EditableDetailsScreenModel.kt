@@ -13,14 +13,14 @@ import ru.lipt.core.success
 import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.editable.models.EditableDetailsScreenUi
 import ru.lipt.details.editable.models.EditableTestResultUi
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.NodesEditResponseRemote
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.testing.common.params.TestEditScreenParams
 
 class EditableDetailsScreenModel(
     val params: NodeDetailsScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<LoadingState<EditableDetailsScreenUi, Unit>, NavigationTarget> =
@@ -124,7 +124,7 @@ class EditableDetailsScreenModel(
     )
 
     fun onRemoveButtonClick() {
-        val parentNodeTitle = _map?.title?.takeIf { _parentNode?.parentNodeId == null } ?: _parentNode?.label.orEmpty()
+        val parentNodeTitle = _map?.title?.takeIf { _parentNode?.id == null } ?: _parentNode?.label.orEmpty()
         _uiState.updateUi { copy { it.copy(alertUi = EditableDetailsScreenUi.Alert.RemoveAlertUi(parentNodeTitle)) } }
     }
 

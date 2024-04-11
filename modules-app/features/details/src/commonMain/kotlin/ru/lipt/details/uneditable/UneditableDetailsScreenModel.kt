@@ -15,7 +15,7 @@ import ru.lipt.details.common.params.NodeDetailsScreenParams
 import ru.lipt.details.uneditable.models.DescriptionLink
 import ru.lipt.details.uneditable.models.UneditableDetailsScreenUi
 import ru.lipt.details.uneditable.models.UneditableTestResultUi
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.NodesViewResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.testing.common.params.TestCompleteScreenParams
@@ -24,7 +24,7 @@ import ru.lipt.testing.common.params.TestingResultParams
 @Suppress("UnusedPrivateMember")
 class UneditableDetailsScreenModel(
     private val params: NodeDetailsScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<LoadingState<UneditableDetailsScreenUi, Unit>, NavigationTarget> =

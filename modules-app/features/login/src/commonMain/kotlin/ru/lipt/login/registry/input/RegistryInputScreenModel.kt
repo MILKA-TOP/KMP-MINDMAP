@@ -2,17 +2,16 @@ package ru.lipt.login.registry.input
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
 import ru.lipt.core.validate.isEmailValid
-import ru.lipt.domain.login.UnAuthedLoginInteractor
+import ru.lipt.domain.login.IUnAuthedLoginInteractor
 import ru.lipt.login.registry.input.model.RegistryInputModel
 
 class RegistryInputScreenModel(
-    private val loginInteractor: UnAuthedLoginInteractor,
+    private val loginInteractor: IUnAuthedLoginInteractor,
 ) : ScreenModel {
 
     private val _uiState: MutableScreenUiStateFlow<RegistryInputModel, NavigationTarget> =
@@ -59,7 +58,6 @@ class RegistryInputScreenModel(
             }
         ) {
             _uiState.updateUi { copy(buttonInProgress = true) }
-            delay(2_500L)
             loginInteractor.register(email = ui.email.trim(), password = ui.password.trim())
 
             _uiState.navigateTo(NavigationTarget.PinCreateNavigate)

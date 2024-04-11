@@ -7,6 +7,7 @@ import ru.lipt.core.kover.IgnoreKover
 import ru.lipt.domain.catalog.CatalogInteractor
 import ru.lipt.domain.catalog.CatalogLocalDataSource
 import ru.lipt.domain.catalog.CatalogRepository
+import ru.lipt.domain.catalog.ICatalogInteractor
 
 @IgnoreKover
 val catalogModules = module {
@@ -18,7 +19,7 @@ val catalogModules = module {
                 remoteDataSource = getUserSessionScope().get(),
             )
         }
-        factory {
+        factory<ICatalogInteractor> {
             CatalogInteractor(
                 catalogRepository = getUserSessionScope().get(),
             )

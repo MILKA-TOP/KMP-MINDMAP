@@ -1,24 +1,24 @@
 package ru.lipt.domain.login
 
 import ru.lipt.core.encrypt.PinCrypt
-import ru.lipt.domain.session.SessionRepository
+import ru.lipt.domain.session.ISessionRepository
 
 class UnAuthedLoginInteractor(
-    private val unAuthedLoginRepository: UnAuthedLoginRepository,
-    private val sessionRepository: SessionRepository,
-) {
+    private val unAuthedLoginRepository: IUnAuthedLoginRepository,
+    private val sessionRepository: ISessionRepository,
+) : IUnAuthedLoginInteractor {
 
-    suspend fun enterAuthData(email: String, password: String) {
+    override suspend fun enterAuthData(email: String, password: String) {
         val session = unAuthedLoginRepository.enterAuthData(email, password)
         sessionRepository.start(session)
     }
 
-    suspend fun register(email: String, password: String) {
+    override suspend fun register(email: String, password: String) {
         val session = unAuthedLoginRepository.register(email, password)
         sessionRepository.start(session)
     }
 
-    suspend fun login(pin: String) {
+    override suspend fun login(pin: String) {
         val userId = sessionRepository.getSavedUserId()
         val token = sessionRepository.getSavedPinKey()
         val encryptedPin = PinCrypt.encrypt(token, pin)
@@ -27,9 +27,9 @@ class UnAuthedLoginInteractor(
         sessionRepository.start(session)
     }
 
-    suspend fun containsSavedAuthData(): Boolean = sessionRepository.containsSavedData()
+    override suspend fun containsSavedAuthData(): Boolean = sessionRepository.containsSavedData()
 
-    suspend fun logout() {
+    override suspend fun logout() {
         val session = sessionRepository.getSession()
         unAuthedLoginRepository.revokeDeviceTokens(session.userId)
         sessionRepository.logOut()

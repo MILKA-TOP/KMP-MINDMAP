@@ -2,7 +2,7 @@ package ru.lipt.domain.login
 
 class LoginRepository(
     private val remoteDataSource: LoginDataSource
-) {
+) : ILoginRepository {
 
-    suspend fun generatePinToken(): String = remoteDataSource.generatePinToken().token
+    override suspend fun generatePinToken(): String = remoteDataSource.generatePinToken().token
 }

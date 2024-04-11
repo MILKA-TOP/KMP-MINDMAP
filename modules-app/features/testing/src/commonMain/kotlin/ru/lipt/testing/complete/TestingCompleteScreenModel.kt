@@ -11,7 +11,7 @@ import ru.lipt.core.error
 import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.AnswerCompleteRequestRemote
 import ru.lipt.domain.map.models.QuestionCompleteRequestRemote
 import ru.lipt.domain.map.models.QuestionType
@@ -30,7 +30,7 @@ import ru.lipt.testing.edit.question.base.models.TableFieldModel.Companion.onSin
 @Suppress("UnusedPrivateMember")
 class TestingCompleteScreenModel(
     private val params: TestCompleteScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<LoadingState<TestingCompleteScreenUi, Unit>, NavigationTarget> =
         MutableScreenUiStateFlow(idle())
@@ -98,6 +98,7 @@ class TestingCompleteScreenModel(
     }
 
     fun onIndicatorPageClick(position: Int) {
+        if (position !in _questions.indices) return
         _uiState.navigateTo(NavigationTarget.OpenQuestions(position))
     }
 

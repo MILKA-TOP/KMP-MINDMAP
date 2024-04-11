@@ -2,6 +2,7 @@ package ru.lipt.testing.edit
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -184,14 +185,19 @@ private fun Content(
             ProgressButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(MR.strings.generate_questions_button_text),
-                enabled = ui.isGenerateButtonEnabled,
+                enabled = ui.isGenerateButtonEnabled && !ui.isGenerateInProgress,
                 onClick = screenModel::onGenerateButtonClick,
                 colors = ButtonDefaults.outlinedButtonColors()
             )
         }
-        if (ui.isGenerateInProgress) {
-            CircularProgressIndicatorLoadingScreen(modifier = Modifier.fillMaxSize().alpha(0.3f).clickable(onClick = {}))
-        }
+    }
+    if (ui.isGenerateInProgress) {
+        CircularProgressIndicatorLoadingScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+                .alpha(0.9f).clickable(onClick = {})
+        )
     }
 }
 

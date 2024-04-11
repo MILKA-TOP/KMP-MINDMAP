@@ -16,18 +16,17 @@ import ru.lipt.core.error
 import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
-import ru.lipt.domain.catalog.CatalogInteractor
+import ru.lipt.domain.catalog.ICatalogInteractor
 import ru.lipt.domain.catalog.models.CatalogMindMap
 import ru.lipt.map.common.params.MapScreenParams
 
 class SearchScreenModel(
-    private val catalogInteractor: CatalogInteractor,
+    private val catalogInteractor: ICatalogInteractor,
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<SearchScreenUi, NavigationTarget> = MutableScreenUiStateFlow(SearchScreenUi())
     val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
-    private var privateMapAdd: Job? = null
     private var publicMapAdd: Job? = null
     private var selectedMapId: String? = null
     private var privateMapPassword: String = ""
@@ -65,7 +64,6 @@ class SearchScreenModel(
     }
 
     fun onHideAddAlert() {
-        privateMapAdd?.cancel()
         publicMapAdd?.cancel()
         selectedMapId = null
         privateMapPassword = ""
@@ -84,7 +82,6 @@ class SearchScreenModel(
     }
 
     fun onConfirmAddPublicMapAlert() {
-        privateMapAdd?.cancel()
         publicMapAdd?.cancel()
         val mapId = selectedMapId ?: return
         publicMapAdd = screenModelScope.launchCatching(
@@ -103,7 +100,6 @@ class SearchScreenModel(
     }
 
     fun onConfirmAddPrivateMapAlert() {
-        privateMapAdd?.cancel()
         publicMapAdd?.cancel()
         val mapId = selectedMapId ?: return
         val password = privateMapPassword.takeIf { it.isNotEmpty() } ?: return
@@ -131,6 +127,9 @@ class SearchScreenModel(
             )
         }
     }
+
+    val isSearchJobActive: Boolean get() = searchJob?.isActive ?: false
+    val isPublicMapAddJobActive: Boolean get() = publicMapAdd?.isActive ?: false
 
     private fun String.isQueryValidated(): Boolean = this.length >= MINIMAL_QUERY_LENGTH
 

@@ -115,6 +115,7 @@ koverReport {
                 "*Module*",
                 "*SuppressCoverage*",
                 "*IgnoreKover*",
+                "*Serializable*",
             )
         }
     }

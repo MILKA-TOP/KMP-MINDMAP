@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     id("com.android.library")
     kotlin("plugin.serialization")
 }

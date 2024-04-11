@@ -1,0 +1,143 @@
+[versions]
+minSdk = "26"
+targetSdk = "34"
+javaTargetCompatibility = "17"
+javaSourceCompatibility = "11"
+
+agp = "8.3.1"
+kotlin = "1.9.21"
+kotlinCoroutines = "1.8.0"
+kotlinDate = "0.5.0"
+ksp = "1.9.21-1.0.15"
+
+appCompat = "1.6.1"
+lifecycleViewModel = "2.7.0"
+sqldelight = "1.5.5"
+detekt = "1.23.6"
+kover = "0.7.6"
+mockmp = "1.17.0"
+mokoResources = "0.23.0"
+mokoGraphics = "0.9.0"
+
+compose = "1.6.4"
+composeActivity = "1.8.2"
+composeCompiler = "1.5.11"
+composeUITooling = "1.6.4"
+composeCoil = "2.6.0"
+composeNavigation = "2.7.7"
+
+koin = "3.5.3"
+koinTest = "3.5.3"
+koinAndroid = "3.5.3"
+koinAndroidCompose = "3.5.3"
+ktor = "2.3.9"
+
+kermit = "2.0.3"
+slf4j = "2.0.12"
+junitKtx = "1.1.5"
+accompanistNavigation = "0.34.0"
+
+[libraries]
+
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+kotlin-date = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinDate" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+accompanist-navigation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigation" }
+
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleViewModel" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
+
+compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompiler" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeUITooling" }
+compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
+compose-activity = { module = "androidx.activity:activity-compose", version.ref = "composeActivity" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-coil = { module = "io.coil-kt:coil-compose", version.ref = "composeCoil" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidCompose" }
+
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+
+sqldelight-native = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqldelight" }
+sqldelight-android-driver = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-sqlite-driver = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+
+test-ktor = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+test-koin = { module = "io.insert-koin:koin-test", version.ref = "koinTest" }
+test-junitKtx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
+test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
+
+log-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+log-slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
+moko-resources = { module = "dev.icerock.moko:resources", version.ref = "mokoResources" }
+moko-resources-test = { module = "dev.icerock.moko:resources-test", version.ref = "mokoResources" }
+moko-graphics = { module = "dev.icerock.moko:graphics", version.ref = "mokoGraphics" }
+moko-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "mokoResources" }
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }
+sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqldelight" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+moko-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "mokoResources" }
+
+[bundles]
+compose = [
+    "compose-ui",
+    "compose-compiler",
+    "compose-runtime",
+    "compose-material",
+    "compose-navigation",
+    "compose-preview",
+    "compose-coil",
+    "compose-activity"
+]
+
+koinAndroid = [
+    "koin-core",
+    "koin-android",
+    "koin-compose"
+]
+
+commonMain = [
+    "kotlin-coroutines",
+    "koin-core",
+    "ktor-core",
+    "ktor-serialization",
+    "ktor-content-negotiation",
+    "ktor-logging",
+    "sqldelight-coroutines",
+    "log-kermit",
+    "log-slf4j"
+]
+commonTest = [
+    "test-coroutines",
+    "test-ktor",
+    "test-koin",
+    "koin-core",
+    "ktor-serialization",
+    "ktor-content-negotiation"
+]

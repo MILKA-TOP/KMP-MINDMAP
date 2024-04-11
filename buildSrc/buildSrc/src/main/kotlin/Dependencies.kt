@@ -1,8 +1,9 @@
 object Dependencies {
 
     object Kotlin {
-        private const val version = "1.9.20"
+        private const val version = "1.9.21"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
+        const val ksp = "com.google.devtools.ksp:symbol-processing-api:$version"
         const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
     }
 
@@ -29,7 +30,7 @@ object Dependencies {
     }
 
     object Koin {
-        private const val koin_version = "3.5.0"
+        private const val koin_version = "3.5.3"
 
         const val core = "io.insert-koin:koin-core:$koin_version"
         const val android = "io.insert-koin:koin-android:$koin_version"

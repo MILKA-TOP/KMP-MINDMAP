@@ -5,7 +5,6 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import ru.lipt.core.LoadingState
-import ru.lipt.core.cache.CachePolicy
 import ru.lipt.core.compose.MutableScreenUiStateFlow
 import ru.lipt.core.compose.alert.UiError
 import ru.lipt.core.coroutines.launchCatching
@@ -14,14 +13,13 @@ import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
 import ru.lipt.details.common.params.NodeDetailsScreenParams
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.SummaryEditMapResponseRemote
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.map.common.params.MapScreenParams
 import ru.lipt.map.ui.common.toViewBoxUi
 import ru.lipt.map.ui.models.EditMapNode
-import ru.lipt.map.ui.models.MapNode
 import ru.lipt.map.ui.models.MapScreenUi
 import ru.lipt.map.ui.models.MindMapBox
 import ru.lipt.map.ui.models.MindMapColumn
@@ -29,7 +27,7 @@ import ru.lipt.map.ui.models.MindMapNodeVertex
 
 class MapScreenModel(
     private val params: MapScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<LoadingState<MapScreenUi, Unit>, NavigationTarget> = MutableScreenUiStateFlow(idle())
     val uiState = _uiState.asStateFlow()
@@ -181,18 +179,6 @@ class MapScreenModel(
         }
     }
 
-    fun onNodeMoved(node: MapNode, index: Int) {
-        screenModelScope.launchCatching {
-            val updatedMap = mapInteractor.updateNodePosition(params.id, node.nodeId, index)
-
-            _uiState.updateUi {
-                copy { ui ->
-                    updatedMap.toUI()
-                }
-            }
-        }
-    }
-
     fun onEditNodeClick(nodeId: String) {
         _uiState.navigateTo(NavigationTarget.EditableDetailsScreen(NodeDetailsScreenParams(params.id, nodeId)))
     }
@@ -208,8 +194,8 @@ class MapScreenModel(
         return map.toUI()
     }
 
-    private suspend fun getMap(cachePolicy: CachePolicy = CachePolicy.ALWAYS): MapScreenUi {
-        val map = mapInteractor.getMap(params.id, cachePolicy)
+    private suspend fun getMap(): MapScreenUi {
+        val map = mapInteractor.getMap(params.id)
         updateUiMap(map)
 
         return map.toUI()

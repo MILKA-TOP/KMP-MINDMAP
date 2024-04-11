@@ -13,7 +13,7 @@ import ru.lipt.core.idle
 import ru.lipt.core.loading
 import ru.lipt.core.success
 import ru.lipt.details.common.params.NodeDetailsScreenParams
-import ru.lipt.domain.map.MindMapInteractor
+import ru.lipt.domain.map.IMindMapInteractor
 import ru.lipt.domain.map.models.SummaryViewMapResponseRemote
 import ru.lipt.domain.map.models.abstract.SummaryMapResponseRemote
 import ru.lipt.map.common.params.MapViewScreenParams
@@ -22,7 +22,7 @@ import ru.lipt.map.ui.models.MapViewScreenUi
 
 class MapViewScreenModel(
     private val params: MapViewScreenParams,
-    private val mapInteractor: MindMapInteractor,
+    private val mapInteractor: IMindMapInteractor,
 ) : ScreenModel {
     private val _uiState: MutableScreenUiStateFlow<LoadingState<MapViewScreenUi, Unit>, NavigationTarget> = MutableScreenUiStateFlow(idle())
     val uiState = _uiState.asStateFlow()
